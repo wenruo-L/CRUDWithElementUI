@@ -1,0 +1,335 @@
+<template>
+  <div class="content__table">
+    <!-- 头部预留插槽 -->
+    <slot name="tableHeader"></slot>
+    <!-- 顶部操作栏 -->
+    <div class="header-mune-content">
+      <div class="header-mune-content__btn_left">
+        <el-button
+          v-if="HeaderMuneAddBtn"
+          type="primary"
+          icon="el-icon-plus"
+          :size="size"
+        >
+          新 增
+        </el-button>
+        <el-button
+          v-if="HeaderMuneDelBtn"
+          type="danger"
+          icon="el-icon-delete"
+          :size="size"
+        >
+          删 除
+        </el-button>
+        <slot name="muneLeft"></slot>
+      </div>
+      <div class="header-mune-content__btn_right">
+        <slot name="muneRight"></slot>
+        <el-tooltip
+          effect="dark"
+          placement="top"
+          content="刷新"
+          v-if="HeaderMuneRefreshBtn"
+        >
+          <el-button
+            icon="el-icon-refresh"
+            circle
+            :class="{ turn: isRefresh }"
+            :size="size"
+            @click="refreshChange"
+          ></el-button>
+        </el-tooltip>
+        <el-tooltip
+          effect="dark"
+          placement="top"
+          content="搜索"
+          v-if="HeaderMuneSearchBtn"
+        >
+          <el-button icon="el-icon-search" circle :size="size"></el-button>
+        </el-tooltip>
+      </div>
+    </div>
+    <!-- 表格 -->
+    <el-table
+      class="crud__Table"
+      ref="table"
+      v-loading="loading"
+      :data="tableData"
+      :height="isAutoHeight ? tableHeight : crudOption.maxHeight"
+      :max-height="tableHeight"
+      :stripe="crudOption.stripe"
+      :border="crudOption.border"
+      :size="size"
+      :fit="crudOption.fit"
+      :show-header="crudOption.showHeader"
+      :highlight-current-row="crudOption.highlightCurrentRow"
+      :cell-class-name="crudOption.cellClassName"
+      :row-key="TableRowKey"
+      :tree-props="TableTreeProps"
+      :lazy="TableLazy"
+      :load="treeLoad"
+      style="width: 100%"
+    >
+      <!-- 多选 -->
+      <el-table-column
+        v-if="crudOption.selection"
+        type="selection"
+        fixed
+        header-align="center"
+        align="center"
+        width="50"
+      >
+      </el-table-column>
+      <!-- 索引 -->
+      <el-table-column
+        v-if="crudOption.index"
+        type="index"
+        fixed
+        header-align="center"
+        align="center"
+        width="50"
+        label="#"
+      >
+      </el-table-column>
+      <!-- 动态列表 -->
+      <template v-for="(column, index) in columnOption">
+        <!-- 动态 -->
+        <el-table-column
+          :key="column.prop + index"
+          :header-align="ColumnHeaderAlign"
+          :align="ColumnAlign"
+          :width="column.width"
+          :fixed="column.fixed"
+          :prop="column.prop || ''"
+          :label="column.label || ''"
+          :show-overflow-tooltip="getShowOverflowTooltip(column)"
+        >
+          <template slot-scope="{ row, $index }">
+            <!-- 列表插槽 -->
+            <slot
+              v-if="column.slot"
+              :name="column.prop"
+              v-bind="{
+                row: row,
+                index: $index,
+              }"
+            >
+            </slot>
+            <!-- 列表内容 -->
+            {{ row[column.prop] }}
+          </template>
+        </el-table-column>
+      </template>
+      <!-- 操作 -->
+      <el-table-column
+        v-if="ColumnMenu"
+        header-align="center"
+        fixed="right"
+        label="操作"
+        :width="ColumnMenuWidth"
+      >
+        <template slot-scope="{ $index, row }">
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-view"
+            v-if="ColumnViewBtn"
+            @click="showFromDialogReturnTrue($index, row, 'view')"
+          >
+            查看
+          </el-button>
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-edit"
+            v-if="ColumnEditBtn"
+            @click="showFromDialogReturnTrue($index, row, 'edit')"
+          >
+            编辑
+          </el-button>
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-delete"
+            v-if="ColumnDelBtn"
+            @click="showFromDialogReturnTrue($index, row, 'delete')"
+          >
+            删除
+          </el-button>
+          <slot name="menuBtn" v-bind="{ row: row, index: $index }"></slot>
+        </template>
+      </el-table-column>
+      <!-- 无数据 -->
+      <!-- <template slot="empty">
+
+      </template> -->
+    </el-table>
+  </div>
+</template>
+
+<script>
+import crudConfig from "@/utils/CURD/crud-config";
+import { vaildData } from "@/utils/validate";
+export default {
+  name: "p-table",
+  provide() {
+    return {
+      crudTable: this,
+    };
+  },
+  props: {
+    // crud的配置
+    crudOption: {
+      type: Object,
+      default: () => {
+        return Object.create(null);
+      },
+    },
+    // 表格数据
+    tableData: {
+      type: Array,
+      default: () => [],
+    },
+    // 树表格 懒加载的处理函数
+    treeLoad: {
+      type: Function,
+    },
+    // loading状态
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    // 表格自动高度
+    isAutoHeight() {
+      return this.crudOption.height === "auto";
+    },
+    // 列配置
+    columnOption() {
+      let columnList = [];
+      console.log("p-table  this.crudOption", this.crudOption);
+      if (this.crudOption.column.length == 0) return columnList;
+      columnList = this.crudOption.column.filter((item, index) => {
+        item.$index = index;
+        return item.hide === undefined || item.hide === false;
+      });
+      return columnList;
+    },
+    // 样式大小 控制表格及新增、批量操作按钮大小
+    size() {
+      return vaildData(this.crudOption.size, crudConfig.size);
+    },
+    // 顶部新增按钮
+    HeaderMuneAddBtn() {
+      return vaildData(this.crudOption.addBtn, crudConfig.addBtn);
+    },
+    // 顶部删除按钮
+    HeaderMuneDelBtn() {
+      return vaildData(
+        this.crudOption.delBtn,
+        crudConfig.delBtn && this.crudOption.selection
+      );
+    },
+    // 顶部刷新按钮
+    HeaderMuneRefreshBtn() {
+      return vaildData(this.crudOption.refreshBtn, crudConfig.refreshBtn);
+    },
+    // 顶部搜索开关按钮
+    HeaderMuneSearchBtn() {
+      return vaildData(this.crudOption.searchBtn, crudConfig.searchBtn);
+    },
+    // 表格 rowkey
+    TableRowKey() {
+      return vaildData(this.crudOption.rowKey, crudConfig.rowKey);
+    },
+    // 表格 tree-props
+    TableTreeProps() {
+      return vaildData(this.crudOption.treeProps, crudConfig.treeProps);
+    },
+    // 表格 lazy
+    TableLazy() {
+      return vaildData(this.crudOption.treeLazy, crudConfig.treeLazy);
+    },
+    // 列 header-align
+    ColumnHeaderAlign() {
+      return vaildData(this.crudOption.headerAlign, crudConfig.headerAlign);
+    },
+    // 列 align
+    ColumnAlign() {
+      return vaildData(this.crudOption.columnAlign, crudConfig.columnAlign);
+    },
+    // 列 操作栏
+    ColumnMenu() {
+      return vaildData(this.crudOption.menu, crudConfig.menu);
+    },
+    // 列 操作栏宽度
+    ColumnMenuWidth() {
+      return vaildData(this.crudOption.menuWidth, crudConfig.menuWidth);
+    },
+    // 列 查看按钮
+    ColumnViewBtn() {
+      return vaildData(this.crudOption.viewBtn, crudConfig.viewBtn);
+    },
+    // 列 编辑按钮
+    ColumnEditBtn() {
+      return vaildData(this.crudOption.editBtn, crudConfig.editBtn);
+    },
+    // 列 删除按钮
+    ColumnDelBtn() {
+      return vaildData(this.crudOption.delBtn, crudConfig.delBtn);
+    },
+  },
+  created() {
+    this.getTableHeight();
+  },
+  data() {
+    return {
+      tableHeight: undefined,
+      crudConfig: crudConfig,
+      isRefresh: false,
+    };
+  },
+  methods: {
+    // 刷新事件
+    refreshChange() {
+      this.$emit("refresh-change");
+      this.isRefresh = true;
+      setTimeout(() => {
+        this.isRefresh = false;
+      }, 500);
+    },
+    // 获取表格高度
+    getTableHeight() {
+      let clientHeight = document.documentElement.clientHeight;
+      if (this.isAutoHeight) {
+        this.$nextTick(() => {
+          const tableRef = this.$refs.table;
+          const tablePageRef = this.$refs.tablePage;
+          if (!tableRef) return;
+          const tableStyle = tableRef.$el;
+          const pageStyle =
+            (tablePageRef &&
+              tablePageRef.$el &&
+              tablePageRef.$el.offsetHeight) ||
+            20;
+          this.tableHeight =
+            clientHeight -
+            tableStyle.offsetTop -
+            pageStyle -
+            this.crudOption.calcHeight;
+        });
+      } else {
+        this.tableHeight = this.crudOption.height;
+      }
+    },
+    getShowOverflowTooltip(column) {
+      return vaildData(column.overHidden, crudConfig.overHidden);
+    },
+  },
+};
+</script>
+
+<style lang='scss' scoped>
+@import url("../style/table.scss");
+</style>

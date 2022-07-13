@@ -1,0 +1,35 @@
+.el-input-number .el-input__inner {
+    text-align: left !important;
+}
+.row-content{
+    width: 100%;
+}
+
+.row-content-flex{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.row-main-content{
+    flex: 1;
+    flex-shrink: 0;
+    display: flex ;
+    flex-wrap: wrap;
+}
+.row-mune-content{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.row-mune-content__block{
+    width: 100%;
+}
+.row-mune-content__inline{
+    width: 20%;
+    
+}
+
+
