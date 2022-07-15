@@ -1,6 +1,6 @@
 <template>
   <div class="crud__from">
-    <!-- PForm:{{ PForm }} -->
+    PForm:{{ PForm }}
     <el-form
       ref="PForm"
       class="p-from"
@@ -225,12 +225,13 @@ export default {
     };
   },
   watch: {
-    PForm: {
+    form: {
       handler(val) {
-        this.handleformvaluechange(val);
+        // this.PForm = val;
+        // 这里不能直接等于父组件绑定的值，如果详情/编辑模式，column有配置，而没有对应的值，赋值会报错
+        this.PForm = Object.assign(this.PForm, val);
       },
       deep: true,
-      immediate: true,
     },
   },
   computed: {
@@ -292,8 +293,6 @@ export default {
     // 启用表单
     enableForm() {
       this.allDisabled = false;
-      this.formInit(true);
-      this.clearValidate();
     },
     // 提交校验
     submitForm(formName) {
@@ -324,8 +323,6 @@ export default {
       this.$emit("resetFrom");
     },
     handleChange(value, column) {
-      console.log("handleChange", value);
-      console.log("column", column.label, column);
       let lableValueName = "$" + column.prop;
       if (column.type === "select" || column.type === "radio") {
         if (column.multiple) {
@@ -342,11 +339,11 @@ export default {
     // 根据option传进来的column数组初始化form的值
     formInit(reset) {
       if (!this.option.column || this.option.column.length <= 0) return;
+      let addLableValueType = ["select", "radio"];
       this.option.column.forEach((el) => {
         if (!el.display || (el.display && el.display !== true)) {
           // 这些类型的组件有可能会把label和value的值一起传给后台，在此初始化
           // 取消checkBox和cascader（cascader绑定了ref，使用getCheckedNodes）
-          let addLableValueType = ["select", "radio"];
           // 初始化默认值
           let defaultValue;
           if (reset) {
@@ -602,6 +599,6 @@ export default {
 };
 </script>
 
-<style >
+<style lang="scss" scoped>
 @import url("../style/form.scss");
 </style>

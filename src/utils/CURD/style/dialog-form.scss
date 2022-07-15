@@ -1,0 +1,22 @@
+.dialog__header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.dialog__menu{
+    position: absolute;
+    top: 18px;
+    right: 50px;
+    padding: 0;
+    line-height: 20px;
+    
+}
+.dialog__menu i{
+    color: #909399;
+    font-size: 16px;
+    cursor: pointer;
+}
+.dialog__menu :hover{
+    color:#1890ff;
+}

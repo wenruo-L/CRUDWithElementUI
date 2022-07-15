@@ -10,6 +10,7 @@
           type="primary"
           icon="el-icon-plus"
           :size="size"
+          @click="openDialogForm('add')"
         >
           新 增
         </el-button>
@@ -18,6 +19,7 @@
           type="danger"
           icon="el-icon-delete"
           :size="size"
+          @click="deleteClick('handleDelete')"
         >
           删 除
         </el-button>
@@ -116,7 +118,9 @@
             >
             </slot>
             <!-- 列表内容 -->
-            {{ row[column.prop] }}
+            <template v-else>
+              {{ getTableValue(row, column) }}
+            </template>
           </template>
         </el-table-column>
       </template>
@@ -128,13 +132,13 @@
         label="操作"
         :width="ColumnMenuWidth"
       >
-        <template slot-scope="{ $index, row }">
+        <template slot-scope="{ row, $index }">
           <el-button
             type="text"
             size="small"
             icon="el-icon-view"
             v-if="ColumnViewBtn"
-            @click="showFromDialogReturnTrue($index, row, 'view')"
+            @click="openDialogForm('view', row, $index)"
           >
             查看
           </el-button>
@@ -143,7 +147,7 @@
             size="small"
             icon="el-icon-edit"
             v-if="ColumnEditBtn"
-            @click="showFromDialogReturnTrue($index, row, 'edit')"
+            @click="openDialogForm('edit', row, $index)"
           >
             编辑
           </el-button>
@@ -152,7 +156,7 @@
             size="small"
             icon="el-icon-delete"
             v-if="ColumnDelBtn"
-            @click="showFromDialogReturnTrue($index, row, 'delete')"
+            @click="deleteClick('delete', row, $index)"
           >
             删除
           </el-button>
@@ -169,7 +173,9 @@
 
 <script>
 import crudConfig from "@/utils/CURD/crud-config";
+import { getObjType } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
+
 export default {
   name: "p-table",
   provide() {
@@ -201,6 +207,15 @@ export default {
     },
   },
   computed: {
+    // data(){
+    //   let dataList = [];
+    //   if(this.tableData.length==0) return dataList;
+    //   dataList =
+    //   this.tableData.forEach((el)=>{
+
+    //   })
+    //   return dataList
+    // },
     // 表格自动高度
     isAutoHeight() {
       return this.crudOption.height === "auto";
@@ -208,7 +223,7 @@ export default {
     // 列配置
     columnOption() {
       let columnList = [];
-      console.log("p-table  this.crudOption", this.crudOption);
+      // console.log("p-table  this.crudOption", this.crudOption);
       if (this.crudOption.column.length == 0) return columnList;
       columnList = this.crudOption.column.filter((item, index) => {
         item.$index = index;
@@ -291,6 +306,18 @@ export default {
     };
   },
   methods: {
+    // 打开表单弹窗
+    openDialogForm(openType, row, index) {
+      this.$emit("open-dialog-form", openType, row, index);
+    },
+    // 删除
+    deleteClick(deleteType, row, index) {
+      if (deleteType === "handleDelete") {
+        this.$emit("handle-delete", deleteType);
+      } else {
+        this.$emit("row-delete", row, index);
+      }
+    },
     // 刷新事件
     refreshChange() {
       this.$emit("refresh-change");
@@ -299,6 +326,42 @@ export default {
         this.isRefresh = false;
       }, 500);
     },
+    getTableValue(row, column) {
+      let value = row[column.prop];
+      let matchType = ["select", "radio", "checkbox", "cascader"];
+      // 1.1：该字段是否需要匹配
+      // 1.2：需要匹配的字段的字典是否有值
+      if (!matchType.includes(column.type) || !vaildData(column.dicData))
+        return value;
+      // 2.1：matchType的类型主要分两种，单选或多选
+      if (
+        !vaildData(column.multiple) &&
+        getObjType(row[column.prop]) != "array"
+      ) {
+        return (value = column.dicData.find((item) => {
+          return item[this.getColumnProps(column, "value")] === value;
+        })[this.getColumnProps(column, "label")]);
+      } else {
+        if (column.type !== "cascader") {
+          return (value = column.dicData
+            .filter((item) => {
+              return value.includes(item[this.getColumnProps(column, "value")]);
+            })
+            .map((item) => {
+              return item[this.getColumnProps(column, "label")];
+            })
+            .join());
+        } else {
+          // 级联选择器。。。没想好怎么搞
+          return value.join("-");
+        }
+      }
+    },
+    // 获取label/value对应的字段名 默认label/value
+    getColumnProps(column, type) {
+      return column.props && column.props[type] ? column.props[type] : type;
+    },
+
     // 获取表格高度
     getTableHeight() {
       let clientHeight = document.documentElement.clientHeight;

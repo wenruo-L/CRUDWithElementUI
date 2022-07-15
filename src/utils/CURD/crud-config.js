@@ -37,6 +37,8 @@ export default {
     columnAlign: 'left',
     // 列是否隐藏
     hide: false,
+    // 表单
+    dialogWidth: '60%',
     //  其他
     // 首次加载表格是否折叠搜索栏
     showSearch: true

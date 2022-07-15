@@ -34,7 +34,7 @@ export default function () {
                 } else {
                     url = `${column.propsHttp.imgDomain?column.propsHttp.imgDomain:''}${res[column.propsHttp.url?column.propsHttp.url:'url']}`
                 }
-                this.form[column.prop].push({
+                this.PForm[column.prop].push({
                     name: url,
                     url
                 })
@@ -59,7 +59,7 @@ export default function () {
             },
             // 删除
             handleRemove(file, column) {
-                this.form[column.prop] = this.form[column.prop].filter((item) => {
+                this.PForm[column.prop] = this.PForm[column.prop].filter((item) => {
                     return item.url != file.url
                 })
             },
