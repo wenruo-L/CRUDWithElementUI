@@ -27,7 +27,11 @@
       :boxType="openType"
       @submitForm="crud.handleSubmit"
       @cancelForm="close"
-    ></p-form>
+    >
+      <template v-for="item in crud.formSlot" :slot="item" slot-scope="scope">
+        <slot v-bind="scope" :name="item"></slot>
+      </template>
+    </p-form>
   </el-dialog>
 </template>
 
@@ -93,5 +97,5 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import url("./style/dialog-form.scss");
+@import "./style/dialog-form.scss";
 </style>

@@ -58,7 +58,7 @@
       v-loading="loading"
       :data="tableData"
       :height="isAutoHeight ? tableHeight : crudOption.maxHeight"
-      :max-height="tableHeight"
+      :max-height="crudOption.maxHeight"
       :stripe="crudOption.stripe"
       :border="crudOption.border"
       :size="size"
@@ -242,8 +242,8 @@ export default {
     // 顶部删除按钮
     HeaderMuneDelBtn() {
       return vaildData(
-        this.crudOption.delBtn,
-        crudConfig.delBtn && this.crudOption.selection
+        this.crudOption.topDelBtn,
+        crudConfig.topDelBtn && this.crudOption.selection
       );
     },
     // 顶部刷新按钮
@@ -331,16 +331,25 @@ export default {
       let matchType = ["select", "radio", "checkbox", "cascader"];
       // 1.1：该字段是否需要匹配
       // 1.2：需要匹配的字段的字典是否有值
-      if (!matchType.includes(column.type) || !vaildData(column.dicData))
+      if (
+        !matchType.includes(column.type) ||
+        !vaildData(column.dicData) ||
+        value === undefined ||
+        value === null
+      )
         return value;
       // 2.1：matchType的类型主要分两种，单选或多选
       if (
         !vaildData(column.multiple) &&
         getObjType(row[column.prop]) != "array"
       ) {
-        return (value = column.dicData.find((item) => {
+        // 怎么会有人配置了字段但是表格data不传对应的值的？原来是我
+        let dicItem = column.dicData.find((item) => {
           return item[this.getColumnProps(column, "value")] === value;
-        })[this.getColumnProps(column, "label")]);
+        });
+        return (value = dicItem
+          ? dicItem[this.getColumnProps(column, "label")]
+          : "");
       } else {
         if (column.type !== "cascader") {
           return (value = column.dicData
@@ -361,7 +370,6 @@ export default {
     getColumnProps(column, type) {
       return column.props && column.props[type] ? column.props[type] : type;
     },
-
     // 获取表格高度
     getTableHeight() {
       let clientHeight = document.documentElement.clientHeight;
@@ -394,5 +402,5 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import url("../style/table.scss");
+@import "../style/table.scss";
 </style>

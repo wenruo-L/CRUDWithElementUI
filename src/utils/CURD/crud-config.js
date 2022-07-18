@@ -12,6 +12,8 @@ export default {
     viewBtn: true,
     // 删除按钮
     delBtn: true,
+    // 顶部删除按钮
+    topDelBtn: true,
     // 编辑按钮
     editBtn: true,
     // 刷新按钮
@@ -20,6 +22,8 @@ export default {
     searchBtn: true,
     // 内容过长是否悬浮显示
     overHidden: true,
+    // 分页器
+    page: true,
     //  tree table =========================
     // 树表格需要的row-key
     rowKey: 'id',

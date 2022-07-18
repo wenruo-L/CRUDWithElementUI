@@ -1,6 +1,6 @@
 <template>
-  <div class="crud__from">
-    PForm:{{ PForm }}
+  <div class="crud__from" :class="[{ form__detail: isView }]">
+    <!-- PForm:{{ PForm }} -->
     <el-form
       ref="PForm"
       class="p-from"
@@ -25,7 +25,7 @@
               >
                 <!-- 内容插槽 -->
                 <slot
-                  v-if="column.formSlot"
+                  v-if="column.formslot"
                   v-bind="{ size, disabled: getDisabled(column) }"
                   :name="column.prop + 'Form'"
                 ></slot>
@@ -174,7 +174,7 @@
       </div>
     </el-form>
     <!-- upload 预览 -->
-    <el-dialog :visible.sync="uploadDialog">
+    <el-dialog append-to-body :visible.sync="uploadDialog">
       <img width="100%" :src="uploadDataUrl" alt="" />
     </el-dialog>
   </div>
@@ -228,7 +228,7 @@ export default {
     form: {
       handler(val) {
         // this.PForm = val;
-        // 这里不能直接等于父组件绑定的值，如果详情/编辑模式，column有配置，而没有对应的值，赋值会报错
+        // 这里不能直接等于父组件绑定的值，如果编辑模式，column有配置，而没有对应的值，赋值会报错
         this.PForm = Object.assign(this.PForm, val);
       },
       deep: true,
@@ -382,8 +382,16 @@ export default {
       return setPx(labelWidth);
     },
     // 获取组件是否禁用
+    // option内传入detail:true和this.isView = true 为表单详情
+    // column内传入disabled为单个禁用
+    // allDisabled为表单进行操作时一切操作、组件的禁用
     getDisabled(column) {
-      return vaildData(column.disabled, false) || this.allDisabled;
+      return (
+        vaildData(column.disabled) ||
+        this.isView ||
+        this.allDisabled ||
+        this.option.detail
+      );
     },
     // 动态获取组件
     getComponent(type, props) {
@@ -599,6 +607,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-@import url("../style/form.scss");
+<style lang="scss">
+@import "../style/form.scss";
 </style>

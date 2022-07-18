@@ -14,8 +14,18 @@
         <slot v-bind="scope" :name="item"></slot>
       </template>
     </p-table>
+    <!-- 分页器 -->
+    <table-page ref="tablePage" :page="page">
+      <template slot="page">
+        <slot name="page"></slot>
+      </template>
+    </table-page>
     <!-- 表单 -->
-    <dialog-form ref="dialogForm"></dialog-form>
+    <dialog-form ref="dialogForm">
+      <template slot-scope="scope" v-for="item in formSlot" :slot="item">
+        <slot v-bind="scope" :name="item"></slot>
+      </template>
+    </dialog-form>
   </div>
 </template>
 
@@ -23,7 +33,8 @@
 import pTable from "@/utils/CURD/p-table/p-table";
 import crudConfig from "@/utils/CURD/crud-config";
 import dialogForm from "@/utils/CURD/dialog-form";
-import { getTableSlot } from "@/utils/util";
+import tablePage from "@/utils/CURD/table-page";
+import { getSlot } from "@/utils/util";
 export default {
   name: "crud",
   model: {
@@ -33,6 +44,7 @@ export default {
   components: {
     pTable,
     dialogForm,
+    tablePage,
   },
   provide() {
     return {
@@ -68,6 +80,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    // 分页器数据
+    page: {
+      type: Object,
+      default: () => {
+        return Object.create(null);
+      },
+    },
     beforeOpen: Function,
   },
   data() {
@@ -89,7 +108,10 @@ export default {
   computed: {
     // 把属于table的插槽传到子组件
     tableSlot() {
-      return getTableSlot(this.$scopedSlots);
+      return getSlot(this.$scopedSlots, "table");
+    },
+    formSlot() {
+      return getSlot(this.$scopedSlots, "Form");
     },
     headerSearch() {
       return this.crudOption.showSearch != undefined

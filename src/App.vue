@@ -30,6 +30,7 @@
       <Crud
         ref="crud"
         v-model="form"
+        :page="page"
         :loading="loading"
         :crudOption="option"
         :before-open="beforeOpen"
@@ -37,13 +38,19 @@
         @refresh-change="refreshChange"
         @row-save="submit"
         @row-update="submit"
+        @row-delete="rowDelete"
+        @current-change="currentChange"
+        @size-change="sizeChange"
+        @on-load="onLoad"
       >
+        <!-- 顶部插槽测试 -->
         <template slot="muneLeft">
           <el-button type="primary" size="small">左边的测试按钮</el-button>
         </template>
         <template slot="muneRight">
           <el-button type="primary" size="small">右边的测试按钮</el-button>
         </template>
+        <!-- 表格插槽测试 -->
         <template slot="name" slot-scope="{ row, index }"
           >{{ index }}{{ row.name }}
         </template>
@@ -56,6 +63,10 @@
           >
             测试
           </el-button>
+        </template>
+        <!-- 表单插槽测试 -->
+        <template slot="sexForm">
+          <div>用插槽告诉你我的性别</div>
         </template>
       </Crud>
     </basic-container>
@@ -595,7 +606,31 @@ export default {
             type: "select",
             filterable: true,
             dataType: "number",
+            formslot: true,
             value: 1,
+            dicData: [
+              {
+                label: "男",
+                value: 1,
+              },
+              {
+                label: "女",
+                value: 0,
+              },
+              {
+                label: "谢尔比",
+                value: 2,
+              },
+            ],
+          },
+          {
+            label: "我是多选的下拉框喔",
+            prop: "selectButMultiple",
+            type: "select",
+            multiple: true,
+            filterable: true,
+            dataType: "number",
+            value: [1, 0],
             dicData: [
               {
                 label: "男",
@@ -631,12 +666,26 @@ export default {
             ],
           },
           {
+            label: "单纯的单选框",
+            prop: "isRadio",
+            type: "radio",
+            dicData: [
+              {
+                label: "选项1",
+                value: 1,
+              },
+              {
+                label: "选项2",
+                value: 2,
+              },
+            ],
+          },
+          {
             label: "单选框但按钮",
             prop: "radio",
             labelWidth: 120,
             type: "radio",
             showType: "button",
-            // disabled: true,
             value: 1,
             dicData: [
               {
@@ -965,6 +1014,11 @@ export default {
           },
         ],
       },
+      page: {
+        pageSize: 10,
+        currentPage: 1,
+        total: 0,
+      },
       statesList: [],
       states: [
         "Alabama",
@@ -1047,7 +1101,6 @@ export default {
   },
   created() {
     // this.getFormData()
-    this.getListData();
   },
 
   mounted() {},
@@ -1055,6 +1108,29 @@ export default {
     // this.$destroy("pForm");
   },
   methods: {
+    currentChange(currentPage) {
+      this.page.currentPage = currentPage;
+    },
+    sizeChange(pageSize) {
+      this.page.pageSize = pageSize;
+    },
+    rowDelete(row) {
+      this.$confirm("你还真敢删我啊?", {
+        confirmButtonText: "试试就逝世",
+        cancelButtonText: "开玩笑的",
+        type: "warning",
+      })
+        .then(() => {
+          console.log("无事发生", row);
+        })
+        .then(() => {
+          this.getListData(this.page);
+          this.$message({
+            type: "success",
+            message: "操作成功!",
+          });
+        });
+    },
     beforeOpen(done, type) {
       // 详情、编辑时你想做的事
       if (["edit", "view"].includes(type)) {
@@ -1066,9 +1142,17 @@ export default {
             sex: 0,
             useDisplay: "辣鸡数据",
             age: 24,
+            isRadio: 1,
             radio: 1,
             checkbox: [1],
+            selectButMultiple: [0, 1],
             cascader: [["zujian", "basic", "layout"]],
+            upload: [
+              {
+                name: "http://www.liulongbin.top:3006/uploads/1658131824528_ba6bdfa4bd5643ceb17212dfe5a5eae4.jpg",
+                url: "http://www.liulongbin.top:3006/uploads/1658131824528_ba6bdfa4bd5643ceb17212dfe5a5eae4.jpg",
+              },
+            ],
           };
         }, 1000);
       } else {
@@ -1079,7 +1163,9 @@ export default {
       }
       done();
     },
-    getListData() {
+    onLoad(page, params = {}) {
+      console.log("onload", page);
+      console.log("params", params);
       if (this.data.length != 0) {
         this.data = [];
       }
@@ -1090,7 +1176,9 @@ export default {
           sex: i % 2 == 0 ? 0 : 1,
           useDisplay: "辣鸡数据",
           age: i < 5 ? i + 20 : i + 10,
+          isRadio: 1,
           radio: 1,
+          selectButMultiple: [0, 1],
           checkbox: [1],
           cascader: ["zhinan", "shejiyuanze", "yizhi"],
           children: [],
@@ -1101,8 +1189,10 @@ export default {
           id: i + 20,
           name: `姓名${i + 20}`,
           sex: i % 2 == 0 ? 0 : 1,
+          selectButMultiple: [0, 1],
           useDisplay: "辣鸡数据",
           age: i < 20 ? i + 10 : i - 10,
+          isRadio: 2,
           radio: 2,
           checkbox: [1, 2],
           cascader: ["zujian", "basic", "layout"],
@@ -1110,6 +1200,7 @@ export default {
       }
       setTimeout(() => {
         this.loading = false;
+        this.page.total = 233;
       }, 700);
       setTimeout(() => {
         this.option.column[this.useDisplayCrudIndex].display = true;
@@ -1171,6 +1262,7 @@ export default {
     test(row, index) {
       console.log("test  row", row);
       console.log("test  index", index);
+      alert("你点了测试对吧,数据是" + JSON.stringify(row));
     },
   },
 };

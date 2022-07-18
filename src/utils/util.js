@@ -18,11 +18,12 @@ export const setPx = (val, defval = '') => {
 };
 
 // 过滤除表格以外的
-export const getTableSlot = (slotArr) => {
-    // 要剔除的插槽类型
+export const getSlot = (slotArr, slotType) => {
     let result = [];
     for (let key in slotArr) {
-        if (!key.endsWith('Form') && !key.endsWith('Search')) {
+        if (!key.endsWith('Form') && !key.endsWith('Search') && slotType == 'table') {
+            result.push(key)
+        } else if (key.endsWith(slotType)) {
             result.push(key)
         }
     }
