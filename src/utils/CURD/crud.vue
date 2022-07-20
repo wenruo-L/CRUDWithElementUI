@@ -1,5 +1,6 @@
 <template>
   <div class="crud">
+    <header-mune ref="headerMune" v-if="searchShow"></header-mune>
     <!-- 表格 -->
     <p-table
       ref="pTable"
@@ -7,8 +8,10 @@
       :crudOption="crudOption"
       :tableData="tableData"
       @refresh-change="refreshChange"
+      @search-change="shouldShowSearch"
       @row-delete="rowDelete"
       @open-dialog-form="openDialogForm"
+      @selection-change="selectionChange"
     >
       <template v-for="item in tableSlot" :slot="item" slot-scope="scope">
         <slot v-bind="scope" :name="item"></slot>
@@ -34,7 +37,9 @@ import pTable from "@/utils/CURD/p-table/p-table";
 import crudConfig from "@/utils/CURD/crud-config";
 import dialogForm from "@/utils/CURD/dialog-form";
 import tablePage from "@/utils/CURD/table-page";
+import headerMune from "@/utils/CURD/header-mune";
 import { getSlot } from "@/utils/util";
+import { vaildData } from "@/utils/validate";
 export default {
   name: "crud",
   model: {
@@ -45,6 +50,7 @@ export default {
     pTable,
     dialogForm,
     tablePage,
+    headerMune,
   },
   provide() {
     return {
@@ -54,6 +60,13 @@ export default {
   props: {
     // 绑定的form表单
     form: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+    // 搜索
+    query: {
       type: Object,
       default: () => {
         return {};
@@ -94,6 +107,8 @@ export default {
       tabelFormIndex: null,
       tableFormType: null,
       tabelForm: {},
+      searchShow: false,
+      searchForm: {},
     };
   },
   watch: {
@@ -113,16 +128,31 @@ export default {
     formSlot() {
       return getSlot(this.$scopedSlots, "Form");
     },
+    // 首次加载crud是否显示顶部搜索
     headerSearch() {
-      return this.crudOption.showSearch != undefined
-        ? this.crudOption.showSearch
-        : crudConfig.showSearch;
+      return vaildData(this.crudOption.searchShow, crudConfig.searchShow);
     },
   },
+  created() {
+    this.searchShow = this.headerSearch;
+  },
   methods: {
+    // 显示、隐藏搜索
+    shouldShowSearch() {
+      this.searchShow = !this.searchShow;
+      console.log("searchShow", this.searchShow);
+      console.log("headerSearch", this.headerSearch);
+    },
     // 刷新事件
     refreshChange() {
       this.$emit("refresh-change");
+    },
+    // 表格多选框
+    selectionChange(rows) {
+      this.$emit("selection-change", rows);
+    },
+    toggleSelection(rows) {
+      this.$refs.pTable.toggleSelection(rows);
     },
     // 行数据克隆
     rowClone(row) {

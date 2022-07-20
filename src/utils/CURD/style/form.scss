@@ -23,12 +23,12 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  .row-mune-content__block {
-    width: 100%;
-  }
-  .row-mune-content__inline {
-    width: 20%;
-  }
+}
+.row-mune-content__block {
+  width: 100%;
+}
+.row-mune-content__inline {
+  width: 20%;
 }
 
 // 详情表单

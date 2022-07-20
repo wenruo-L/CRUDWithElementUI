@@ -6,13 +6,20 @@ export default {
     // labelWidth大小
     labelWidth: 90,
     labelSuffix: ':',
+    muneAlign: 'center',
     // 提交按钮
     submitBtn: true,
+    submitText: '保 存',
+    submitText__search: '搜 索',
     // 重置按钮
     resetBtn: false,
+    resetText: '重 置',
     // 取消按钮  
     // 注：重置和取消按钮的功能并不冲突，但一般是二选一显示，取消一般适用于表单弹窗，可以应用与关闭表单弹窗
     cancelBtn: true,
+    cancelText: '取 消',
+    // 操作按钮的span大小
+    muneSpan: 24,
     // 是否为详情模式 该模式一般适用于查看详情
     detail: true,
     // 对齐方式

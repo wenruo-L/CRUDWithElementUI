@@ -103,3 +103,17 @@ export const deepClone = data => {
     }
     return obj;
 };
+
+// 获取提示语 当有校验规则的时候使用检验规则的提示
+export const getPlaceHolder = (column) => {
+    let placeHolder = `请输入${column.label}`;
+    let inputType = ["input", "textarea", "password"];
+    let columnType = column.type || "input";
+    if (!inputType.includes(columnType)) {
+        placeHolder = `请选择${column.label}`;
+    }
+    if (column.rules && column.rules.length) {
+        placeHolder = column.rules[0].message;
+    }
+    return placeHolder;
+}

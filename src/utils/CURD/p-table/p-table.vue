@@ -47,7 +47,12 @@
           content="搜索"
           v-if="HeaderMuneSearchBtn"
         >
-          <el-button icon="el-icon-search" circle :size="size"></el-button>
+          <el-button
+            icon="el-icon-search"
+            circle
+            :size="size"
+            @click="searchChange"
+          ></el-button>
         </el-tooltip>
       </div>
     </div>
@@ -70,6 +75,7 @@
       :tree-props="TableTreeProps"
       :lazy="TableLazy"
       :load="treeLoad"
+      @selection-change="selectionChange"
       style="width: 100%"
     >
       <!-- 多选 -->
@@ -303,9 +309,24 @@ export default {
       tableHeight: undefined,
       crudConfig: crudConfig,
       isRefresh: false,
+      tableSelect: [],
     };
   },
   methods: {
+    // 表格多选框
+    selectionChange(rows) {
+      this.tableSelect = rows;
+      this.$emit("selection-change", this.tableSelect);
+    },
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach((row) => {
+          this.$refs.table.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.table.clearSelection();
+      }
+    },
     // 打开表单弹窗
     openDialogForm(openType, row, index) {
       this.$emit("open-dialog-form", openType, row, index);
@@ -325,6 +346,9 @@ export default {
       setTimeout(() => {
         this.isRefresh = false;
       }, 500);
+    },
+    searchChange() {
+      this.$emit("search-change");
     },
     getTableValue(row, column) {
       let value = row[column.prop];

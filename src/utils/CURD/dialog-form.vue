@@ -23,20 +23,46 @@
       ref="PForm"
       v-if="dialogVisible"
       v-model="crud.tabelForm"
+      :status.sync="btnDisabled"
       :option="formOption"
       :boxType="openType"
+      :needBtnMune="false"
       @submitForm="crud.handleSubmit"
-      @cancelForm="close"
     >
       <template v-for="item in crud.formSlot" :slot="item" slot-scope="scope">
         <slot v-bind="scope" :name="item"></slot>
       </template>
     </p-form>
+    <div
+      slot="footer"
+      class="dialog-footer"
+      :style="'text-align:' + muneAlign"
+      v-if="!isView"
+    >
+      <el-button
+        type="primary"
+        :size="size"
+        :icon="btnDisabled ? 'el-icon-loading' : 'el-icon-circle-check'"
+        :disabled="btnDisabled"
+        @click="submit"
+      >
+        {{ getSubmitBtnText }}
+      </el-button>
+      <el-button
+        :size="size"
+        :icon="btnDisabled ? 'el-icon-loading' : 'el-icon-circle-close'"
+        :disabled="btnDisabled"
+        @click="close"
+      >
+        {{ getCancelBtnText }}
+      </el-button>
+    </div>
   </el-dialog>
 </template>
 
 <script>
 import crudConfig from "@/utils/CURD/crud-config";
+import pFormConfig from "@/utils/CURD/p-form/p-form-config";
 import { vaildData } from "@/utils/validate";
 import pForm from "@/utils/CURD/p-form/p-form";
 export default {
@@ -62,12 +88,28 @@ export default {
         ? "编 辑"
         : "查 看";
     },
+    size() {
+      return vaildData(this.crud.crudOption.size, pFormConfig.size);
+    },
+    muneAlign() {
+      return vaildData(this.crud.crudOption.muneAlign, pFormConfig.muneAlign);
+    },
+    getSubmitBtnText() {
+      return vaildData(this.crud.crudOption.submitText, pFormConfig.submitText);
+    },
+    getCancelBtnText() {
+      return vaildData(this.crud.crudOption.cancelText, pFormConfig.cancelText);
+    },
+    isView() {
+      return this.openType === "view";
+    },
   },
   data() {
     return {
       dialogVisible: false,
       openType: "add", //add view edit
       fullscreen: false,
+      btnDisabled: false,
     };
   },
   methods: {
@@ -84,6 +126,9 @@ export default {
       } else {
         callback();
       }
+    },
+    submit() {
+      this.$refs.PForm.submitForm();
     },
     // 关闭弹窗
     close() {

@@ -1,22 +1,32 @@
-.dialog__header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .dialog__menu{
-        position: absolute;
-        top: 18px;
-        right: 50px;
-        padding: 0;
-        line-height: 20px;
-        i{
-            color: #909399;
-            font-size: 16px;
-            cursor: pointer;
-            &:hover{
-                color:#1890ff;
-            }
-        }
-        
+.dialog__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .dialog__menu {
+    position: absolute;
+    top: 18px;
+    right: 50px;
+    padding: 0;
+    line-height: 20px;
+    i {
+      color: #909399;
+      font-size: 16px;
+      cursor: pointer;
+      &:hover {
+        color: #1890ff;
+      }
     }
+  }
 }
 
+.dialog-footer {
+  display: block;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  border-top: 1px solid #f0f0f0;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-color: #fff;
+}

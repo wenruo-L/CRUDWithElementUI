@@ -1,9 +1,10 @@
 <template>
   <div class="crud__from" :class="[{ form__detail: isView }]">
-    <!-- PForm:{{ PForm }} -->
+    PForm:{{ PForm }}
     <el-form
       ref="PForm"
       class="p-from"
+      :inline="inline"
       :model="PForm"
       :label-width="getFormLabelWidth"
       :size="size"
@@ -11,167 +12,161 @@
       :label-position="labelPosition"
       @submit.native.prevent
     >
-      <div :class="btnMode === 'inline' ? 'row-content-flex' : 'row-content'">
-        <el-row :gutter="20" class="row-main-content">
-          <template v-for="(column, index) in columnOption">
-            <el-col :span="columnSpan(column)" :key="column.prop">
-              <el-form-item
-                :key="'pform-item-' + column.prop + index"
-                :label="column.label"
-                :prop="column.prop"
-                :rules="column.rules"
-                :label-width="getColumnLabelWidth(column)"
-                :label-position="column.position || labelPosition"
+      <el-row :gutter="20" class="row-main-content">
+        <template v-for="(column, index) in columnOption">
+          <el-col :span="columnSpan(column)" :key="column.prop">
+            <el-form-item
+              :key="'pform-item-' + column.prop + index"
+              :label="column.label"
+              :prop="column.prop"
+              :rules="column.rules"
+              :label-width="getColumnLabelWidth(column)"
+              :label-position="column.position || labelPosition"
+            >
+              <!-- 内容插槽 -->
+              <slot
+                v-if="column.formslot"
+                v-bind="{ size, disabled: getDisabled(column) }"
+                :name="column.prop + 'Form'"
+              ></slot>
+              <!-- 组件 -->
+              <component
+                v-else
+                :is="getComponent(column.type, column.props)"
+                :disabled="getDisabled(column)"
+                v-model="PForm[column.prop]"
+                v-bind="getComponentBind(column)"
+                clearable
+                style="width: 100%"
+                @change="
+                  (value) => {
+                    handleChange(value, column);
+                  }
+                "
               >
-                <!-- 内容插槽 -->
-                <slot
-                  v-if="column.formslot"
-                  v-bind="{ size, disabled: getDisabled(column) }"
-                  :name="column.prop + 'Form'"
-                ></slot>
-                <!-- 组件 -->
-                <component
-                  v-else
-                  :is="getComponent(column.type, column.props)"
-                  :disabled="getDisabled(column)"
-                  v-model="PForm[column.prop]"
-                  v-bind="getComponentBind(column)"
-                  clearable
-                  style="width: 100%"
-                  @change="
-                    (value) => {
-                      handleChange(value, column);
-                    }
+                <!-- radio 处理 -->
+                <template
+                  v-if="
+                    column.type === 'radio' &&
+                    column.dicData &&
+                    column.dicData.length
                   "
                 >
-                  <!-- radio 处理 -->
                   <template
-                    v-if="
-                      column.type === 'radio' &&
-                      column.dicData &&
-                      column.dicData.length
-                    "
+                    v-if="column.showType && column.showType === 'button'"
                   >
-                    <template
-                      v-if="column.showType && column.showType === 'button'"
-                    >
-                      <el-radio-button
-                        v-for="(item, index) in column.dicData"
-                        :key="index"
-                        :size="size"
-                        :label="item[getFormItemValue(column)]"
-                      >
-                        {{ item[getFormItemLabel(column)] }}
-                      </el-radio-button>
-                    </template>
-                    <template v-else>
-                      <el-radio
-                        v-for="(item, index) in column.dicData"
-                        :key="index"
-                        :size="size"
-                        :label="item[getFormItemValue(column)]"
-                      >
-                        {{ item[getFormItemLabel(column)] }}
-                      </el-radio>
-                    </template>
-                  </template>
-                  <!-- checkbox 处理 -->
-                  <template
-                    v-if="
-                      column.type === 'checkbox' &&
-                      column.dicData &&
-                      column.dicData.length
-                    "
-                  >
-                    <el-checkbox
+                    <el-radio-button
                       v-for="(item, index) in column.dicData"
                       :key="index"
+                      :size="size"
                       :label="item[getFormItemValue(column)]"
                     >
                       {{ item[getFormItemLabel(column)] }}
-                    </el-checkbox>
+                    </el-radio-button>
                   </template>
-                  <!-- select 处理 -->
-                  <template
-                    v-if="
-                      column.type === 'select' &&
-                      column.dicData &&
-                      column.dicData.length
-                    "
-                  >
-                    <el-option
-                      v-for="item in column.dicData"
-                      :key="item[column.prop]"
-                      :label="item[getFormItemLabel(column)]"
-                      :value="item[getFormItemValue(column)]"
-                      :disabled="item.disabled"
+                  <template v-else>
+                    <el-radio
+                      v-for="(item, index) in column.dicData"
+                      :key="index"
+                      :size="size"
+                      :label="item[getFormItemValue(column)]"
                     >
-                    </el-option>
+                      {{ item[getFormItemLabel(column)] }}
+                    </el-radio>
                   </template>
-                  <!-- upload 处理 -->
-                  <!-- upload的插槽套上template会失效，暂时直接判断到插槽 -->
-                  <el-button
-                    size="small"
-                    type="primary"
-                    :disabled="getDisabled(column)"
-                    v-if="
-                      column.type == 'upload' &&
-                      getListType(column.listType) === 'text'
-                    "
+                </template>
+                <!-- checkbox 处理 -->
+                <template
+                  v-if="
+                    column.type === 'checkbox' &&
+                    column.dicData &&
+                    column.dicData.length
+                  "
+                >
+                  <el-checkbox
+                    v-for="(item, index) in column.dicData"
+                    :key="index"
+                    :label="item[getFormItemValue(column)]"
                   >
-                    点击上传
-                  </el-button>
-                  <!-- 有传限制就动态提示 -->
-                  <div slot="tip" class="el-upload__tip" v-if="column.fileType">
-                    <span> 只能上传{{ column.fileType }}文件 </span>
-                    <span v-if="column.fileSize">
-                      ，且不超过{{ column.fileSize }}MB
-                    </span>
-                  </div>
-                </component>
-              </el-form-item>
-            </el-col>
-          </template>
-        </el-row>
-        <div
-          v-if="!isView"
-          :class="
-            btnMode === 'search'
-              ? 'row-mune-content row-mune-content__inline'
-              : 'row-mune-content row-mune-content__block'
-          "
-        >
-          <!-- v-loading用在按钮有点丑 -->
-          <el-button
-            type="primary"
-            :size="size"
-            v-if="shouldShowSubmitBtn"
-            :icon="allDisabled ? 'el-icon-loading' : 'el-icon-circle-check'"
-            :disabled="allDisabled"
-            @click="submitForm('PForm')"
-          >
-            保 存
-          </el-button>
-          <el-button
-            :size="size"
-            :icon="allDisabled ? 'el-icon-loading' : 'el-icon-circle-close'"
-            v-if="shouldShowCancelBtn"
-            :disabled="allDisabled"
-            @click="handleCancel"
-          >
-            取 消
-          </el-button>
-          <el-button
-            :size="size"
-            v-if="shouldShowResetBtn"
-            :icon="allDisabled ? 'el-icon-loading' : 'el-icon-delete'"
-            :disabled="allDisabled"
-            @click="resetForm"
-          >
-            重 置
-          </el-button>
-        </div>
-      </div>
+                    {{ item[getFormItemLabel(column)] }}
+                  </el-checkbox>
+                </template>
+                <!-- select 处理 -->
+                <template
+                  v-if="
+                    column.type === 'select' &&
+                    column.dicData &&
+                    column.dicData.length
+                  "
+                >
+                  <el-option
+                    v-for="item in column.dicData"
+                    :key="item[column.prop]"
+                    :label="item[getFormItemLabel(column)]"
+                    :value="item[getFormItemValue(column)]"
+                    :disabled="item.disabled"
+                  >
+                  </el-option>
+                </template>
+                <!-- upload 处理 -->
+                <!-- upload的插槽套上template会失效，暂时直接判断到插槽 -->
+                <el-button
+                  size="small"
+                  type="primary"
+                  :disabled="getDisabled(column)"
+                  v-if="
+                    column.type == 'upload' &&
+                    getListType(column.listType) === 'text'
+                  "
+                >
+                  点击上传
+                </el-button>
+                <!-- 有传限制就动态提示 -->
+                <div slot="tip" class="el-upload__tip" v-if="column.fileType">
+                  <span> 只能上传{{ column.fileType }}文件 </span>
+                  <span v-if="column.fileSize">
+                    ，且不超过{{ column.fileSize }}MB
+                  </span>
+                </div>
+              </component>
+            </el-form-item>
+          </el-col>
+        </template>
+        <el-col :span="muneSpan" v-if="!isView && needBtnMune">
+          <el-form-item label-width="0px" :style="'text-align:' + muneAlign">
+            <el-button
+              type="primary"
+              :size="size"
+              v-if="shouldShowSubmitBtn"
+              :icon="allDisabled ? 'el-icon-loading' : 'el-icon-circle-check'"
+              :disabled="allDisabled"
+              @click="submitForm"
+            >
+              {{ getSubmitBtnText }}
+            </el-button>
+            <el-button
+              :size="size"
+              :icon="allDisabled ? 'el-icon-loading' : 'el-icon-circle-close'"
+              v-if="shouldShowCancelBtn"
+              :disabled="allDisabled"
+              @click="handleCancel"
+            >
+              {{ getCancelBtnText }}
+            </el-button>
+            <el-button
+              :size="size"
+              v-if="shouldShowResetBtn"
+              :icon="allDisabled ? 'el-icon-loading' : 'el-icon-delete'"
+              :disabled="allDisabled"
+              @click="resetForm"
+            >
+              {{ getResetBtnText }}
+            </el-button>
+            <slot name="menuForm" v-bind="{ size, disabled: allDisabled }">
+            </slot>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <!-- upload 预览 -->
     <el-dialog append-to-body :visible.sync="uploadDialog">
@@ -181,7 +176,7 @@
 </template>
 
 <script>
-import { setPx, changeValueType } from "@/utils/util";
+import { setPx, changeValueType, getPlaceHolder } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
 import upload from "@/utils/CURD/upload";
 import pFormConfig from "@/utils/CURD/p-form/p-form-config";
@@ -196,23 +191,34 @@ export default {
     // 父组件绑定的值
     form: {
       type: Object,
-      default: Object.create(null),
+      default: () => {
+        return {};
+      },
     },
     // 表单的配置
     option: {
       type: Object,
       default: Object.create(null),
     },
-    // 按钮模式  正常表单 block 搜索栏表单 inline
-    btnMode: {
-      type: String,
-      default: "block",
+    needBtnMune: {
+      type: Boolean,
+      default: true,
+    },
+    // 按钮模式
+    inline: {
+      type: Boolean,
+      default: false,
     },
     // 显示模式 详情  新增  编辑
     //         view  add   edit
     boxType: {
       type: String,
       default: "edit",
+    },
+    // 通知父组件的禁用状态
+    status: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [upload()],
@@ -230,6 +236,20 @@ export default {
         // this.PForm = val;
         // 这里不能直接等于父组件绑定的值，如果编辑模式，column有配置，而没有对应的值，赋值会报错
         this.PForm = Object.assign(this.PForm, val);
+      },
+      deep: true,
+    },
+    // 通知父组件的禁用状态 目前dialog-form用到
+    allDisabled: {
+      handler(val) {
+        this.$emit("update:status", val);
+      },
+      immediate: true,
+    },
+    // 通知父组件PForm发生了变化
+    PForm: {
+      handler(val) {
+        this.handleformvaluechange(val);
       },
       deep: true,
     },
@@ -261,14 +281,32 @@ export default {
     labelSuffix() {
       return vaildData(this.option.labelSuffix, pFormConfig.labelSuffix);
     },
+    muneAlign() {
+      return vaildData(this.option.muneAlign, pFormConfig.muneAlign);
+    },
+    muneSpan() {
+      return vaildData(this.option.muneSpan, pFormConfig.muneSpan);
+    },
     shouldShowSubmitBtn() {
       return vaildData(this.option.submitBtn, pFormConfig.submitBtn);
+    },
+    shouldShowCancelBtn() {
+      return vaildData(this.option.cancelBtn, pFormConfig.cancelBtn);
     },
     shouldShowResetBtn() {
       return vaildData(this.option.resetBtn, pFormConfig.resetBtn);
     },
-    shouldShowCancelBtn() {
-      return vaildData(this.option.cancelBtn, pFormConfig.cancelBtn);
+    getSubmitBtnText() {
+      return vaildData(
+        this.option.submitText,
+        this.inline ? pFormConfig.submitText__search : pFormConfig.submitText
+      );
+    },
+    getCancelBtnText() {
+      return vaildData(this.option.cancelText, pFormConfig.cancelText);
+    },
+    getResetBtnText() {
+      return vaildData(this.option.resetText, pFormConfig.resetText);
     },
     // 判断表单的模式
     isView() {
@@ -295,8 +333,8 @@ export default {
       this.allDisabled = false;
     },
     // 提交校验
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    submitForm() {
+      this.$refs["PForm"].validate((valid) => {
         if (valid) {
           this.handleSubmit();
         } else {
@@ -339,26 +377,25 @@ export default {
     // 根据option传进来的column数组初始化form的值
     formInit(reset) {
       if (!this.option.column || this.option.column.length <= 0) return;
+
       let addLableValueType = ["select", "radio"];
       this.option.column.forEach((el) => {
-        if (!el.display || (el.display && el.display !== true)) {
-          // 这些类型的组件有可能会把label和value的值一起传给后台，在此初始化
-          // 取消checkBox和cascader（cascader绑定了ref，使用getCheckedNodes）
-          // 初始化默认值
-          let defaultValue;
-          if (reset) {
-            defaultValue = changeValueType(el.dataType, el.value);
-          } else {
-            // 设置父组件form传进的值，如果没有对应的值则设置默认值
-            defaultValue = this.form[el.prop]
-              ? changeValueType(el.dataType, this.form[el.prop])
-              : changeValueType(el.dataType, el.value);
-          }
-          this.$set(this.PForm, el.prop, defaultValue);
-          if (el.type && addLableValueType.includes(el.type)) {
-            let addLableValueName = "$" + el.prop;
-            this.$set(this.PForm, addLableValueName, defaultValue);
-          }
+        // 这些类型的组件有可能会把label和value的值一起传给后台，在此初始化
+        // 取消checkBox和cascader（cascader绑定了ref，使用getCheckedNodes）
+        // 初始化默认值
+        let defaultValue;
+        if (reset) {
+          defaultValue = changeValueType(el.dataType, el.value);
+        } else {
+          // 设置父组件form传进的值，如果没有对应的值则设置默认值
+          defaultValue = this.form[el.prop]
+            ? changeValueType(el.dataType, this.form[el.prop])
+            : changeValueType(el.dataType, el.value);
+        }
+        this.$set(this.PForm, el.prop, defaultValue);
+        if (el.type && addLableValueType.includes(el.type)) {
+          let addLableValueName = "$" + el.prop;
+          this.$set(this.PForm, addLableValueName, defaultValue);
         }
       });
     },
@@ -435,7 +472,7 @@ export default {
       result.size = this.size;
       result.readonly = column.readonly || false;
       // disabled需要动态，就不在这绑定了
-      result.placeholder = this.getPlaceHolder(column);
+      result.placeholder = getPlaceHolder(column);
       if (type === "password") {
         result.showPassword = true;
       } else if (type === "number") {
@@ -578,29 +615,17 @@ export default {
     //   }
 
     // },
-    // 当有校验规则的时候使用检验规则的提示
-    getPlaceHolder(column) {
-      let placeHolder = `请输入${column.label}`;
-      let inputType = ["input", "textarea", "password"];
-      let columnType = column.type || "input";
-      if (!inputType.includes(columnType)) {
-        placeHolder = `请选择${column.label}`;
-      }
-      if (column.rules && column.rules.length) {
-        placeHolder = column.rules[0].message;
-      }
-      return placeHolder;
-    },
     getPrecision(column) {
       return vaildData(column.precision, pFormConfig.precision);
     },
     columnSpan(column) {
-      return this.btnMode === "block"
-        ? vaildData(column.span, pFormConfig.span)
-        : vaildData(column.searchSpan, pFormConfig.searchSpan);
+      return this.inline
+        ? vaildData(column.searchSpan, pFormConfig.searchSpan)
+        : vaildData(column.span, pFormConfig.span);
     },
     // 这里函数名不使用大/小驼峰是因为监听器在 DOM 模板中会被自动转换为全小写 (因为 HTML 是大小写不敏感的)
     handleformvaluechange(val) {
+      this.$emit("change", val);
       this.$emit("handleformvaluechange", val ? val : this.PForm);
     },
   },

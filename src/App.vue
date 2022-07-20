@@ -35,12 +35,16 @@
         :crudOption="option"
         :before-open="beforeOpen"
         :tableData="data"
-        @refresh-change="refreshChange"
+        :query.sync="query"
         @row-save="submit"
         @row-update="submit"
         @row-delete="rowDelete"
+        @search-change="searchChange"
+        @search-reset="searchReset"
+        @selection-change="selectionChange"
         @current-change="currentChange"
         @size-change="sizeChange"
+        @refresh-change="refreshChange"
         @on-load="onLoad"
       >
         <!-- 顶部插槽测试 -->
@@ -571,13 +575,15 @@ export default {
           },
         ],
       },
+      // 搜索栏参数
+      query: {
+        name: "test",
+      },
       option: {
         menuWidth: 300,
         height: "auto",
         calcHeight: 60,
-        tip: false,
         searchShow: true,
-        searchMenuSpan: 6,
         border: true,
         index: true,
         viewBtn: true,
@@ -591,6 +597,7 @@ export default {
             fixed: true,
             slot: true,
             disabled: true,
+            search: true,
             span: 24,
             rules: [
               {
@@ -604,6 +611,7 @@ export default {
             label: "性别",
             prop: "sex",
             type: "select",
+            search: true,
             filterable: true,
             dataType: "number",
             formslot: true,
@@ -627,6 +635,8 @@ export default {
             label: "我是多选的下拉框喔",
             prop: "selectButMultiple",
             type: "select",
+            // search: true,
+            searchLabelWidth: 160,
             multiple: true,
             filterable: true,
             dataType: "number",
@@ -649,6 +659,8 @@ export default {
           {
             label: "专门用来消失的",
             prop: "useDisplay",
+            searchLabelWidth: 120,
+            search: true,
             display: false,
             hide: true,
             labelWidth: 120,
@@ -656,6 +668,7 @@ export default {
           {
             label: "年龄",
             prop: "age",
+            // search: true,
             type: "number",
             rules: [
               {
@@ -668,6 +681,7 @@ export default {
           {
             label: "单纯的单选框",
             prop: "isRadio",
+            search: true,
             type: "radio",
             dicData: [
               {
@@ -683,6 +697,7 @@ export default {
           {
             label: "单选框但按钮",
             prop: "radio",
+            // search: true,
             labelWidth: 120,
             type: "radio",
             showType: "button",
@@ -703,6 +718,7 @@ export default {
             prop: "checkbox",
             type: "checkbox",
             dataType: "array",
+            // search: true,
             value: [2],
             dicData: [
               {
@@ -721,6 +737,7 @@ export default {
             type: "cascader",
             filterable: true,
             multiple: true,
+            // search: true,
             dicData: [
               {
                 value: "zhinan",
@@ -1073,6 +1090,7 @@ export default {
         "Wyoming",
       ],
       data: [],
+      selectionList: [],
     };
   },
   computed: {
@@ -1108,6 +1126,23 @@ export default {
     // this.$destroy("pForm");
   },
   methods: {
+    searchReset() {
+      this.query = {};
+      this.onLoad(this.page);
+    },
+    searchChange(params, done) {
+      this.query = params;
+      this.page.currentPage = 1;
+      this.onLoad(this.page, params);
+      done();
+    },
+    selectionChange(rows) {
+      this.selectionList = rows;
+    },
+    selectionClear() {
+      this.selectionList = [];
+      this.$refs.crud.toggleSelection();
+    },
     currentChange(currentPage) {
       this.page.currentPage = currentPage;
     },
@@ -1165,7 +1200,8 @@ export default {
     },
     onLoad(page, params = {}) {
       console.log("onload", page);
-      console.log("params", params);
+      console.log("搜索栏的参数  params", params);
+      this.loading = true;
       if (this.data.length != 0) {
         this.data = [];
       }
@@ -1255,9 +1291,7 @@ export default {
     },
     refreshChange() {
       console.log("刷新");
-      this.loading = true;
-      this.getListData();
-      this.loading = false;
+      this.onLoad(this.page);
     },
     test(row, index) {
       console.log("test  row", row);

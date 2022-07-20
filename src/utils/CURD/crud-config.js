@@ -44,6 +44,6 @@ export default {
     // 表单
     dialogWidth: '60%',
     //  其他
-    // 首次加载表格是否折叠搜索栏
-    showSearch: true
+    // 首次加载表格是否显示搜索
+    searchShow: true
 }
