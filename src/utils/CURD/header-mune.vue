@@ -1,6 +1,5 @@
 <template>
   <div class="header-mune" v-show="searchShow">
-    searchForm:{{ searchForm }}
     <p-form
       v-if="crud.searchShow"
       ref="PForm"

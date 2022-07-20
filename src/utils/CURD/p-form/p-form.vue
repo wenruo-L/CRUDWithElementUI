@@ -1,6 +1,5 @@
 <template>
   <div class="crud__from" :class="[{ form__detail: isView }]">
-    PForm:{{ PForm }}
     <el-form
       ref="PForm"
       class="p-from"
