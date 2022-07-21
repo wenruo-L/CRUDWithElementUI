@@ -23,10 +23,13 @@
               :label-position="column.position || labelPosition"
             >
               <!-- 内容插槽 -->
+              <!-- 20220721 修改 
+                  不需要再在column里声明slot为true开启插槽，以$scopedSlots的存在对应prop字段为开启插槽 
+              -->
               <slot
-                v-if="column.formslot"
+                v-if="$scopedSlots[column.prop]"
                 v-bind="{ size, disabled: getDisabled(column) }"
-                :name="column.prop + 'Form'"
+                :name="column.prop"
               ></slot>
               <!-- 组件 -->
               <component
@@ -319,6 +322,7 @@ export default {
     },
   },
   created() {
+    console.log("p-form this", this);
     this.formInit();
     this.$nextTick(() => this.clearValidate());
   },

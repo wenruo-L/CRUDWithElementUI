@@ -17,13 +17,19 @@ export const setPx = (val, defval = '') => {
     return val;
 };
 
-// 过滤除表格以外的
-export const getSlot = (slotArr, slotType) => {
+// 获取slot的列表
+// slotArr 插槽列表
+// slotType 要过滤的插槽类型
+// needCut 是否需要切割替换成Form插槽
+export const getSlot = (slotArr, slotType, needCut = false) => {
     let result = [];
     for (let key in slotArr) {
         if (!key.endsWith('Form') && !key.endsWith('Search') && slotType == 'table') {
             result.push(key)
         } else if (key.endsWith(slotType)) {
+            key = needCut ?
+                `${key.substring(0, key.lastIndexOf(slotType))}` :
+                key;
             result.push(key)
         }
     }

@@ -47,18 +47,30 @@
         @refresh-change="refreshChange"
         @on-load="onLoad"
       >
+        <!-- 顶部搜索栏插槽测试 -->
+        <template slot="useDisplaySearch">
+          <div><el-button type="primary">我成按钮啦 </el-button></div>
+        </template>
+        <template v-slot:sexSearch="{ size, disabled }">
+          <el-input
+            v-model="query.sex"
+            :size="size"
+            :disabled="disabled"
+            placeholder="我成input了"
+          ></el-input>
+        </template>
         <!-- 顶部插槽测试 -->
-        <template slot="muneLeft">
+        <template #muneLeft>
           <el-button type="primary" size="small">左边的测试按钮</el-button>
         </template>
-        <template slot="muneRight">
+        <template #muneRight>
           <el-button type="primary" size="small">右边的测试按钮</el-button>
         </template>
         <!-- 表格插槽测试 -->
-        <template slot="name" slot-scope="{ row, index }"
+        <template v-slot:name="{ row, index }"
           >{{ index }}{{ row.name }}
         </template>
-        <template slot="menuBtn" slot-scope="{ row, index }">
+        <template v-slot:menuBtn="{ row, index }">
           <el-button
             type="text"
             size="mini"
@@ -69,8 +81,10 @@
           </el-button>
         </template>
         <!-- 表单插槽测试 -->
-        <template slot="sexForm">
-          <div>用插槽告诉你我的性别</div>
+        <template v-slot:sexForm="{ disabled }">
+          <el-button type="primary" :disabled="disabled"
+            >用插槽告诉你我的性别</el-button
+          >
         </template>
       </Crud>
     </basic-container>
@@ -525,7 +539,6 @@ export default {
             label: "时间选择器",
             prop: "time",
             type: "time",
-            formSlot: true,
             props: {
               start: "08:30",
               step: "00:15",
@@ -614,7 +627,6 @@ export default {
             search: true,
             filterable: true,
             dataType: "number",
-            formslot: true,
             value: 1,
             dicData: [
               {
@@ -657,7 +669,7 @@ export default {
             ],
           },
           {
-            label: "专门用来消失的",
+            label: "搜索专属",
             prop: "useDisplay",
             searchLabelWidth: 120,
             search: true,
@@ -681,8 +693,8 @@ export default {
           {
             label: "单纯的单选框",
             prop: "isRadio",
-            search: true,
             type: "radio",
+            search: true,
             dicData: [
               {
                 label: "选项1",
@@ -697,7 +709,7 @@ export default {
           {
             label: "单选框但按钮",
             prop: "radio",
-            // search: true,
+            search: true,
             labelWidth: 120,
             type: "radio",
             showType: "button",

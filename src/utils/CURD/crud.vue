@@ -1,6 +1,10 @@
 <template>
   <div class="crud">
-    <header-mune ref="headerMune" v-if="searchShow"></header-mune>
+    <header-search ref="headerMune" v-if="searchShow">
+      <template v-for="item in searchSlot" :slot="item" slot-scope="scope">
+        <slot v-bind="scope" :name="getSlotName(item, 'Search')"></slot>
+      </template>
+    </header-search>
     <!-- 表格 -->
     <p-table
       ref="pTable"
@@ -26,7 +30,7 @@
     <!-- 表单 -->
     <dialog-form ref="dialogForm">
       <template slot-scope="scope" v-for="item in formSlot" :slot="item">
-        <slot v-bind="scope" :name="item"></slot>
+        <slot v-bind="scope" :name="getSlotName(item, 'Form')"></slot>
       </template>
     </dialog-form>
   </div>
@@ -37,7 +41,7 @@ import pTable from "@/utils/CURD/p-table/p-table";
 import crudConfig from "@/utils/CURD/crud-config";
 import dialogForm from "@/utils/CURD/dialog-form";
 import tablePage from "@/utils/CURD/table-page";
-import headerMune from "@/utils/CURD/header-mune";
+import headerSearch from "@/utils/CURD/header-search";
 import { getSlot } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
 export default {
@@ -50,7 +54,7 @@ export default {
     pTable,
     dialogForm,
     tablePage,
-    headerMune,
+    headerSearch,
   },
   provide() {
     return {
@@ -126,7 +130,10 @@ export default {
       return getSlot(this.$scopedSlots, "table");
     },
     formSlot() {
-      return getSlot(this.$scopedSlots, "Form");
+      return getSlot(this.$scopedSlots, "Form", true);
+    },
+    searchSlot() {
+      return getSlot(this.$scopedSlots, "Search", true);
     },
     // 首次加载crud是否显示顶部搜索
     headerSearch() {
@@ -134,14 +141,18 @@ export default {
     },
   },
   created() {
+    console.log("crud   this", this);
     this.searchShow = this.headerSearch;
   },
+
   methods: {
+    // 获取slotname
+    getSlotName(slotName, suffix) {
+      return slotName + suffix;
+    },
     // 显示、隐藏搜索
     shouldShowSearch() {
       this.searchShow = !this.searchShow;
-      console.log("searchShow", this.searchShow);
-      console.log("headerSearch", this.headerSearch);
     },
     // 刷新事件
     refreshChange() {

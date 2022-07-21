@@ -1,5 +1,5 @@
 <template>
-  <div class="header-mune" v-show="searchShow">
+  <div class="header-search" v-show="searchShow">
     <p-form
       v-if="crud.searchShow"
       ref="PForm"
@@ -28,8 +28,9 @@
           >
         </template>
       </template>
-      <!-- @submitForm="crud.handleSubmit"
-      @cancelForm="close" -->
+      <template v-for="item in crud.searchSlot" :slot="item" slot-scope="scope">
+        <slot v-bind="scope" :name="item"></slot>
+      </template>
     </p-form>
   </div>
 </template>
@@ -41,7 +42,7 @@ import crudConfig from "@/utils/CURD/crud-config";
 import { deepClone, getPlaceHolder } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
 export default {
-  name: "header-mune",
+  name: "header-search",
   inject: ["crud"],
   components: {
     pForm,
@@ -81,6 +82,8 @@ export default {
     },
   },
   created() {
+    console.log("header-search  this", this);
+    console.log("crud.searchSlot", this.crud.searchSlot);
     this.initFun();
     this.initOption();
   },
@@ -134,7 +137,7 @@ export default {
             obj.rules = el.searchRules;
             obj.display = (() => {
               if (!this.show) {
-                return index > this.searchIndex - 1 ? true : false;
+                return !(index < this.searchIndex);
               } else {
                 return false;
               }
@@ -145,8 +148,12 @@ export default {
         });
         return column;
       };
+      let column = deepClone(option.column);
+      column = column.filter((item) => {
+        return item.search === true;
+      });
       let searchOption = {
-        column: dealWithColumn(deepClone(option.column)),
+        column: dealWithColumn(column),
         cancelBtn: false,
         labelWidth: vaildData(option.labelWidth, pFormConfig.labelWidth),
         labelPosition: vaildData(
@@ -162,6 +169,7 @@ export default {
         resetText: vaildData(option.searchResetText, pFormConfig.resetText),
         muneSpan: vaildData(option.searchMenuSpan, pFormConfig.searchSpan),
       };
+      console.log("searchOption", searchOption);
       this.option = searchOption;
     },
     // 获取搜索栏对应的组件类型
