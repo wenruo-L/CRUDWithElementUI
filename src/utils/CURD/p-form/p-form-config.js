@@ -20,6 +20,7 @@ export default {
     cancelText: '取 消',
     // 操作按钮的span大小
     muneSpan: 24,
+    searchMuneSpan: 24,
     // 是否为详情模式 该模式一般适用于查看详情
     detail: true,
     // 对齐方式

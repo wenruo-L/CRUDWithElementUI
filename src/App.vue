@@ -66,6 +66,8 @@
         <template #muneRight>
           <el-button type="primary" size="small">右边的测试按钮</el-button>
         </template>
+        <!-- 表格空数据插槽提示 -->
+        <!-- <template #empty> 我是空数据提示 </template> -->
         <!-- 表格插槽测试 -->
         <template v-slot:name="{ row, index }"
           >{{ index }}{{ row.name }}
@@ -591,6 +593,7 @@ export default {
       // 搜索栏参数
       query: {
         name: "test",
+        sex: "man",
       },
       option: {
         menuWidth: 300,
@@ -1196,8 +1199,16 @@ export default {
             cascader: [["zujian", "basic", "layout"]],
             upload: [
               {
-                name: "http://www.liulongbin.top:3006/uploads/1658131824528_ba6bdfa4bd5643ceb17212dfe5a5eae4.jpg",
-                url: "http://www.liulongbin.top:3006/uploads/1658131824528_ba6bdfa4bd5643ceb17212dfe5a5eae4.jpg",
+                name: "美女哦",
+                url: "https://n.sinaimg.cn/ent/transform/700/w1000h500/20220407/bd69-d515c976b0b5d56b702b634ee91f50ed.jpg",
+              },
+              {
+                name: "卧槽车车",
+                url: "https://auto1.sinaimg.cn/autoimg/car/95/90/131519095_950.JPG",
+              },
+              {
+                name: "好康的",
+                url: "https://1307918980.vod2.myqcloud.com/8a753638vodtranscq1307918980/5959edbc387702303012006247/v.f1417934.mp4",
               },
             ],
           };

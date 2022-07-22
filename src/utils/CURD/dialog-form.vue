@@ -112,10 +112,6 @@ export default {
       btnDisabled: false,
     };
   },
-  created() {
-    console.log("dialog-form  this", this);
-    console.log("crud.formSlot", this.crud.formSlot);
-  },
   methods: {
     // 打开弹窗
     show(openType) {

@@ -44,10 +44,17 @@ export default function () {
                 console.log('err', err, file, fileList);
             },
             // 预览
-            handlePreview(file) {
-                // console.log('handlePreview', file);
-                this.uploadDataUrl = file.url;
-                this.uploadDialog = true;
+            handlePreview(file, fileList) {
+                console.log('handlePreview', file);
+                console.log('fileList', fileList);
+                // this.uploadDataUrl = file.url;
+                let index = fileList.findIndex((item) => {
+                    return item.url === file.url;
+                })
+                let previewList = fileList.map((item) => {
+                    return item.url
+                })
+                this.$ImagePreview(previewList, index)
             },
             // 文件数量限制提示
             handleExceed(files, fileList, column) {

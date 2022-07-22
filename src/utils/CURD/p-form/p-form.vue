@@ -135,7 +135,10 @@
           </el-col>
         </template>
         <el-col :span="muneSpan" v-if="!isView && needBtnMune">
-          <el-form-item label-width="0px" :style="'text-align:' + muneAlign">
+          <el-form-item
+            label-width="0px"
+            :style="'width: 100%;text-align:' + muneAlign"
+          >
             <el-button
               type="primary"
               :size="size"
@@ -322,7 +325,6 @@ export default {
     },
   },
   created() {
-    console.log("p-form this", this);
     this.formInit();
     this.$nextTick(() => this.clearValidate());
   },
@@ -598,7 +600,9 @@ export default {
           this.handleExceed(files, fileList, column);
         };
         // 预览
-        result.onPreview = this.handlePreview;
+        result.onPreview = (file) => {
+          this.handlePreview(file, this.PForm[column.prop]);
+        };
         // 删除前
         result.beforeRemove = (file, fileList) => {
           return this.beforeRemove(file, fileList);

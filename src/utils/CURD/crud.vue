@@ -141,7 +141,7 @@ export default {
     },
   },
   created() {
-    console.log("crud   this", this);
+    // console.log("crud   this", this);
     this.searchShow = this.headerSearch;
   },
 

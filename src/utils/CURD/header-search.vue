@@ -82,8 +82,6 @@ export default {
     },
   },
   created() {
-    console.log("header-search  this", this);
-    console.log("crud.searchSlot", this.crud.searchSlot);
     this.initFun();
     this.initOption();
   },
@@ -167,9 +165,10 @@ export default {
         ),
         resetBtn: true,
         resetText: vaildData(option.searchResetText, pFormConfig.resetText),
-        muneSpan: vaildData(option.searchMenuSpan, pFormConfig.searchSpan),
+        muneSpan: vaildData(option.searchMenuSpan, pFormConfig.searchMuneSpan),
+        muneAlign: vaildData(option.searchMuneAlign, pFormConfig.muneAlign),
       };
-      console.log("searchOption", searchOption);
+      // console.log("searchOption", searchOption);
       this.option = searchOption;
     },
     // 获取搜索栏对应的组件类型
@@ -187,3 +186,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.header-search {
+  transition: all 0.5s;
+}
+</style>
