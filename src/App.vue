@@ -36,6 +36,7 @@
         :before-open="beforeOpen"
         :tableData="data"
         :query.sync="query"
+        :permission="permissionList"
         @row-save="submit"
         @row-update="submit"
         @row-delete="rowDelete"
@@ -66,6 +67,12 @@
         <template #muneRight>
           <el-button type="primary" size="small">右边的测试按钮</el-button>
         </template>
+        <!-- 表单插槽测试 -->
+        <template v-slot:sexForm="{ disabled }">
+          <el-button type="primary" :disabled="disabled"
+            >用插槽告诉你我的性别</el-button
+          >
+        </template>
         <!-- 表格空数据插槽提示 -->
         <!-- <template #empty> 我是空数据提示 </template> -->
         <!-- 表格插槽测试 -->
@@ -82,11 +89,9 @@
             测试
           </el-button>
         </template>
-        <!-- 表单插槽测试 -->
-        <template v-slot:sexForm="{ disabled }">
-          <el-button type="primary" :disabled="disabled"
-            >用插槽告诉你我的性别</el-button
-          >
+        <!-- 行展开测试 -->
+        <template v-slot:expand="{ row }">
+          <div>来，给他整个活！忽略~ ：{{ row.name }}</div>
         </template>
       </Crud>
     </basic-container>
@@ -606,6 +611,9 @@ export default {
         selection: true,
         dialogClickModal: false,
         treeLazy: true,
+        showSummary: true,
+        expand: true,
+        dialogDrag: true,
         column: [
           {
             label: "姓名",
@@ -1109,6 +1117,15 @@ export default {
     };
   },
   computed: {
+    // 测试权限
+    permissionList() {
+      return {
+        addBtn: false,
+        delBtn: true,
+        viewBtn: false,
+        editBtn: false,
+      };
+    },
     useDisplayCrudIndex() {
       let index = this.option.column.findIndex((item) => {
         return item.prop == "useDisplay";

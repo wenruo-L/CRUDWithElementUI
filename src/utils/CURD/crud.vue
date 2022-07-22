@@ -88,6 +88,13 @@ export default {
       type: Array,
       default: () => [],
     },
+    // 权限
+    permission: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
     // 树表格 懒加载的处理函数
     treeLoad: {
       type: Function,

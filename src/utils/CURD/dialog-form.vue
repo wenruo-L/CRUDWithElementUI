@@ -7,6 +7,7 @@
     :visible.sync="dialogVisible"
     :width="dialogWidth"
     :fullscreen="fullscreen"
+    v-dialogDrag="getDialogBind"
     @closed="close"
   >
     <div slot="title" class="dialog__header">
@@ -65,8 +66,13 @@ import crudConfig from "@/utils/CURD/crud-config";
 import pFormConfig from "@/utils/CURD/p-form/p-form-config";
 import { vaildData } from "@/utils/validate";
 import pForm from "@/utils/CURD/p-form/p-form";
+import dialogDrag from "@/utils/CURD/directive/dialog-drag";
+
 export default {
   name: "dialog-form",
+  directives: {
+    dialogDrag,
+  },
   inject: ["crud"],
   components: {
     pForm,
@@ -102,6 +108,9 @@ export default {
     },
     isView() {
       return this.openType === "view";
+    },
+    getDialogBind() {
+      return this.crud.crudOption.dialogDrag === true;
     },
   },
   data() {
