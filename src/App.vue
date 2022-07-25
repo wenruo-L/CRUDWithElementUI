@@ -1120,10 +1120,10 @@ export default {
     // 测试权限
     permissionList() {
       return {
-        addBtn: false,
+        addBtn: true,
         delBtn: true,
-        viewBtn: false,
-        editBtn: false,
+        viewBtn: true,
+        editBtn: true,
       };
     },
     useDisplayCrudIndex() {

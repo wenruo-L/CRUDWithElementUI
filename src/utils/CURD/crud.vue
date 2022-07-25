@@ -11,6 +11,7 @@
       :loading="loading"
       :crudOption="crudOption"
       :tableData="tableData"
+      :permission="permission"
       @refresh-change="refreshChange"
       @search-change="shouldShowSearch"
       @row-delete="rowDelete"
@@ -92,7 +93,12 @@ export default {
     permission: {
       type: Object,
       default: () => {
-        return {};
+        return {
+          addBtn: true,
+          delBtn: true,
+          editBtn: true,
+          viewBtn: true,
+        };
       },
     },
     // 树表格 懒加载的处理函数

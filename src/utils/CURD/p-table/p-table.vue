@@ -6,6 +6,7 @@
     <div class="header-mune-content">
       <div class="header-mune-content__btn_left">
         <el-button
+          v-permission="getPermission('addBtn')"
           v-if="HeaderMuneAddBtn"
           type="primary"
           icon="el-icon-plus"
@@ -15,6 +16,7 @@
           新 增
         </el-button>
         <el-button
+          v-permission="getPermission('delBtn')"
           v-if="HeaderMuneDelBtn"
           type="danger"
           icon="el-icon-delete"
@@ -162,6 +164,7 @@
             size="small"
             icon="el-icon-view"
             v-if="ColumnViewBtn"
+            v-permission="getPermission('viewBtn')"
             @click="openDialogForm('view', row, $index)"
           >
             查看
@@ -171,6 +174,7 @@
             size="small"
             icon="el-icon-edit"
             v-if="ColumnEditBtn"
+            v-permission="getPermission('editBtn')"
             @click="openDialogForm('edit', row, $index)"
           >
             编辑
@@ -179,6 +183,7 @@
             type="text"
             size="small"
             icon="el-icon-delete"
+            v-permission="getPermission('delBtn')"
             v-if="ColumnDelBtn"
             @click="deleteClick('delete', row, $index)"
           >
@@ -233,7 +238,12 @@ export default {
     permission: {
       type: Object,
       default: () => {
-        return {};
+        return {
+          addBtn: true,
+          delBtn: true,
+          editBtn: true,
+          viewBtn: true,
+        };
       },
     },
     // 树表格 懒加载的处理函数
@@ -348,6 +358,11 @@ export default {
     };
   },
   methods: {
+    // 获取权限
+    // 如果props不传进permission，即视为不进行权限管理，所以理应默认拥有权限
+    getPermission(tagetPermission) {
+      return vaildData(this.permission[tagetPermission], true);
+    },
     // 行展开
     expandChange(row, expanded) {
       console.log("expandChange  row", row);

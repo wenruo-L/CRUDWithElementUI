@@ -123,3 +123,8 @@ export const getPlaceHolder = (column) => {
     }
     return placeHolder;
 }
+
+// 获取权限
+export const getPermission = (permission, tagetPermission) => {
+    return validatenull(permission[tagetPermission], false)
+}

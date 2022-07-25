@@ -109,6 +109,7 @@ export default {
     isView() {
       return this.openType === "view";
     },
+    // 是否开启拖拽表单
     getDialogBind() {
       return this.crud.crudOption.dialogDrag === true;
     },
