@@ -31,10 +31,14 @@
                 v-bind="{ size, disabled: getDisabled(column) }"
                 :name="column.prop"
               ></slot>
-              <!-- 组件 -->
+              <!-- 
+                组件
+                
+              -->
+
               <component
                 v-else
-                :is="getComponent(column.type, column.props)"
+                :is="getComponent(column)"
                 :disabled="getDisabled(column)"
                 v-model="PForm[column.prop]"
                 v-bind="getComponentBind(column)"
@@ -436,9 +440,13 @@ export default {
       );
     },
     // 动态获取组件
-    getComponent(type, props) {
+    // 1.1：element-ui的组件或者说是已经通过getComponent处理好的组件
+    // 1.2：父组件自己传入的组件或者插件
+    getComponent(column) {
+      // 如果有传入自定义组件或者插件，直接返回传入的组件名
+      if (column.component && column.component !== "") return column.component;
       let key_component_name = pFormConfig.key_component_name;
-      let result = type || "input";
+      let result = column.type || "input";
       // 特殊处理
       switch (result) {
         case "number":
@@ -454,7 +462,7 @@ export default {
           result = "checkbox-group";
           break;
         case "time":
-          if (props) {
+          if (column.props) {
             result = "time-select";
           } else {
             result = "time-picker";
@@ -476,8 +484,17 @@ export default {
       // 公共的
       result.size = this.size;
       result.readonly = column.readonly || false;
-      // disabled需要动态，就不在这绑定了
       result.placeholder = getPlaceHolder(column);
+      // 1.1 处理自定义组件或者第三方插件的属性
+      // 1.2 处理elementUI组件的属性
+      if (
+        column.component &&
+        column.component !== "" &&
+        column.params &&
+        Object.keys(column.params).length != 0
+      ) {
+        result = Object.assign(result, column.params);
+      }
       if (type === "password") {
         result.showPassword = true;
       } else if (type === "number") {
@@ -585,6 +602,10 @@ export default {
         // 事件
         // 上传前
         result.beforeUpload = (file) => {
+          console.log(
+            "this.beforeUpload(file, column)",
+            this.beforeUpload(file, column)
+          );
           return this.beforeUpload(file, column);
         };
         // 上传成功
@@ -602,10 +623,6 @@ export default {
         // 预览
         result.onPreview = (file) => {
           this.handlePreview(file, this.PForm[column.prop]);
-        };
-        // 删除前
-        result.beforeRemove = (file, fileList) => {
-          return this.beforeRemove(file, fileList);
         };
         // 删除
         result.onRemove = (file) => {

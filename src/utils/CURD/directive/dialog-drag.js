@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable */
 export default {
   // v-dialog-drag: 弹窗拖拽 
   bind(el, binding, vnode, oldVnode) {

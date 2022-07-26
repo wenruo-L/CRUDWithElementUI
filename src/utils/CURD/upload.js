@@ -16,11 +16,12 @@ export default function () {
                 }
                 let isOverSize = fileSize ? file.size / 1024 / 1024 < fileSize : null;
                 let isRightType = fileType ? fileType.split('/').includes(file.type.split('/')[1]) : null;
-                if (fileSize && !isOverSize) {
+                if (!isOverSize) {
                     this.$message.error(`上传文件大小不能超过${fileSize}MB!`);
                     return false
                 }
-                if (fileType && !isRightType) {
+
+                if (!isRightType) {
                     this.$message.error(`上传文件类型只能是${fileType}格式`);
                     return false
                 }
@@ -59,10 +60,6 @@ export default function () {
             // 文件数量限制提示
             handleExceed(files, fileList, column) {
                 this.$message.warning(`当前限制选择 ${column.limit} 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-            },
-            // 删除前
-            beforeRemove() {
-                return this.$confirm(`确定移除？`);
             },
             // 删除
             handleRemove(file, column) {

@@ -1050,8 +1050,36 @@ export default {
 
             limit: 3,
             fileSize: 2, //文件大小限制,单位M
-            fileType: "jpg/jpeg/mp4", //逗号分隔
+            fileType: "jpg/jpeg", //逗号分隔
           },
+          // {
+          //   // 一个简单的双向绑定的input框
+          //   label: "测试插入自定义组件",
+          //   prop: "testCom",
+          //   component: "test-com",
+          //   params: {},
+          //   hide: true,
+          //   span: 24,
+          // },
+          // {
+          //   // 测试第三方插件
+          //   label: "这是个富文本框哦",
+          //   prop: "testRichText",
+          //   component: "Ueditor",
+          //   params: {
+          //     options: {
+          //       action: "https://avuejs.com/imgupload",
+          //       customConfig: {}, //wangEditor编辑的配置
+          //       props: {
+          //         res: "data",
+          //         url: "url",
+          //       },
+          //     },
+          //   },
+          //   position: "top",
+          //   hide: true,
+          //   span: 24,
+          // },
         ],
       },
       page: {
