@@ -36,6 +36,12 @@ export default {
         value: 'value',
         children: 'children'
     },
+    // 栅格左侧的间隔格数
+    offset: 0,
+    // 栅格向右移动格数
+    push: 0,
+    // 栅格向左移动格数
+    pull: 0,
     // 组件设置相关================================
     precision: 2,
     // select 作为 value 唯一标识的键名，绑定值为对象类型时必填

@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import testPage from '../views/test.vue'
 
 Vue.use(VueRouter)
 
 const routes = [{
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'test',
+    component: testPage
   },
   {
     path: '/about',
@@ -18,10 +18,10 @@ const routes = [{
     component: () => import( /* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/test',
-    name: 'test',
-    component: () => import( /* webpackChunkName: "test" */ '../views/test.vue')
-  }
+    path: '/document',
+    name: '文档',
+    component: () => import( /* webpackChunkName: "test" */ '../views/document.vue')
+  },
 ]
 
 const router = new VueRouter({

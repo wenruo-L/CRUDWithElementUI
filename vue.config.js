@@ -1,6 +1,6 @@
 module.exports = {
     publicPath: process.env.VUE_APP_PATH,
-    lintOnSave: true,
+    lintOnSave: false,
     productionSourceMap: false,
     css: {
         extract: {

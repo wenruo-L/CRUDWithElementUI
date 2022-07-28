@@ -1,5 +1,5 @@
 <template>
-  <div class="crud__from" :class="[{ form__detail: isView }]">
+  <div class="crud__from" :class="[{ form__detail: isView || isDetail }]">
     <el-form
       ref="PForm"
       class="p-from"
@@ -13,14 +13,19 @@
     >
       <el-row :gutter="20" class="row-main-content">
         <template v-for="(column, index) in columnOption">
-          <el-col :span="columnSpan(column)" :key="column.prop">
+          <el-col
+            :span="columnSpan(column)"
+            :offset="columnOffset(column)"
+            :push="columnPush(column)"
+            :pull="columnPull(column)"
+            :key="column.prop"
+          >
             <el-form-item
               :key="'pform-item-' + column.prop + index"
               :label="column.label"
               :prop="column.prop"
               :rules="column.rules"
               :label-width="getColumnLabelWidth(column)"
-              :label-position="column.position || labelPosition"
             >
               <!-- 内容插槽 -->
               <!-- 20220721 修改 
@@ -65,9 +70,9 @@
                       v-for="(item, index) in column.dicData"
                       :key="index"
                       :size="size"
-                      :label="item[getFormItemValue(column)]"
+                      :label="item[getColumnProps(column, 'value')]"
                     >
-                      {{ item[getFormItemLabel(column)] }}
+                      {{ item[getColumnProps(column, "label")] }}
                     </el-radio-button>
                   </template>
                   <template v-else>
@@ -75,9 +80,9 @@
                       v-for="(item, index) in column.dicData"
                       :key="index"
                       :size="size"
-                      :label="item[getFormItemValue(column)]"
+                      :label="item[getColumnProps(column, 'value')]"
                     >
-                      {{ item[getFormItemLabel(column)] }}
+                      {{ item[getColumnProps(column, "label")] }}
                     </el-radio>
                   </template>
                 </template>
@@ -92,9 +97,9 @@
                   <el-checkbox
                     v-for="(item, index) in column.dicData"
                     :key="index"
-                    :label="item[getFormItemValue(column)]"
+                    :label="item[getColumnProps(column, 'value')]"
                   >
-                    {{ item[getFormItemLabel(column)] }}
+                    {{ item[getColumnProps(column, "label")] }}
                   </el-checkbox>
                 </template>
                 <!-- select 处理 -->
@@ -108,8 +113,8 @@
                   <el-option
                     v-for="item in column.dicData"
                     :key="item[column.prop]"
-                    :label="item[getFormItemLabel(column)]"
-                    :value="item[getFormItemValue(column)]"
+                    :label="item[getColumnProps(column, 'label')]"
+                    :value="item[getColumnProps(column, 'value')]"
                     :disabled="item.disabled"
                   >
                   </el-option>
@@ -327,6 +332,9 @@ export default {
     isEdit() {
       return this.boxType === "edit";
     },
+    isDetail() {
+      return this.option.detail === true;
+    },
   },
   created() {
     this.formInit();
@@ -374,12 +382,12 @@ export default {
       if (column.type === "select" || column.type === "radio") {
         if (column.multiple) {
           this.PForm[lableValueName] = column.dicData.filter((item) => {
-            return value.includes(item[this.getFormItemValue(column)]);
+            return value.includes(item[this.getColumnProps(column, "value")]);
           });
         } else {
           this.PForm[lableValueName] = column.dicData.find((item) => {
-            return item[this.getFormItemValue(column)] == value;
-          })[this.getFormItemLabel(column)];
+            return item[this.getColumnProps(column, "value")] == value;
+          })[this.getColumnProps(column, "label")];
         }
       }
     },
@@ -408,17 +416,11 @@ export default {
         }
       });
     },
-    // 获取下拉框，单选框，多选框，联级等的组件绑定的label
-    getFormItemLabel(column) {
-      return column.props && column.props.label
-        ? column.props.label
-        : pFormConfig.props.label;
-    },
-    // 获取下拉框，单选框，多选框，联级等的组件绑定的value
-    getFormItemValue(column) {
-      return column.props && column.props.value
-        ? column.props.value
-        : pFormConfig.props.value;
+    // 获取下拉框，单选框，多选框，联级等的组件绑定的label,value,children
+    getColumnProps(column, type) {
+      return column.props && column.props[type]
+        ? column.props[type]
+        : pFormConfig.props[type];
     },
     // 获取form-item的labelWidth
     getColumnLabelWidth(column) {
@@ -451,6 +453,9 @@ export default {
       switch (result) {
         case "number":
           result = "input-number";
+          break;
+        case "textarea":
+          result = "input";
           break;
         case "password":
           result = "input";
@@ -495,7 +500,23 @@ export default {
       ) {
         result = Object.assign(result, column.params);
       }
-      if (type === "password") {
+      if (type === "input") {
+        result.maxlength = column.maxlength;
+        result.minlength = column.minlength;
+      } else if (type === "textarea") {
+        result.type = "textarea";
+        result.rows = column.rows || 3;
+        result.autosize = column.autosize;
+        result.maxlength = column.maxlength;
+        result.minlength = column.minlength;
+        result.showWordLimit = column.showWordLimit;
+        if (column.minRows) {
+          result.autosize.minRows = column.minRows;
+        }
+        if (column.maxRows) {
+          result.autosize.maxRows = column.minRows;
+        }
+      } else if (type === "password") {
         result.showPassword = true;
       } else if (type === "number") {
         result.min = column.min || -Infinity;
@@ -503,8 +524,8 @@ export default {
         result.controlsPosition = column.controlsPosition || "right";
         result.precision = this.getPrecision(column);
       } else if (type === "select") {
-        result.collapseTags = column.collapseTags || false;
         result.filterable = column.filterable || false;
+        result.filterMethod = column.filterMethod;
         result.remote = column.remote || false;
         result.remoteMethod = column.remoteMethod;
         result.allowCreate = column.allowCreate;
@@ -517,27 +538,34 @@ export default {
         result.multiple = column.multiple || false;
         result.multipleLimit = column.multipleLimit || 0;
         result.loading = column.loading || false;
+      } else if (type === "radio") {
+        result.border = column.border || false;
       } else if (type === "checkbox") {
         result.min = column.min || 0;
         result.max = column.max || Infinity;
       } else if (type === "cascader") {
         result.ref = `${column.prop}Cascader`;
         result.props = {
-          expandTrigger: column.expandTrigger || "click",
           multiple: column.multiple || false,
-          collapseTags: column.collapseTags || false,
-          showAllLevels: column.showAllLevels || true,
+          expandTrigger: column.expandTrigger || "click",
           checkStrictly: column.checkStrictly || false,
           lazy: column.lazy || false,
           lazyLoad: column.lazyLoad || false,
-          separator: column.separator || "/",
-          label: this.getFormItemLabel(column),
-          value: this.getFormItemValue(column),
+          label: this.getColumnProps(column, "label"),
+          value: this.getColumnProps(column, "value"),
+          children: this.getColumnProps(column, "children"),
         };
         result.filterable = column.filterable || false;
+        result.filterMethod = column.filterMethod;
+        result.collapseTags = column.collapseTags || false;
+        result.separator = column.separator || "/";
+        result.showAllLevels = column.showAllLevels || true;
         result.options = column.dicData || [];
       } else if (type == "switch") {
-        result = column.props || null;
+        result.activeColor = column.activeColor || "#409EFF";
+        result.inactiveColor = column.inactiveColor || "##C0CCDA";
+        result.activeValue = column.activeValue || true;
+        result.inactiveValue = column.inactiveValue || false;
       } else if (type == "time") {
         result.valueFormat = column.valueFormat || "yyyy-MM-dd HH:mm:ss";
         if (column.props != undefined) {
@@ -646,6 +674,15 @@ export default {
       return this.inline
         ? vaildData(column.searchSpan, pFormConfig.searchSpan)
         : vaildData(column.span, pFormConfig.span);
+    },
+    columnOffset(column) {
+      return vaildData(column.offset, pFormConfig.offset);
+    },
+    columnPush(column) {
+      return vaildData(column.push, pFormConfig.push);
+    },
+    columnPull(column) {
+      return vaildData(column.pull, pFormConfig.pull);
     },
     // 这里函数名不使用大/小驼峰是因为监听器在 DOM 模板中会被自动转换为全小写 (因为 HTML 是大小写不敏感的)
     handleformvaluechange(val) {

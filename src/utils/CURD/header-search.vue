@@ -119,12 +119,15 @@ export default {
             obj.type = this.getSearchType(el);
             obj.size = vaildData(el.searchSize, pFormConfig.size);
             obj.span = vaildData(el.searchSpan, pFormConfig.searchSpan);
+            obj.offset = vaildData(el.searchOffset, pFormConfig.offset);
+            obj.push = vaildData(el.searchPush, pFormConfig.push);
+            obj.pull = vaildData(el.searchPull, pFormConfig.pull);
             obj.labelWidth = vaildData(
               el.searchLabelWidth,
               pFormConfig.labelWidth
             );
             obj.labelSuffix = vaildData(
-              el.searchLabelSuffix,
+              option.searchLabelSuffix,
               pFormConfig.labelSuffix
             );
             obj.placeholder = vaildData(
@@ -153,9 +156,9 @@ export default {
       let searchOption = {
         column: dealWithColumn(column),
         cancelBtn: false,
-        labelWidth: vaildData(option.labelWidth, pFormConfig.labelWidth),
+        labelWidth: vaildData(option.searchLabelWidth, pFormConfig.labelWidth),
         labelPosition: vaildData(
-          option.labelPosition,
+          option.searchLabelPosition,
           pFormConfig.labelPosition
         ),
         submitBtn: vaildData(option.searchSubmitBtn, pFormConfig.submitBtn),
@@ -168,7 +171,7 @@ export default {
         muneSpan: vaildData(option.searchMenuSpan, pFormConfig.searchMuneSpan),
         muneAlign: vaildData(option.searchMuneAlign, pFormConfig.muneAlign),
       };
-      // console.log("searchOption", searchOption);
+      console.log("searchOption", searchOption);
       this.option = searchOption;
     },
     // 获取搜索栏对应的组件类型
