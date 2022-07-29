@@ -12,7 +12,7 @@ export default {
   name: "test-com",
   model: {
     prop: "textValue",
-    event: "handleValueChange",
+    event: "handlevaluechange",
   },
   props: {
     textValue: {
@@ -37,13 +37,9 @@ export default {
       textStr: "",
     };
   },
-  mounted() {
-    console.log("test-com", this);
-  },
   methods: {
     handleValueChange() {
-      console.log("test-com  handleValueChange");
-      this.$emit("input", this.textStr);
+      this.$emit("handlevaluechange", this.textStr);
     },
   },
 };

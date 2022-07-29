@@ -23,7 +23,6 @@ export default {
         searchBtn: false,
         menu: false,
         treeLazy: true,
-        expandAll: true,
         column: [
           {
             label: "属性/方法",

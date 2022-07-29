@@ -123,7 +123,8 @@ export default {
   },
   data() {
     return {
-      componentsName: "el-upload",
+      testComValue: "",
+      componentsName: "testCom",
       loading: true,
       form: {},
       formOption: {
@@ -1071,8 +1072,18 @@ export default {
             label: "textarea",
             prop: "textarea",
             type: "textarea",
+            hide: true,
+            search: true,
             span: 24,
             value: "我依家就叼柒你",
+          },
+          {
+            label: "测试使用自定义组件",
+            prop: "testCom",
+            component: "testCom",
+            params: {
+              testParams: "窝嫩叠",
+            },
           },
           // {
           //   // 一个简单的双向绑定的input框
