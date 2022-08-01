@@ -449,9 +449,58 @@ export default {
             .join());
         } else {
           // 级联选择器。。。没想好怎么搞
-          return value.join("-");
+          return this.matchCascaderValue(row, column);
         }
       }
+    },
+    matchCascaderValue(row, column) {
+      let value = row[column.prop];
+      // 1.1 当数据为空时处理显示格式，把原值返回显示
+      if (column.dicData.length === 0) {
+        value = column.multiple
+          ? value
+              .map((item) => {
+                return item.join("-");
+              })
+              .join("/")
+          : value.join("/");
+        return value;
+      }
+      // 1.2 当存在数据时，递归匹配数据
+      let labelList = [];
+      let valueIndex = 0;
+      const dealWithCascader = (value, data) => {
+        let taggetData = data.find((item) => {
+          return (
+            item[this.getColumnProps(column, "value")] === value[valueIndex]
+          );
+        });
+        if (taggetData) {
+          labelList.push(taggetData[this.getColumnProps(column, "label")]);
+          valueIndex++;
+          if (
+            taggetData[this.getColumnProps(column, "children")] &&
+            taggetData[this.getColumnProps(column, "children")].length !== 0
+          ) {
+            dealWithCascader(
+              value,
+              taggetData[this.getColumnProps(column, "children")]
+            );
+          }
+        }
+        return labelList.join("-");
+      };
+      if (column.multiple) {
+        let resultList = [];
+        value.forEach((el) => {
+          resultList.push(dealWithCascader(el, column.dicData));
+        });
+        value = resultList.join("/");
+      } else {
+        value = dealWithCascader(value, column.dicData);
+      }
+      console.log("匹配级联选择器中文", value);
+      return value;
     },
     // 获取label/value对应的字段名 默认label/value
     getColumnProps(column, type) {
