@@ -145,7 +145,6 @@ export default {
             label: "姓名",
             prop: "name",
             slot: true,
-            disabled: true,
             span: 24,
             rules: [
               {
@@ -628,13 +627,12 @@ export default {
         showSummary: true,
         expand: true,
         dialogDrag: true,
-
         column: [
           {
             label: "姓名",
             prop: "name",
             fixed: true,
-            disabled: true,
+            addDisabled: true,
             search: true,
             position: "top",
             span: 24,
@@ -652,6 +650,7 @@ export default {
               {
                 label: "哈哈",
                 prop: "haha",
+                display: false,
               },
               {
                 label: "嗨！",
@@ -661,6 +660,7 @@ export default {
                     label: "来了啊",
                     prop: "inComming",
                     type: "select",
+                    addDisplay: false,
                     value: 0,
                     dicData: [
                       {
@@ -680,11 +680,14 @@ export default {
                       {
                         label: "人称美食家",
                         prop: "laoba",
+                        disabled: true,
                         search: true,
                       },
                       {
                         label: "你吃了吗",
                         prop: "welcome",
+                        editDisabled: true,
+                        editDetail: true,
                       },
                     ],
                   },
@@ -1309,6 +1312,7 @@ export default {
             checkbox: [1],
             selectButMultiple: [0, 1],
             cascader: [["zujian", "basic", "layout"]],
+            switch: "100",
             upload: [
               {
                 name: "美女哦",
@@ -1323,6 +1327,11 @@ export default {
                 url: "https://1307918980.vod2.myqcloud.com/8a753638vodtranscq1307918980/5959edbc387702303012006247/v.f1417934.mp4",
               },
             ],
+            haha: "哈哈",
+            hi: "嗨！",
+            laoba: "客官里面请",
+            inComming: "美食家我老八",
+            welcome: "肃然起敬",
           };
         }, 1000);
       } else {
@@ -1353,6 +1362,7 @@ export default {
           checkbox: [1],
           cascader: ["zhinan", "shejiyuanze", "yizhi"],
           children: [],
+          switch: "100",
           haha: "哈哈",
           hi: "嗨！",
           laoba: "客官里面请",

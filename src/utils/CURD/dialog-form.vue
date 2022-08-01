@@ -79,7 +79,10 @@ export default {
   },
   computed: {
     formOption() {
-      return { column: this.crud.columnList };
+      return {
+        detail: this.crud.crudOption.detail,
+        column: this.crud.columnList,
+      };
     },
     dialogWidth() {
       return vaildData(

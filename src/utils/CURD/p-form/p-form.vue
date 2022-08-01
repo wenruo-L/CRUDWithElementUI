@@ -19,6 +19,9 @@
             :push="columnPush(column)"
             :pull="columnPull(column)"
             :key="column.prop"
+            :class="[
+              { 'form__detail form__detail__column': vaildDetail(column) },
+            ]"
           >
             <el-form-item
               :key="'pform-item-' + column.prop + index"
@@ -38,9 +41,7 @@
               ></slot>
               <!-- 
                 组件
-                
               -->
-
               <component
                 v-else
                 :is="getComponent(column)"
@@ -264,14 +265,14 @@ export default {
   },
   computed: {
     // 2022-08-01
-    // 这里最终决定主要处理隐藏的字段，以及后续要做的**表单分组**功能
-    // 针对表格的复杂表头的情况，在父组件处理好数据格式后传进
+    // 这里最终决定主要处理是否需要隐藏的字段，以及后续要做的**表单分组**功能时处理数据
+    // 针对表格的复杂表头的情况，应在父组件处理好数据格式后传进
     columnOption() {
       let result = [];
       if (this.option.column.length === 0) return result;
-      result = this.option.column.filter((item, index) => {
-        item.$index = index;
-        return !item.display || (item.display && item.display !== true);
+      result = this.option.column.filter((item) => {
+        item.IsDisplay = this.vaildDisplay(item);
+        return item.IsDisplay === true;
       });
       return result;
     },
@@ -321,7 +322,7 @@ export default {
     },
     // 判断表单的模式
     isView() {
-      return this.boxType === "view";
+      return this.boxType === "view" || this.option.detail === true;
     },
     isAdd() {
       return this.boxType === "add";
@@ -438,15 +439,62 @@ export default {
     },
     // 获取组件是否禁用
     // option内传入detail:true和this.isView = true 为表单详情
-    // column内传入disabled为单个禁用
     // allDisabled为表单进行操作时一切操作、组件的禁用
     getDisabled(column) {
       return (
-        vaildData(column.disabled) ||
-        this.isView ||
-        this.allDisabled ||
-        this.option.detail
+        this.vaildDetail(column) ||
+        this.vaildDisabled(column) ||
+        this.isView === true ||
+        this.allDisabled === true
       );
+    },
+    // 获取字段是否禁用
+    // 1.1 是否新增/编辑弹窗表单模式都禁用 column.disabled === true
+    // 1.2 addDisabled | editDisabled 分别对应新增和编辑时是否禁用
+    // 1.3 查看弹窗必为禁用
+    vaildDisabled(column) {
+      if (column.allDisabled) return true;
+      let key;
+      if (column.disabled === true) {
+        key = "disabled";
+      } else if (this.boxType === "add") {
+        key = "addDisabled";
+      } else if (this.boxType === "edit") {
+        key = "editDisabled";
+      } else if (this.boxType === "view") {
+        return true;
+      }
+      return vaildData(column[key], false);
+    },
+    // 获取字段是否为详情
+    // 1.1 如果表单为详情或在option.detail === true 即为详情
+    // 1.2 addDetail和editDetail分别对应新增和编辑时是否为详情
+    vaildDetail(column) {
+      if (this.isView === true) return true;
+      let key;
+      if (column.detail === true) {
+        key = "detail";
+      } else if (this.boxType === "add") {
+        key = "addDetail";
+      } else if (this.boxType === "edit") {
+        key = "editDetail";
+      } else if (this.boxType === "view") {
+        return true;
+      }
+      return vaildData(column[key], false);
+    },
+    // 获取字段是否隐藏
+    // 1.1 如果column.display===true即为隐藏
+    // 1.2 addDisplay和editDisplay分别对应新增和编辑时是否隐藏
+    vaildDisplay(column) {
+      if (column.display === false) return false;
+      let key;
+      if (this.boxType === "add") {
+        key = "addDisplay";
+      } else if (this.boxType === "edit") {
+        key = "editDisplay";
+      }
+      return vaildData(column[key], true);
     },
     // 动态获取组件
     // 1.1：element-ui的组件或者说是已经通过getComponent处理好的组件

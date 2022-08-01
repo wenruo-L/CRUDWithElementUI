@@ -570,16 +570,58 @@ export default {
                       usedBy: "栅格向左移动格数",
                     },
                     {
+                      attribute: "detail",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "该字段在表单是否为详情",
+                    },
+                    {
+                      attribute: "addDetail",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "该字段在表单为新增时是否为详情",
+                    },
+                    {
+                      attribute: "editDetail",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "该字段在表单为编辑时是否为详情",
+                    },
+                    {
                       attribute: "display",
                       type: "Boolean",
                       defaultValue: "false",
-                      usedBy: "是否显示表单中的该字段",
+                      usedBy: "该字段在表单是否显示",
+                    },
+                    {
+                      attribute: "addDisplay",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "该字段在表单为新增时是否显示",
+                    },
+                    {
+                      attribute: "editDisplay",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "该字段在表单为编辑时是否显示",
                     },
                     {
                       attribute: "disabled",
                       type: "Boolean",
                       defaultValue: "false",
-                      usedBy: "是否禁用",
+                      usedBy: "该字段在表单是否禁用",
+                    },
+                    {
+                      attribute: "addDisabled",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "该字段在表单为新增时是否禁用",
+                    },
+                    {
+                      attribute: "editDisabled",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "该字段在表单为编辑时是否禁用",
                     },
                     {
                       attribute: "fixed",
@@ -587,7 +629,6 @@ export default {
                       defaultValue: "false",
                       usedBy: "是否固定列",
                     },
-
                     {
                       attribute: "dataType",
                       type: "String",
