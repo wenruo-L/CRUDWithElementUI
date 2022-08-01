@@ -12,6 +12,7 @@
       :crudOption="crudOption"
       :tableData="tableData"
       :permission="permission"
+      :tablePageHeight="tablePageHeight"
       @refresh-change="refreshChange"
       @search-change="shouldShowSearch"
       @row-delete="rowDelete"
@@ -43,7 +44,7 @@ import crudConfig from "@/utils/CURD/crud-config";
 import dialogForm from "@/utils/CURD/dialog-form";
 import tablePage from "@/utils/CURD/table-page";
 import headerSearch from "@/utils/CURD/header-search";
-import { getSlot } from "@/utils/util";
+import { getSlot, deepClone } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
 export default {
   name: "crud",
@@ -121,9 +122,9 @@ export default {
   },
   data() {
     return {
-      tabelFormIndex: null,
+      tableFormIndex: null,
       tableFormType: null,
-      tabelForm: {},
+      tableForm: {},
       searchShow: false,
       searchForm: {},
     };
@@ -131,7 +132,7 @@ export default {
   watch: {
     form: {
       handler(val) {
-        this.tabelForm = val;
+        this.tableForm = val;
       },
       deep: true,
       immediate: true,
@@ -152,12 +153,39 @@ export default {
     headerSearch() {
       return vaildData(this.crudOption.searchShow, crudConfig.searchShow);
     },
+    // 分页器高度
+    tablePageHeight() {
+      const tablePageRef = this.$refs.tablePage;
+      return (
+        (tablePageRef && tablePageRef.$el && tablePageRef.$el.offsetHeight) ||
+        20
+      );
+    },
+    // 字段处理，主要处理存在复杂表头情况下，需要把复杂表头下的子数组展开到原本的下标位置
+    columnList() {
+      let result = [];
+      if (this.crudOption.column.length === 0) return result;
+      let list = deepClone(this.crudOption.column);
+      const dealWithColumn = (list) => {
+        list.forEach((el) => {
+          if (el.children && el.children.length) {
+            dealWithColumn(el.children);
+          } else {
+            result.push(el);
+          }
+        });
+      };
+      dealWithColumn(list);
+      return result;
+    },
   },
   created() {
     // console.log("crud   this", this);
     this.searchShow = this.headerSearch;
   },
-
+  mounted() {
+    // console.log("columnList", this.columnList);
+  },
   methods: {
     // 获取slotname
     getSlotName(slotName, suffix) {
@@ -189,8 +217,8 @@ export default {
     // 关闭弹窗
     closeDialogForm() {
       this.$refs.dialogForm.close();
-      this.tabelForm = {};
-      this.tabelFormIndex = null;
+      this.tableForm = {};
+      this.tableFormIndex = null;
     },
     // 打开弹窗
     // 详情、编辑打开弹窗会默认拿**行数据**填充、匹配数据
@@ -198,8 +226,8 @@ export default {
     openDialogForm(openType, row, index) {
       this.tableFormType = openType;
       if (openType !== "add") {
-        this.tabelForm = this.rowClone(row);
-        this.tabelFormIndex = index;
+        this.tableForm = this.rowClone(row);
+        this.tableFormIndex = index;
       }
       this.$refs.dialogForm.show(openType);
     },
@@ -216,7 +244,7 @@ export default {
       this.$emit("row-delete", row, index);
     },
     handletableformchange(val) {
-      this.$emit("handletableformchange", val ? val : this.tabelForm);
+      this.$emit("handletableformchange", val ? val : this.tableForm);
     },
   },
 };

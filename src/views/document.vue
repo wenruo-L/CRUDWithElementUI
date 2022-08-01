@@ -484,6 +484,28 @@ export default {
                       usedBy: "列字段名称（必须保持唯一）",
                     },
                     {
+                      attribute: "type",
+                      type: "String",
+                      defaultValue: "input",
+                      options:
+                        "input | textarea | password | number|radio | checkbox | select | cascader | switch | time | datetime | datetimerange | upload",
+                      usedBy: "字段对应展示的组件类型",
+                    },
+                    {
+                      attribute: "component",
+                      type: "String",
+                      defaultValue: "-",
+                      usedBy:
+                        "自定义组件的名字,可配合params对象属性传入绑定参数",
+                    },
+                    {
+                      attribute: "params",
+                      type: "Object",
+                      defaultValue: "-",
+                      usedBy:
+                        "当使用自定义组件时可通过该属性传入绑定参数，配合component使用",
+                    },
+                    {
                       attribute: "props",
                       type: "Object",
                       defaultValue:
@@ -559,12 +581,6 @@ export default {
                       usedBy: "是否固定列",
                     },
 
-                    {
-                      attribute: "type",
-                      type: "String",
-                      defaultValue: "input",
-                      usedBy: "字段对应展示的组件类型",
-                    },
                     {
                       attribute: "dataType",
                       type: "String",

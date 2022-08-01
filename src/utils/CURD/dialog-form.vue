@@ -23,7 +23,7 @@
     <p-form
       ref="PForm"
       v-if="dialogVisible"
-      v-model="crud.tabelForm"
+      v-model="crud.tableForm"
       :status.sync="btnDisabled"
       :option="formOption"
       :boxType="openType"
@@ -79,7 +79,7 @@ export default {
   },
   computed: {
     formOption() {
-      return { column: this.crud.crudOption.column };
+      return { column: this.crud.columnList };
     },
     dialogWidth() {
       return vaildData(

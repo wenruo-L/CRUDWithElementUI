@@ -1,10 +1,13 @@
 <template>
-  <!-- 一个简单的双向绑定的input框 -->
-  <el-input
-    :disabled="disabled"
-    placeholder="我是全局注册的测试组件喔"
-    v-model="textStr"
-  ></el-input>
+  <div>
+    <!-- 一个简单的双向绑定的input框 -->
+    <el-input
+      :disabled="disabled"
+      placeholder="我是全局注册的测试组件喔"
+      v-model="textStr"
+    ></el-input>
+    <el-button type="text">testParams:{{ testParams }}</el-button>
+  </div>
 </template>
 
 <script>
@@ -22,6 +25,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+    testParams: {
+      type: String,
+      default: "",
     },
   },
   watch: {

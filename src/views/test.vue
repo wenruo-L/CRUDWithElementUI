@@ -60,9 +60,9 @@
         ></el-input>
       </template>
       <!-- tableHeader插槽测试 -->
-      <template #tableHeader> tableHeader插槽测试 </template>
+      <!-- <template #tableHeader> tableHeader插槽测试 </template> -->
       <!-- tableFooter插槽测试 -->
-      <template #tableFooter>tableFooter插槽测试</template>
+      <!-- <template #tableFooter>tableFooter插槽测试</template> -->
       <!-- 顶部插槽测试 -->
       <template #muneLeft>
         <el-button type="primary" size="small" @click="to_document"
@@ -84,6 +84,15 @@
       <template v-slot:name="{ row, index }"
         >{{ index }}{{ row.name }}
       </template>
+      <!-- 表格复杂表头插槽测试 -->
+      <template v-slot:inComming="{ row, index }">
+        卧槽，复杂表头插槽：{{ row.inComming }}{{ index }}
+      </template>
+      <!-- 表单复杂表头插槽测试 -->
+      <template v-slot:hahaForm> 复杂表头会影响表单插槽吗 </template>
+      <!-- 搜索栏复杂表头插槽测试 -->
+      <template slot="laobaSearch">卧槽，老八</template>
+      <!-- 操作栏按钮插槽测试 -->
       <template v-slot:menuBtn="{ row, index }">
         <el-button
           type="text"
@@ -638,6 +647,52 @@ export default {
             ],
           },
           {
+            label: "哈哈嗨！复杂表头",
+            children: [
+              {
+                label: "哈哈",
+                prop: "haha",
+              },
+              {
+                label: "嗨！",
+                prop: "hi",
+                children: [
+                  {
+                    label: "来了啊",
+                    prop: "inComming",
+                    type: "select",
+                    value: 0,
+                    dicData: [
+                      {
+                        label: "叉出去",
+                        value: 0,
+                      },
+                      {
+                        label: "里面请",
+                        value: 1,
+                      },
+                    ],
+                  },
+                  {
+                    label: "原来你是来用餐的",
+                    width: 130,
+                    children: [
+                      {
+                        label: "人称美食家",
+                        prop: "laoba",
+                        search: true,
+                      },
+                      {
+                        label: "你吃了吗",
+                        prop: "welcome",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
             label: "性别",
             prop: "sex",
             type: "select",
@@ -742,24 +797,24 @@ export default {
               },
             ],
           },
-          {
-            label: "多选框",
-            prop: "checkbox",
-            type: "checkbox",
-            dataType: "array",
-            // search: true,
-            value: [2],
-            dicData: [
-              {
-                label: "选项1",
-                value: 1,
-              },
-              {
-                label: "选项2",
-                value: 2,
-              },
-            ],
-          },
+          // {
+          //   label: "多选框",
+          //   prop: "checkbox",
+          //   type: "checkbox",
+          //   dataType: "array",
+          //   // search: true,
+          //   value: [2],
+          //   dicData: [
+          //     {
+          //       label: "选项1",
+          //       value: 1,
+          //     },
+          //     {
+          //       label: "选项2",
+          //       value: 2,
+          //     },
+          //   ],
+          // },
           {
             label: "级联选择器",
             prop: "cascader",
@@ -1080,39 +1135,12 @@ export default {
           {
             label: "测试使用自定义组件",
             prop: "testCom",
+            span: 24,
             component: "testCom",
             params: {
               testParams: "窝嫩叠",
             },
           },
-          // {
-          //   // 一个简单的双向绑定的input框
-          //   label: "测试插入自定义组件",
-          //   prop: "testCom",
-          //   component: "test-com",
-          //   params: {},
-          //   hide: true,
-          //   span: 24,
-          // },
-          // {
-          //   // 测试第三方插件
-          //   label: "这是个富文本框哦",
-          //   prop: "testRichText",
-          //   component: "Ueditor",
-          //   params: {
-          //     options: {
-          //       action: "https://avuejs.com/imgupload",
-          //       customConfig: {}, //wangEditor编辑的配置
-          //       props: {
-          //         res: "data",
-          //         url: "url",
-          //       },
-          //     },
-          //   },
-          //   position: "top",
-          //   hide: true,
-          //   span: 24,
-          // },
         ],
       },
       page: {
@@ -1324,6 +1352,11 @@ export default {
           checkbox: [1],
           cascader: ["zhinan", "shejiyuanze", "yizhi"],
           children: [],
+          haha: "哈哈",
+          hi: "嗨！",
+          laoba: "客官里面请",
+          inComming: "美食家我老八",
+          welcome: "肃然起敬",
         });
       }
       for (let i = 1; i < 50; i++) {

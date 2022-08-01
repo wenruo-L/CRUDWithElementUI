@@ -24,7 +24,7 @@
 import { vaildData } from "@/utils/validate";
 import crudConfig from "@/utils/CURD/crud-config";
 export default {
-  name: "tabel-page",
+  name: "table-page",
   inject: ["crud"],
   props: {
     page: {

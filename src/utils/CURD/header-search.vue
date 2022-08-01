@@ -149,12 +149,11 @@ export default {
         });
         return column;
       };
-      let column = deepClone(option.column);
-      column = column.filter((item) => {
+      let columnArr = this.crud.columnList.filter((item) => {
         return item.search === true;
       });
       let searchOption = {
-        column: dealWithColumn(column),
+        column: dealWithColumn(columnArr),
         cancelBtn: false,
         labelWidth: vaildData(option.searchLabelWidth, pFormConfig.labelWidth),
         labelPosition: vaildData(

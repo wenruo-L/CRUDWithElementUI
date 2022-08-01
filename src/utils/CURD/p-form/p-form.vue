@@ -182,10 +182,6 @@
         </el-col>
       </el-row>
     </el-form>
-    <!-- upload 预览 -->
-    <el-dialog append-to-body :visible.sync="uploadDialog">
-      <img width="100%" :src="uploadDataUrl" alt="" />
-    </el-dialog>
   </div>
 </template>
 
@@ -239,8 +235,6 @@ export default {
   data() {
     return {
       PForm: {},
-      uploadDialog: false,
-      uploadDataUrl: "",
       allDisabled: false, //用于提交表单时禁用所有按钮及组件操作
     };
   },
@@ -269,6 +263,9 @@ export default {
     },
   },
   computed: {
+    // 2022-08-01
+    // 这里最终决定主要处理隐藏的字段，以及后续要做的**表单分组**功能
+    // 针对表格的复杂表头的情况，在父组件处理好数据格式后传进
     columnOption() {
       let result = [];
       if (this.option.column.length === 0) return result;
@@ -394,27 +391,37 @@ export default {
     // 根据option传进来的column数组初始化form的值
     formInit(reset) {
       if (!this.option.column || this.option.column.length <= 0) return;
-
       let addLableValueType = ["select", "radio"];
-      this.option.column.forEach((el) => {
-        // 这些类型的组件有可能会把label和value的值一起传给后台，在此初始化
-        // 取消checkBox和cascader（cascader绑定了ref，使用getCheckedNodes）
-        // 初始化默认值
-        let defaultValue;
-        if (reset) {
-          defaultValue = changeValueType(el.dataType, el.value);
-        } else {
-          // 设置父组件form传进的值，如果没有对应的值则设置默认值
-          defaultValue = this.form[el.prop]
-            ? changeValueType(el.dataType, this.form[el.prop])
-            : changeValueType(el.dataType, el.value);
+      const dealWithColumn = (columnList) => {
+        for (let el of columnList) {
+          // 处理复杂表头下的初始化
+          if (el.children && el.children.length) {
+            return dealWithColumn(el.children);
+          }
+          // 这些类型的组件有可能会把label和value的值一起传给后台，在此初始化
+          // 取消checkBox和cascader（cascader绑定了ref，使用getCheckedNodes）
+          // 初始化默认值
+          let defaultValue;
+          if (reset) {
+            defaultValue = changeValueType(el.dataType, el.value);
+          } else {
+            // 设置父组件form传进的值，如果没有对应的值则设置默认值
+            if (el.dataType) {
+              defaultValue = this.form[el.prop]
+                ? changeValueType(el.dataType, this.form[el.prop])
+                : changeValueType(el.dataType, el.value);
+            } else {
+              defaultValue = this.form[el.prop] ? this.form[el.prop] : el.value;
+            }
+          }
+          this.$set(this.PForm, el.prop, defaultValue);
+          if (el.type && addLableValueType.includes(el.type)) {
+            let addLableValueName = "$" + el.prop;
+            this.$set(this.PForm, addLableValueName, defaultValue);
+          }
         }
-        this.$set(this.PForm, el.prop, defaultValue);
-        if (el.type && addLableValueType.includes(el.type)) {
-          let addLableValueName = "$" + el.prop;
-          this.$set(this.PForm, addLableValueName, defaultValue);
-        }
-      });
+      };
+      dealWithColumn(this.option.column);
     },
     // 获取下拉框，单选框，多选框，联级等的组件绑定的label,value,children
     getColumnProps(column, type) {

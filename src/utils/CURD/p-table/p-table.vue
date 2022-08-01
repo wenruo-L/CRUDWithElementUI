@@ -122,34 +122,14 @@
 
       <!-- 动态列表 -->
       <template v-for="(column, index) in columnOption">
-        <!-- 动态 -->
-        <el-table-column
-          :key="column.prop + index"
-          :header-align="ColumnHeaderAlign"
-          :align="ColumnAlign"
-          :width="column.width"
-          :fixed="column.fixed"
-          :prop="column.prop || ''"
-          :label="column.label || ''"
-          :show-overflow-tooltip="getShowOverflowTooltip(column)"
+        <column-dynamic
+          :key="column.prop ? column.prop + index : index"
+          :column="column"
         >
-          <template slot-scope="{ row, $index }">
-            <!-- 列表插槽 -->
-            <slot
-              v-if="column.slot"
-              :name="column.prop"
-              v-bind="{
-                row: row,
-                index: $index,
-              }"
-            >
-            </slot>
-            <!-- 列表内容 -->
-            <template v-else>
-              {{ getTableValue(row, column) }}
-            </template>
+          <template v-for="item in columnSlot" :slot="item" slot-scope="scope">
+            <slot v-bind="scope" :name="item"></slot>
           </template>
-        </el-table-column>
+        </column-dynamic>
       </template>
       <!-- 操作栏 -->
       <el-table-column
@@ -211,6 +191,7 @@ import crudConfig from "@/utils/CURD/crud-config";
 import { getObjType } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
 import permission from "@/utils/CURD/directive/permission";
+import columnDynamic from "@/utils/CURD/p-table/column-dynamic";
 
 export default {
   name: "p-table",
@@ -219,8 +200,11 @@ export default {
   },
   provide() {
     return {
-      crudTable: this,
+      pTable: this,
     };
+  },
+  components: {
+    columnDynamic,
   },
   props: {
     // crud的配置
@@ -256,6 +240,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    // 分页器高度
+    tablePageHeight: {
+      type: [String, Number],
+      default: 20,
+    },
   },
   computed: {
     // data(){
@@ -282,6 +271,23 @@ export default {
       });
       // 是否需要做去重？？
       return columnList;
+    },
+    columnSlot() {
+      let result = [];
+      let filterList = [
+        "tableHeader",
+        "muneLeft",
+        "muneRight",
+        "expand",
+        "menuBtn",
+        "empty",
+        "tableFooter",
+      ];
+      let scopedSlots = Object.keys(this.$scopedSlots);
+      result = scopedSlots.filter((item) => {
+        return !filterList.includes(item);
+      });
+      return result;
     },
     // 样式大小 控制表格及新增、批量操作按钮大小
     size() {
@@ -348,6 +354,7 @@ export default {
     },
   },
   created() {
+    console.log("ptable this", this);
     this.getTableHeight();
   },
   data() {
@@ -456,14 +463,9 @@ export default {
       if (this.isAutoHeight) {
         this.$nextTick(() => {
           const tableRef = this.$refs.table;
-          const tablePageRef = this.$refs.tablePage;
           if (!tableRef) return;
           const tableStyle = tableRef.$el;
-          const pageStyle =
-            (tablePageRef &&
-              tablePageRef.$el &&
-              tablePageRef.$el.offsetHeight) ||
-            20;
+          const pageStyle = Number(this.tablePageHeight);
           this.tableHeight =
             clientHeight -
             tableStyle.offsetTop -
