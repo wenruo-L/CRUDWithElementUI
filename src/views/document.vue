@@ -506,6 +506,13 @@ export default {
                         "当使用自定义组件时可通过该属性传入绑定参数，配合component使用",
                     },
                     {
+                      attribute: "children",
+                      type: "Array",
+                      defaultValue: "-",
+                      usedBy:
+                        "传入children即视为开启复杂表头，传入数组内容与配置字段一致，复杂表头对应的字段在表单里会从复杂表头字段下标开始插入",
+                    },
+                    {
                       attribute: "props",
                       type: "Object",
                       defaultValue:

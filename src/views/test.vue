@@ -766,6 +766,7 @@ export default {
             label: "单纯的单选框",
             prop: "isRadio",
             type: "radio",
+            value: 2,
             search: true,
             dicData: [
               {
