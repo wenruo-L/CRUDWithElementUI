@@ -590,19 +590,19 @@ export default {
                     {
                       attribute: "display",
                       type: "Boolean",
-                      defaultValue: "false",
+                      defaultValue: "true",
                       usedBy: "该字段在表单是否显示",
                     },
                     {
                       attribute: "addDisplay",
                       type: "Boolean",
-                      defaultValue: "false",
+                      defaultValue: "true",
                       usedBy: "该字段在表单为新增时是否显示",
                     },
                     {
                       attribute: "editDisplay",
                       type: "Boolean",
-                      defaultValue: "false",
+                      defaultValue: "true",
                       usedBy: "该字段在表单为编辑时是否显示",
                     },
                     {
