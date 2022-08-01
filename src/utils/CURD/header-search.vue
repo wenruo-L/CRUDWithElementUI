@@ -138,9 +138,9 @@ export default {
             obj.rules = el.searchRules;
             obj.display = (() => {
               if (!this.show) {
-                return !(index < this.searchIndex);
+                return index < this.searchIndex;
               } else {
-                return false;
+                return true;
               }
             })();
             obj.formslot = el.searchslot;
@@ -152,6 +152,7 @@ export default {
       let columnArr = this.crud.columnList.filter((item) => {
         return item.search === true;
       });
+      console.log("header-search columnArr", dealWithColumn(columnArr));
       let searchOption = {
         column: dealWithColumn(columnArr),
         cancelBtn: false,
