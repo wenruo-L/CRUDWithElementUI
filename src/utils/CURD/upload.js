@@ -31,9 +31,9 @@ export default function () {
                 console.log('handleOnSuccess', res);
                 let url = '';
                 if (column.propsHttp.res && res[column.propsHttp.res]) {
-                    url = `${column.propsHttp.imgDomain?column.propsHttp.imgDomain:''}${res[column.propsHttp.res?column.propsHttp.res:'data'][column.propsHttp.url?column.propsHttp.url:'url']}`
+                    url = `${column.propsHttp.domain?column.propsHttp.domain:''}${res[column.propsHttp.res?column.propsHttp.res:'data'][column.propsHttp.url?column.propsHttp.url:'url']}`
                 } else {
-                    url = `${column.propsHttp.imgDomain?column.propsHttp.imgDomain:''}${res[column.propsHttp.url?column.propsHttp.url:'url']}`
+                    url = `${column.propsHttp.domain?column.propsHttp.domain:''}${res[column.propsHttp.url?column.propsHttp.url:'url']}`
                 }
                 this.PForm[column.prop].push({
                     name: url,

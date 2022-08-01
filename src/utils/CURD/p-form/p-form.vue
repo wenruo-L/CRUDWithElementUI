@@ -671,8 +671,8 @@ export default {
           result.listType == "text" ? this.PForm[column.prop] : null;
         // 上传相关
         result.name =
-          column.propsHttp && column.propsHttp.name
-            ? column.propsHttp.name
+          column.propsHttp && column.propsHttp.fileName
+            ? column.propsHttp.fileName
             : "file";
         result.data =
           column.propsHttp && column.propsHttp.data

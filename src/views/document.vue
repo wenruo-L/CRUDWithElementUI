@@ -1164,10 +1164,35 @@ export default {
                       usedBy: "上传时的配置",
                       children: [
                         {
+                          attribute: "domain",
+                          type: "String",
+                          defaultValue: "-",
+                          usedBy: "文件资源前缀，如域名前缀等，不需要不要传",
+                        },
+                        {
+                          attribute: "res",
+                          type: "String",
+                          defaultValue: "-",
+                          usedBy:
+                            "结构体的层次，例如返回data:{url:'',name:''},则res配置为data",
+                        },
+                        {
+                          attribute: "url",
+                          type: "String",
+                          defaultValue: "-",
+                          usedBy: "上传服务器后返回资源的对应字段",
+                        },
+                        {
                           attribute: "name",
                           type: "String",
+                          defaultValue: "-",
+                          usedBy: "上传服务器后返回资源的名字对应字段",
+                        },
+                        {
+                          attribute: "fileName",
+                          type: "String",
                           defaultValue: "file",
-                          usedBy: "上传的文件字段名",
+                          usedBy: "上传文件流时的名称",
                         },
                         {
                           attribute: "data",
@@ -1179,7 +1204,7 @@ export default {
                           attribute: "headers",
                           type: "Object",
                           defaultValue: "-",
-                          usedBy: "设置上传的请求头部",
+                          usedBy: "设置上传时的请求头",
                         },
                       ],
                     },

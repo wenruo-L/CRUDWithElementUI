@@ -1113,7 +1113,7 @@ export default {
             listType: "text",
             dataType: "array",
             propsHttp: {
-              imgDomain: "http://www.liulongbin.top:3006", //图片前缀，如果需要的话
+              domain: "http://www.liulongbin.top:3006", //图片前缀，如果需要的话
               res: "response", //结构体的层次，例如返回data:{url:'',name:''},则res配置为data
               url: "url", //上传服务器后返回图片的对应字段
               name: "", //上传服务器后返回图片的对应名字
