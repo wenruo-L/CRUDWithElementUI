@@ -100,8 +100,7 @@ export default {
     // upload 限制文件大小，单位M
     fileSize: 10,
     // upload 限制文件个数
-    limit: 100,
-    // upload 上传文件类型限制
+    limit: 10,
     fileType: {
         img: /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)/,
         video: /\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|ogg|mp4)/

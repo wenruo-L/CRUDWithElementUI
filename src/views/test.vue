@@ -132,6 +132,8 @@ export default {
   },
   data() {
     return {
+      // 修狗狗 http://www.liulongbin.top:3006/uploads/1659410084298_4f2c768e9e1643d1ae762efc313d140a.jpg
+      // 修猫猫 http://www.liulongbin.top:3006/uploads/1659410093045_f21e01061b914120a6feb61d0f4fefe9.jpg
       testComValue: "",
       componentsName: "testCom",
       loading: true,
@@ -756,6 +758,7 @@ export default {
             label: "年龄",
             prop: "age",
             // search: true,
+            value: 18,
             type: "number",
             rules: [
               {
@@ -819,559 +822,559 @@ export default {
           //     },
           //   ],
           // },
-          {
-            label: "级联选择器多选",
-            prop: "cascader",
-            type: "cascader",
-            width: 300,
-            filterable: true,
-            multiple: true,
-            // search: true,
-            dicData: [
-              {
-                value: "zhinan",
-                label: "指南",
-                children: [
-                  {
-                    value: "shejiyuanze",
-                    label: "设计原则",
-                    children: [
-                      {
-                        value: "yizhi",
-                        label: "一致",
-                      },
-                      {
-                        value: "fankui",
-                        label: "反馈",
-                      },
-                      {
-                        value: "xiaolv",
-                        label: "效率",
-                      },
-                      {
-                        value: "kekong",
-                        label: "可控",
-                      },
-                    ],
-                  },
-                  {
-                    value: "daohang",
-                    label: "导航",
-                    children: [
-                      {
-                        value: "cexiangdaohang",
-                        label: "侧向导航",
-                      },
-                      {
-                        value: "dingbudaohang",
-                        label: "顶部导航",
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                value: "zujian",
-                label: "组件",
-                children: [
-                  {
-                    value: "basic",
-                    label: "Basic",
-                    children: [
-                      {
-                        value: "layout",
-                        label: "Layout 布局",
-                      },
-                      {
-                        value: "color",
-                        label: "Color 色彩",
-                      },
-                      {
-                        value: "typography",
-                        label: "Typography 字体",
-                      },
-                      {
-                        value: "icon",
-                        label: "Icon 图标",
-                      },
-                      {
-                        value: "button",
-                        label: "Button 按钮",
-                      },
-                    ],
-                  },
-                  {
-                    value: "form",
-                    label: "Form",
-                    children: [
-                      {
-                        value: "radio",
-                        label: "Radio 单选框",
-                      },
-                      {
-                        value: "checkbox",
-                        label: "Checkbox 多选框",
-                      },
-                      {
-                        value: "input",
-                        label: "Input 输入框",
-                      },
-                      {
-                        value: "input-number",
-                        label: "InputNumber 计数器",
-                      },
-                      {
-                        value: "select",
-                        label: "Select 选择器",
-                      },
-                      {
-                        value: "cascader",
-                        label: "Cascader 级联选择器",
-                      },
-                      {
-                        value: "switch",
-                        label: "Switch 开关",
-                      },
-                      {
-                        value: "slider",
-                        label: "Slider 滑块",
-                      },
-                      {
-                        value: "time-picker",
-                        label: "TimePicker 时间选择器",
-                      },
-                      {
-                        value: "date-picker",
-                        label: "DatePicker 日期选择器",
-                      },
-                      {
-                        value: "datetime-picker",
-                        label: "DateTimePicker 日期时间选择器",
-                      },
-                      {
-                        value: "upload",
-                        label: "Upload 上传",
-                      },
-                      {
-                        value: "rate",
-                        label: "Rate 评分",
-                      },
-                      {
-                        value: "form",
-                        label: "Form 表单",
-                      },
-                    ],
-                  },
-                  {
-                    value: "data",
-                    label: "Data",
-                    children: [
-                      {
-                        value: "table",
-                        label: "Table 表格",
-                      },
-                      {
-                        value: "tag",
-                        label: "Tag 标签",
-                      },
-                      {
-                        value: "progress",
-                        label: "Progress 进度条",
-                      },
-                      {
-                        value: "tree",
-                        label: "Tree 树形控件",
-                      },
-                      {
-                        value: "pagination",
-                        label: "Pagination 分页",
-                      },
-                      {
-                        value: "badge",
-                        label: "Badge 标记",
-                      },
-                    ],
-                  },
-                  {
-                    value: "notice",
-                    label: "Notice",
-                    children: [
-                      {
-                        value: "alert",
-                        label: "Alert 警告",
-                      },
-                      {
-                        value: "loading",
-                        label: "Loading 加载",
-                      },
-                      {
-                        value: "message",
-                        label: "Message 消息提示",
-                      },
-                      {
-                        value: "message-box",
-                        label: "MessageBox 弹框",
-                      },
-                      {
-                        value: "notification",
-                        label: "Notification 通知",
-                      },
-                    ],
-                  },
-                  {
-                    value: "navigation",
-                    label: "Navigation",
-                    children: [
-                      {
-                        value: "menu",
-                        label: "NavMenu 导航菜单",
-                      },
-                      {
-                        value: "tabs",
-                        label: "Tabs 标签页",
-                      },
-                      {
-                        value: "breadcrumb",
-                        label: "Breadcrumb 面包屑",
-                      },
-                      {
-                        value: "dropdown",
-                        label: "Dropdown 下拉菜单",
-                      },
-                      {
-                        value: "steps",
-                        label: "Steps 步骤条",
-                      },
-                    ],
-                  },
-                  {
-                    value: "others",
-                    label: "Others",
-                    children: [
-                      {
-                        value: "dialog",
-                        label: "Dialog 对话框",
-                      },
-                      {
-                        value: "tooltip",
-                        label: "Tooltip 文字提示",
-                      },
-                      {
-                        value: "popover",
-                        label: "Popover 弹出框",
-                      },
-                      {
-                        value: "card",
-                        label: "Card 卡片",
-                      },
-                      {
-                        value: "carousel",
-                        label: "Carousel 走马灯",
-                      },
-                      {
-                        value: "collapse",
-                        label: "Collapse 折叠面板",
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                value: "ziyuan",
-                label: "资源",
-                children: [
-                  {
-                    value: "axure",
-                    label: "Axure Components",
-                  },
-                  {
-                    value: "sketch",
-                    label: "Sketch Templates",
-                  },
-                  {
-                    value: "jiaohu",
-                    label: "组件交互文档",
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            label: "级联选择器",
-            prop: "cascaderOne",
-            width: 200,
-            type: "cascader",
-            filterable: true,
-            // search: true,
-            dicData: [
-              {
-                value: "zhinan",
-                label: "指南",
-                children: [
-                  {
-                    value: "shejiyuanze",
-                    label: "设计原则",
-                    children: [
-                      {
-                        value: "yizhi",
-                        label: "一致",
-                      },
-                      {
-                        value: "fankui",
-                        label: "反馈",
-                      },
-                      {
-                        value: "xiaolv",
-                        label: "效率",
-                      },
-                      {
-                        value: "kekong",
-                        label: "可控",
-                      },
-                    ],
-                  },
-                  {
-                    value: "daohang",
-                    label: "导航",
-                    children: [
-                      {
-                        value: "cexiangdaohang",
-                        label: "侧向导航",
-                      },
-                      {
-                        value: "dingbudaohang",
-                        label: "顶部导航",
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                value: "zujian",
-                label: "组件",
-                children: [
-                  {
-                    value: "basic",
-                    label: "Basic",
-                    children: [
-                      {
-                        value: "layout",
-                        label: "Layout 布局",
-                      },
-                      {
-                        value: "color",
-                        label: "Color 色彩",
-                      },
-                      {
-                        value: "typography",
-                        label: "Typography 字体",
-                      },
-                      {
-                        value: "icon",
-                        label: "Icon 图标",
-                      },
-                      {
-                        value: "button",
-                        label: "Button 按钮",
-                      },
-                    ],
-                  },
-                  {
-                    value: "form",
-                    label: "Form",
-                    children: [
-                      {
-                        value: "radio",
-                        label: "Radio 单选框",
-                      },
-                      {
-                        value: "checkbox",
-                        label: "Checkbox 多选框",
-                      },
-                      {
-                        value: "input",
-                        label: "Input 输入框",
-                      },
-                      {
-                        value: "input-number",
-                        label: "InputNumber 计数器",
-                      },
-                      {
-                        value: "select",
-                        label: "Select 选择器",
-                      },
-                      {
-                        value: "cascader",
-                        label: "Cascader 级联选择器",
-                      },
-                      {
-                        value: "switch",
-                        label: "Switch 开关",
-                      },
-                      {
-                        value: "slider",
-                        label: "Slider 滑块",
-                      },
-                      {
-                        value: "time-picker",
-                        label: "TimePicker 时间选择器",
-                      },
-                      {
-                        value: "date-picker",
-                        label: "DatePicker 日期选择器",
-                      },
-                      {
-                        value: "datetime-picker",
-                        label: "DateTimePicker 日期时间选择器",
-                      },
-                      {
-                        value: "upload",
-                        label: "Upload 上传",
-                      },
-                      {
-                        value: "rate",
-                        label: "Rate 评分",
-                      },
-                      {
-                        value: "form",
-                        label: "Form 表单",
-                      },
-                    ],
-                  },
-                  {
-                    value: "data",
-                    label: "Data",
-                    children: [
-                      {
-                        value: "table",
-                        label: "Table 表格",
-                      },
-                      {
-                        value: "tag",
-                        label: "Tag 标签",
-                      },
-                      {
-                        value: "progress",
-                        label: "Progress 进度条",
-                      },
-                      {
-                        value: "tree",
-                        label: "Tree 树形控件",
-                      },
-                      {
-                        value: "pagination",
-                        label: "Pagination 分页",
-                      },
-                      {
-                        value: "badge",
-                        label: "Badge 标记",
-                      },
-                    ],
-                  },
-                  {
-                    value: "notice",
-                    label: "Notice",
-                    children: [
-                      {
-                        value: "alert",
-                        label: "Alert 警告",
-                      },
-                      {
-                        value: "loading",
-                        label: "Loading 加载",
-                      },
-                      {
-                        value: "message",
-                        label: "Message 消息提示",
-                      },
-                      {
-                        value: "message-box",
-                        label: "MessageBox 弹框",
-                      },
-                      {
-                        value: "notification",
-                        label: "Notification 通知",
-                      },
-                    ],
-                  },
-                  {
-                    value: "navigation",
-                    label: "Navigation",
-                    children: [
-                      {
-                        value: "menu",
-                        label: "NavMenu 导航菜单",
-                      },
-                      {
-                        value: "tabs",
-                        label: "Tabs 标签页",
-                      },
-                      {
-                        value: "breadcrumb",
-                        label: "Breadcrumb 面包屑",
-                      },
-                      {
-                        value: "dropdown",
-                        label: "Dropdown 下拉菜单",
-                      },
-                      {
-                        value: "steps",
-                        label: "Steps 步骤条",
-                      },
-                    ],
-                  },
-                  {
-                    value: "others",
-                    label: "Others",
-                    children: [
-                      {
-                        value: "dialog",
-                        label: "Dialog 对话框",
-                      },
-                      {
-                        value: "tooltip",
-                        label: "Tooltip 文字提示",
-                      },
-                      {
-                        value: "popover",
-                        label: "Popover 弹出框",
-                      },
-                      {
-                        value: "card",
-                        label: "Card 卡片",
-                      },
-                      {
-                        value: "carousel",
-                        label: "Carousel 走马灯",
-                      },
-                      {
-                        value: "collapse",
-                        label: "Collapse 折叠面板",
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                value: "ziyuan",
-                label: "资源",
-                children: [
-                  {
-                    value: "axure",
-                    label: "Axure Components",
-                  },
-                  {
-                    value: "sketch",
-                    label: "Sketch Templates",
-                  },
-                  {
-                    value: "jiaohu",
-                    label: "组件交互文档",
-                  },
-                ],
-              },
-            ],
-          },
+          // {
+          //   label: "级联选择器多选",
+          //   prop: "cascader",
+          //   type: "cascader",
+          //   width: 300,
+          //   filterable: true,
+          //   multiple: true,
+          //   // search: true,
+          //   dicData: [
+          //     {
+          //       value: "zhinan",
+          //       label: "指南",
+          //       children: [
+          //         {
+          //           value: "shejiyuanze",
+          //           label: "设计原则",
+          //           children: [
+          //             {
+          //               value: "yizhi",
+          //               label: "一致",
+          //             },
+          //             {
+          //               value: "fankui",
+          //               label: "反馈",
+          //             },
+          //             {
+          //               value: "xiaolv",
+          //               label: "效率",
+          //             },
+          //             {
+          //               value: "kekong",
+          //               label: "可控",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "daohang",
+          //           label: "导航",
+          //           children: [
+          //             {
+          //               value: "cexiangdaohang",
+          //               label: "侧向导航",
+          //             },
+          //             {
+          //               value: "dingbudaohang",
+          //               label: "顶部导航",
+          //             },
+          //           ],
+          //         },
+          //       ],
+          //     },
+          //     {
+          //       value: "zujian",
+          //       label: "组件",
+          //       children: [
+          //         {
+          //           value: "basic",
+          //           label: "Basic",
+          //           children: [
+          //             {
+          //               value: "layout",
+          //               label: "Layout 布局",
+          //             },
+          //             {
+          //               value: "color",
+          //               label: "Color 色彩",
+          //             },
+          //             {
+          //               value: "typography",
+          //               label: "Typography 字体",
+          //             },
+          //             {
+          //               value: "icon",
+          //               label: "Icon 图标",
+          //             },
+          //             {
+          //               value: "button",
+          //               label: "Button 按钮",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "form",
+          //           label: "Form",
+          //           children: [
+          //             {
+          //               value: "radio",
+          //               label: "Radio 单选框",
+          //             },
+          //             {
+          //               value: "checkbox",
+          //               label: "Checkbox 多选框",
+          //             },
+          //             {
+          //               value: "input",
+          //               label: "Input 输入框",
+          //             },
+          //             {
+          //               value: "input-number",
+          //               label: "InputNumber 计数器",
+          //             },
+          //             {
+          //               value: "select",
+          //               label: "Select 选择器",
+          //             },
+          //             {
+          //               value: "cascader",
+          //               label: "Cascader 级联选择器",
+          //             },
+          //             {
+          //               value: "switch",
+          //               label: "Switch 开关",
+          //             },
+          //             {
+          //               value: "slider",
+          //               label: "Slider 滑块",
+          //             },
+          //             {
+          //               value: "time-picker",
+          //               label: "TimePicker 时间选择器",
+          //             },
+          //             {
+          //               value: "date-picker",
+          //               label: "DatePicker 日期选择器",
+          //             },
+          //             {
+          //               value: "datetime-picker",
+          //               label: "DateTimePicker 日期时间选择器",
+          //             },
+          //             {
+          //               value: "upload",
+          //               label: "Upload 上传",
+          //             },
+          //             {
+          //               value: "rate",
+          //               label: "Rate 评分",
+          //             },
+          //             {
+          //               value: "form",
+          //               label: "Form 表单",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "data",
+          //           label: "Data",
+          //           children: [
+          //             {
+          //               value: "table",
+          //               label: "Table 表格",
+          //             },
+          //             {
+          //               value: "tag",
+          //               label: "Tag 标签",
+          //             },
+          //             {
+          //               value: "progress",
+          //               label: "Progress 进度条",
+          //             },
+          //             {
+          //               value: "tree",
+          //               label: "Tree 树形控件",
+          //             },
+          //             {
+          //               value: "pagination",
+          //               label: "Pagination 分页",
+          //             },
+          //             {
+          //               value: "badge",
+          //               label: "Badge 标记",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "notice",
+          //           label: "Notice",
+          //           children: [
+          //             {
+          //               value: "alert",
+          //               label: "Alert 警告",
+          //             },
+          //             {
+          //               value: "loading",
+          //               label: "Loading 加载",
+          //             },
+          //             {
+          //               value: "message",
+          //               label: "Message 消息提示",
+          //             },
+          //             {
+          //               value: "message-box",
+          //               label: "MessageBox 弹框",
+          //             },
+          //             {
+          //               value: "notification",
+          //               label: "Notification 通知",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "navigation",
+          //           label: "Navigation",
+          //           children: [
+          //             {
+          //               value: "menu",
+          //               label: "NavMenu 导航菜单",
+          //             },
+          //             {
+          //               value: "tabs",
+          //               label: "Tabs 标签页",
+          //             },
+          //             {
+          //               value: "breadcrumb",
+          //               label: "Breadcrumb 面包屑",
+          //             },
+          //             {
+          //               value: "dropdown",
+          //               label: "Dropdown 下拉菜单",
+          //             },
+          //             {
+          //               value: "steps",
+          //               label: "Steps 步骤条",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "others",
+          //           label: "Others",
+          //           children: [
+          //             {
+          //               value: "dialog",
+          //               label: "Dialog 对话框",
+          //             },
+          //             {
+          //               value: "tooltip",
+          //               label: "Tooltip 文字提示",
+          //             },
+          //             {
+          //               value: "popover",
+          //               label: "Popover 弹出框",
+          //             },
+          //             {
+          //               value: "card",
+          //               label: "Card 卡片",
+          //             },
+          //             {
+          //               value: "carousel",
+          //               label: "Carousel 走马灯",
+          //             },
+          //             {
+          //               value: "collapse",
+          //               label: "Collapse 折叠面板",
+          //             },
+          //           ],
+          //         },
+          //       ],
+          //     },
+          //     {
+          //       value: "ziyuan",
+          //       label: "资源",
+          //       children: [
+          //         {
+          //           value: "axure",
+          //           label: "Axure Components",
+          //         },
+          //         {
+          //           value: "sketch",
+          //           label: "Sketch Templates",
+          //         },
+          //         {
+          //           value: "jiaohu",
+          //           label: "组件交互文档",
+          //         },
+          //       ],
+          //     },
+          //   ],
+          // },
+          // {
+          //   label: "级联选择器",
+          //   prop: "cascaderOne",
+          //   width: 200,
+          //   type: "cascader",
+          //   filterable: true,
+          //   // search: true,
+          //   dicData: [
+          //     {
+          //       value: "zhinan",
+          //       label: "指南",
+          //       children: [
+          //         {
+          //           value: "shejiyuanze",
+          //           label: "设计原则",
+          //           children: [
+          //             {
+          //               value: "yizhi",
+          //               label: "一致",
+          //             },
+          //             {
+          //               value: "fankui",
+          //               label: "反馈",
+          //             },
+          //             {
+          //               value: "xiaolv",
+          //               label: "效率",
+          //             },
+          //             {
+          //               value: "kekong",
+          //               label: "可控",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "daohang",
+          //           label: "导航",
+          //           children: [
+          //             {
+          //               value: "cexiangdaohang",
+          //               label: "侧向导航",
+          //             },
+          //             {
+          //               value: "dingbudaohang",
+          //               label: "顶部导航",
+          //             },
+          //           ],
+          //         },
+          //       ],
+          //     },
+          //     {
+          //       value: "zujian",
+          //       label: "组件",
+          //       children: [
+          //         {
+          //           value: "basic",
+          //           label: "Basic",
+          //           children: [
+          //             {
+          //               value: "layout",
+          //               label: "Layout 布局",
+          //             },
+          //             {
+          //               value: "color",
+          //               label: "Color 色彩",
+          //             },
+          //             {
+          //               value: "typography",
+          //               label: "Typography 字体",
+          //             },
+          //             {
+          //               value: "icon",
+          //               label: "Icon 图标",
+          //             },
+          //             {
+          //               value: "button",
+          //               label: "Button 按钮",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "form",
+          //           label: "Form",
+          //           children: [
+          //             {
+          //               value: "radio",
+          //               label: "Radio 单选框",
+          //             },
+          //             {
+          //               value: "checkbox",
+          //               label: "Checkbox 多选框",
+          //             },
+          //             {
+          //               value: "input",
+          //               label: "Input 输入框",
+          //             },
+          //             {
+          //               value: "input-number",
+          //               label: "InputNumber 计数器",
+          //             },
+          //             {
+          //               value: "select",
+          //               label: "Select 选择器",
+          //             },
+          //             {
+          //               value: "cascader",
+          //               label: "Cascader 级联选择器",
+          //             },
+          //             {
+          //               value: "switch",
+          //               label: "Switch 开关",
+          //             },
+          //             {
+          //               value: "slider",
+          //               label: "Slider 滑块",
+          //             },
+          //             {
+          //               value: "time-picker",
+          //               label: "TimePicker 时间选择器",
+          //             },
+          //             {
+          //               value: "date-picker",
+          //               label: "DatePicker 日期选择器",
+          //             },
+          //             {
+          //               value: "datetime-picker",
+          //               label: "DateTimePicker 日期时间选择器",
+          //             },
+          //             {
+          //               value: "upload",
+          //               label: "Upload 上传",
+          //             },
+          //             {
+          //               value: "rate",
+          //               label: "Rate 评分",
+          //             },
+          //             {
+          //               value: "form",
+          //               label: "Form 表单",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "data",
+          //           label: "Data",
+          //           children: [
+          //             {
+          //               value: "table",
+          //               label: "Table 表格",
+          //             },
+          //             {
+          //               value: "tag",
+          //               label: "Tag 标签",
+          //             },
+          //             {
+          //               value: "progress",
+          //               label: "Progress 进度条",
+          //             },
+          //             {
+          //               value: "tree",
+          //               label: "Tree 树形控件",
+          //             },
+          //             {
+          //               value: "pagination",
+          //               label: "Pagination 分页",
+          //             },
+          //             {
+          //               value: "badge",
+          //               label: "Badge 标记",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "notice",
+          //           label: "Notice",
+          //           children: [
+          //             {
+          //               value: "alert",
+          //               label: "Alert 警告",
+          //             },
+          //             {
+          //               value: "loading",
+          //               label: "Loading 加载",
+          //             },
+          //             {
+          //               value: "message",
+          //               label: "Message 消息提示",
+          //             },
+          //             {
+          //               value: "message-box",
+          //               label: "MessageBox 弹框",
+          //             },
+          //             {
+          //               value: "notification",
+          //               label: "Notification 通知",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "navigation",
+          //           label: "Navigation",
+          //           children: [
+          //             {
+          //               value: "menu",
+          //               label: "NavMenu 导航菜单",
+          //             },
+          //             {
+          //               value: "tabs",
+          //               label: "Tabs 标签页",
+          //             },
+          //             {
+          //               value: "breadcrumb",
+          //               label: "Breadcrumb 面包屑",
+          //             },
+          //             {
+          //               value: "dropdown",
+          //               label: "Dropdown 下拉菜单",
+          //             },
+          //             {
+          //               value: "steps",
+          //               label: "Steps 步骤条",
+          //             },
+          //           ],
+          //         },
+          //         {
+          //           value: "others",
+          //           label: "Others",
+          //           children: [
+          //             {
+          //               value: "dialog",
+          //               label: "Dialog 对话框",
+          //             },
+          //             {
+          //               value: "tooltip",
+          //               label: "Tooltip 文字提示",
+          //             },
+          //             {
+          //               value: "popover",
+          //               label: "Popover 弹出框",
+          //             },
+          //             {
+          //               value: "card",
+          //               label: "Card 卡片",
+          //             },
+          //             {
+          //               value: "carousel",
+          //               label: "Carousel 走马灯",
+          //             },
+          //             {
+          //               value: "collapse",
+          //               label: "Collapse 折叠面板",
+          //             },
+          //           ],
+          //         },
+          //       ],
+          //     },
+          //     {
+          //       value: "ziyuan",
+          //       label: "资源",
+          //       children: [
+          //         {
+          //           value: "axure",
+          //           label: "Axure Components",
+          //         },
+          //         {
+          //           value: "sketch",
+          //           label: "Sketch Templates",
+          //         },
+          //         {
+          //           value: "jiaohu",
+          //           label: "组件交互文档",
+          //         },
+          //       ],
+          //     },
+          //   ],
+          // },
           {
             label: "开关",
             prop: "switch",
@@ -1395,14 +1398,32 @@ export default {
               url: "url", //上传服务器后返回图片的对应字段
               name: "", //上传服务器后返回图片的对应名字
               fileName: "", //上传文件流时的名称,
-              data: {}, //上传文件流时附带的参数
-              headers: {}, //上传文件流时附带的请求头
             },
+            data: {
+              test: 123,
+            }, //上传文件流时附带的参数
+            headers: {
+              token: "123",
+            }, //上传文件流时附带的请求头
             action: "http://www.liulongbin.top:3006/api/upload/avatar",
 
             limit: 3,
             fileSize: 2, //文件大小限制,单位M
-            fileType: "jpg/jpeg", //逗号分隔
+            accept: "jpg/jpeg", //逗号分隔
+          },
+          {
+            label: "上传但picture-card",
+            prop: "uploadPicture",
+            type: "upload",
+            hide: "true",
+            listType: "picture-card",
+            action: "http://www.liulongbin.top:3006/api/upload/avatar",
+            propsHttp: {
+              domain: "http://www.liulongbin.top:3006",
+              res: "response",
+              url: "url",
+            },
+            dataType: "array",
           },
           {
             label: "textarea",
@@ -1587,6 +1608,7 @@ export default {
             isRadio: 1,
             radio: 1,
             checkbox: [1],
+            testCom: "我是自定义的组件喔",
             selectButMultiple: [0, 1],
             cascader: [["zujian", "basic", "layout"]],
             cascaderOne: ["zujian", "form", "radio"],
@@ -1605,6 +1627,8 @@ export default {
                 url: "https://1307918980.vod2.myqcloud.com/8a753638vodtranscq1307918980/5959edbc387702303012006247/v.f1417934.mp4",
               },
             ],
+            uploadPicture:
+              "https://auto1.sinaimg.cn/autoimg/car/95/90/131519095_950.JPG",
             haha: "哈哈",
             hi: "嗨！",
             laoba: "客官里面请",
@@ -1644,6 +1668,8 @@ export default {
           ],
           cascaderOne: ["zujian", "form", "radio"],
           testCom: "我是自定义的组件喔",
+          uploadPicture:
+            "https://auto1.sinaimg.cn/autoimg/car/95/90/131519095_950.JPG",
           children: [],
           switch: "100",
           haha: "哈哈",
@@ -1666,6 +1692,8 @@ export default {
           checkbox: [1, 2],
           cascader: [["zujian", "basic", "layout"]],
           cascaderOne: ["zujian", "form", "radio"],
+          uploadPicture:
+            "http://www.liulongbin.top:3006/uploads/1659410093045_f21e01061b914120a6feb61d0f4fefe9.jpg",
         });
       }
       setTimeout(() => {

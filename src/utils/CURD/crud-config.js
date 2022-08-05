@@ -45,5 +45,10 @@ export default {
     dialogWidth: '60%',
     //  其他
     // 首次加载表格是否显示搜索
-    searchShow: true
+    searchShow: true,
+    // 文件类型校验
+    fileType: {
+        img: /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)/,
+        video: /\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|ogg|mp4)/
+    },
 }

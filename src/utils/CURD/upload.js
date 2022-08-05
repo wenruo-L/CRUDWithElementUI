@@ -16,15 +16,16 @@ export default function () {
                 }
                 let isOverSize = fileSize ? file.size / 1024 / 1024 < fileSize : null;
                 let isRightType = fileType ? fileType.split('/').includes(file.type.split('/')[1]) : null;
-                if (!isOverSize) {
+                if (!isOverSize && fileSize) {
                     this.$message.error(`上传文件大小不能超过${fileSize}MB!`);
                     return false
                 }
 
-                if (!isRightType) {
+                if (!isRightType && fileType) {
                     this.$message.error(`上传文件类型只能是${fileType}格式`);
                     return false
                 }
+                return true
             },
             // 上传成功
             handleOnSuccess(res, column) {
@@ -35,10 +36,14 @@ export default function () {
                 } else {
                     url = `${column.propsHttp.domain?column.propsHttp.domain:''}${res[column.propsHttp.url?column.propsHttp.url:'url']}`
                 }
-                this.PForm[column.prop].push({
-                    name: url,
-                    url
-                })
+                if (column.listType === 'text') {
+                    this.PForm[column.prop].push({
+                        name: url,
+                        url
+                    })
+                } else {
+                    this.PForm[column.prop] = url
+                }
             },
             // 上传失败
             handleOnError(err, file, fileList) {

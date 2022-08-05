@@ -18,6 +18,10 @@ export default {
     event: "handlevaluechange",
   },
   props: {
+    testCom: {
+      type: String,
+      default: "",
+    },
     textValue: {
       type: String,
       default: "",
@@ -43,6 +47,9 @@ export default {
     return {
       textStr: "",
     };
+  },
+  created() {
+    console.log("test-com this", this);
   },
   methods: {
     handleValueChange() {

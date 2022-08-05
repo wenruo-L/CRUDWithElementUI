@@ -121,23 +121,55 @@
                   </el-option>
                 </template>
                 <!-- upload 处理 -->
+
+                <template v-if="getTypeOfTextOnUpload(column)">
+                  <el-button
+                    size="small"
+                    type="primary"
+                    :disabled="getDisabled(column)"
+                  >
+                    点击上传
+                  </el-button>
+                  <!-- 有传限制就动态提示 -->
+                  <div slot="tip" class="el-upload__tip" v-if="column.fileType">
+                    <span> 只能上传{{ column.fileType }}文件 </span>
+                    <span v-if="column.fileSize">
+                      ，且不超过{{ column.fileSize }}MB
+                    </span>
+                  </div>
+                </template>
+
                 <!-- upload的插槽套上template会失效，暂时直接判断到插槽 -->
-                <el-button
-                  size="small"
-                  type="primary"
-                  :disabled="getDisabled(column)"
-                  v-if="
-                    column.type == 'upload' &&
-                    getListType(column.listType) === 'text'
-                  "
+                <i
+                  slot="default"
+                  class="el-icon-plus"
+                  v-if="getTypeOfPictureCardOnUpload(column)"
                 >
-                  点击上传
-                </el-button>
-                <!-- 有传限制就动态提示 -->
-                <div slot="tip" class="el-upload__tip" v-if="column.fileType">
-                  <span> 只能上传{{ column.fileType }}文件 </span>
-                  <span v-if="column.fileSize">
-                    ，且不超过{{ column.fileSize }}MB
+                </i>
+                <div
+                  slot="file"
+                  slot-scope="{ file }"
+                  v-if="getTypeOfPictureCardOnUpload(column)"
+                >
+                  <img
+                    class="el-upload-list__item-thumbnail"
+                    :src="form[column.prop]"
+                    alt=""
+                  />
+                  <span class="el-upload-list__item-actions">
+                    <span
+                      class="el-upload-list__item-preview"
+                      @click="handlePreview(file)"
+                    >
+                      <i class="el-icon-zoom-in"></i>
+                    </span>
+                    <span
+                      v-if="!getDisabled(column)"
+                      @click="handleRemove(file)"
+                      class="el-upload-list__item-delete"
+                    >
+                      <i class="el-icon-delete"></i>
+                    </span>
                   </span>
                 </div>
               </component>
@@ -191,6 +223,7 @@ import { setPx, changeValueType, getPlaceHolder } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
 import upload from "@/utils/CURD/upload";
 import pFormConfig from "@/utils/CURD/p-form/p-form-config";
+import pUpload from "@/utils/CURD/p-form/components/p-upload";
 
 export default {
   name: "p-from",
@@ -233,6 +266,9 @@ export default {
     },
   },
   mixins: [upload()],
+  components: {
+    pUpload,
+  },
   data() {
     return {
       PForm: {},
@@ -377,7 +413,10 @@ export default {
     },
     handleChange(value, column) {
       let lableValueName = "$" + column.prop;
-      if (column.type === "select" || column.type === "radio") {
+      if (
+        (column.type === "select" || column.type === "radio") &&
+        column.lableValueName
+      ) {
         if (column.multiple) {
           this.PForm[lableValueName] = column.dicData.filter((item) => {
             return value.includes(item[this.getColumnProps(column, "value")]);
@@ -416,9 +455,12 @@ export default {
             }
           }
           this.$set(this.PForm, el.prop, defaultValue);
-          if (el.type && addLableValueType.includes(el.type)) {
-            let addLableValueName = "$" + el.prop;
-            this.$set(this.PForm, addLableValueName, defaultValue);
+          if (
+            el.type &&
+            addLableValueType.includes(el.type) &&
+            el.lableValueName
+          ) {
+            this.$set(this.PForm, el.lableValueName, defaultValue);
           }
         }
       };
@@ -502,6 +544,8 @@ export default {
     getComponent(column) {
       // 如果有传入自定义组件或者插件，直接返回传入的组件名
       if (column.component && column.component !== "") return column.component;
+      // 20020802 upload特殊处理
+      if (column.type === "upload") return "p-upload";
       let key_component_name = pFormConfig.key_component_name;
       let result = column.type || "input";
       // 特殊处理
@@ -660,57 +704,29 @@ export default {
         }
       } else if (type == "upload") {
         result.ref = `${column.prop}Upload`;
-        result.class = "uploader";
+        result[column.prop] = this.PForm[column.prop];
         result.action = column.action || "#0";
+        result.accept = column.accept;
+        result.fileSize = column.fileSize || pFormConfig.fileSize;
         result.limit = column.limit || pFormConfig.limit;
         result.multiple = column.multiple || false;
-        result.drag = column.drag || false;
+        result.drag = column.drag;
         result.autoUpload = column.autoUpload || true;
         result.listType = column.listType || "text"; //text/picture/picture-card
-        result.fileList =
-          result.listType == "text" ? this.PForm[column.prop] : null;
+        result.dataType = column.dataType;
+        if (result.listType === "text") {
+          result.fileList = this.PForm[column.prop];
+        } else {
+          result.multiple = false;
+        }
         // 上传相关
-        result.name =
-          column.propsHttp && column.propsHttp.fileName
-            ? column.propsHttp.fileName
-            : "file";
-        result.data =
-          column.propsHttp && column.propsHttp.data
-            ? column.propsHttp.data
-            : null;
-        result.headers =
-          column.propsHttp && column.propsHttp.headers
-            ? column.propsHttp.headers
-            : null;
-        // 事件
-        // 上传前
-        result.beforeUpload = (file) => {
-          console.log(
-            "this.beforeUpload(file, column)",
-            this.beforeUpload(file, column)
-          );
-          return this.beforeUpload(file, column);
-        };
-        // 上传成功
-        result.onSuccess = (res) => {
-          this.handleOnSuccess(res, column);
-        };
-        // 上传失败
-        result.onError = (err, file, fileList, column) => {
-          this.handleOnError(err, file, fileList, column);
-        };
-        // 超过限制数量
-        result.onExceed = (files, fileList) => {
-          this.handleExceed(files, fileList, column);
-        };
-        // 预览
-        result.onPreview = (file) => {
-          this.handlePreview(file, this.PForm[column.prop]);
-        };
-        // 删除
-        result.onRemove = (file) => {
-          this.handleRemove(file, column);
-        };
+        result.fileName = column.propsHttp && column.propsHttp.fileName;
+        result.name = column.propsHttp.name && column.propsHttp.name;
+        result.domain = column.propsHttp.domain && column.propsHttp.domain;
+        result.res = column.propsHttp.res && column.propsHttp.res;
+        result.url = column.propsHttp.url && column.propsHttp.url;
+        result.data = column.data;
+        result.headers = column.headers;
       }
       return result;
     },
@@ -722,6 +738,13 @@ export default {
     //   }
 
     // },
+    // upload
+    getTypeOfTextOnUpload(column) {
+      return column.type == "upload" && column.listType === "text";
+    },
+    getTypeOfPictureCardOnUpload(column) {
+      return column.type == "upload" && column.listType === "picture-card";
+    },
     getPrecision(column) {
       return vaildData(column.precision, pFormConfig.precision);
     },

@@ -32,20 +32,20 @@
       >
         <el-carousel-item
           v-for="item in datas"
-          :key="item"
+          :key="item.id"
           @click.native.self="ops.closeOnClickModel ? close() : ''"
         >
           <img
-            v-if="getFileType(item) === 'img'"
+            v-if="getFileType(item.url) === 'img'"
             :style="styleName"
             class="preview__img"
-            :src="item"
+            :src="item.url"
             alt="无法展示"
           />
           <video
             class="preview__video"
-            v-if="getFileType(item) === 'video'"
-            :src="item"
+            v-if="getFileType(item.url) === 'video'"
+            :src="item.url"
             autoplay
             controls
           ></video>

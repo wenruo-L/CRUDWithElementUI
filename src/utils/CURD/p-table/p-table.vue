@@ -107,7 +107,6 @@
         width="50"
       >
       </el-table-column>
-
       <!-- 索引 -->
       <el-table-column
         v-if="crudOption.index"
@@ -119,7 +118,6 @@
         label="#"
       >
       </el-table-column>
-
       <!-- 动态列表 -->
       <template v-for="(column, index) in columnOption">
         <column-dynamic
@@ -366,6 +364,10 @@ export default {
     };
   },
   methods: {
+    // 重绘表格
+    tableDoLayout() {
+      this.$refs.table.doLayout();
+    },
     // 获取权限
     // 如果props不传进permission，即视为不进行权限管理，所以理应默认拥有权限
     getPermission(tagetPermission) {
@@ -448,7 +450,7 @@ export default {
             })
             .join());
         } else {
-          // 级联选择器。。。没想好怎么搞
+          // 级联选择器
           return this.matchCascaderValue(row, column);
         }
       }
@@ -479,14 +481,14 @@ export default {
           labelList.push(taggetData[this.getColumnProps(column, "label")]);
           valueIndex++;
           if (
-            taggetData[this.getColumnProps(column, "children")] &&
-            taggetData[this.getColumnProps(column, "children")].length !== 0
-          ) {
-            dealWithCascader(
-              value,
-              taggetData[this.getColumnProps(column, "children")]
-            );
-          }
+            !taggetData[this.getColumnProps(column, "children")] ||
+            taggetData[this.getColumnProps(column, "children")].length === 0
+          )
+            return;
+          dealWithCascader(
+            value,
+            taggetData[this.getColumnProps(column, "children")]
+          );
         }
         return labelList.join("-");
       };
@@ -495,11 +497,10 @@ export default {
         value.forEach((el) => {
           resultList.push(dealWithCascader(el, column.dicData));
         });
-        value = resultList.join("/");
+        value = resultList.join(" / ");
       } else {
         value = dealWithCascader(value, column.dicData);
       }
-      console.log("匹配级联选择器中文", value);
       return value;
     },
     // 获取label/value对应的字段名 默认label/value
@@ -526,6 +527,7 @@ export default {
       }
     },
     getShowOverflowTooltip(column) {
+      if (column.type === "upload") return false;
       return vaildData(column.overHidden, crudConfig.overHidden);
     },
   },

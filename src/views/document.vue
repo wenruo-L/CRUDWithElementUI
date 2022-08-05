@@ -1,6 +1,6 @@
 <template>
   <basic-container>
-    <p-table :crudOption="option" :tableData="data"></p-table>
+    <p-table :crudOption="option" :tableData="data"> </p-table>
   </basic-container>
 </template>
 
@@ -23,6 +23,7 @@ export default {
         searchBtn: false,
         menu: false,
         treeLazy: true,
+        expandAll: true,
         column: [
           {
             label: "属性/方法",
@@ -805,6 +806,12 @@ export default {
                   usedBy: "单选框",
                   children: [
                     {
+                      attribute: "lableValueName",
+                      type: "String",
+                      defaultValue: "-",
+                      usedBy: "指定选择的值对应的中文值的键名，不传不处理",
+                    },
+                    {
                       attribute: "border",
                       type: "Boolean",
                       defaultValue: "false",
@@ -841,6 +848,12 @@ export default {
                   attribute: "select",
                   usedBy: "下拉框",
                   children: [
+                    {
+                      attribute: "lableValueName",
+                      type: "String",
+                      defaultValue: "-",
+                      usedBy: "指定选择的值对应的中文值的键名，不传不处理",
+                    },
                     {
                       attribute: "filterable",
                       type: "Boolean",
@@ -1129,8 +1142,8 @@ export default {
                     },
                     {
                       attribute: "limit",
-                      type: "String",
-                      defaultValue: "100",
+                      type: "Number",
+                      defaultValue: "10",
                       usedBy: "最大允许上传个数",
                     },
                     {
@@ -1155,7 +1168,19 @@ export default {
                       attribute: "listType",
                       type: "String",
                       defaultValue: "text",
-                      options: "text (picture与picture-card待实现)",
+                      options: "text/picture-img/picture-card",
+                    },
+                    {
+                      attribute: "data",
+                      type: "Object",
+                      defaultValue: "-",
+                      usedBy: "上传时附带的额外参数",
+                    },
+                    {
+                      attribute: "headers",
+                      type: "Object",
+                      defaultValue: "-",
+                      usedBy: "设置上传时的请求头",
                     },
                     {
                       attribute: "propsHttp",
@@ -1194,18 +1219,6 @@ export default {
                           defaultValue: "file",
                           usedBy: "上传文件流时的名称",
                         },
-                        {
-                          attribute: "data",
-                          type: "Object",
-                          defaultValue: "-",
-                          usedBy: "上传时附带的额外参数",
-                        },
-                        {
-                          attribute: "headers",
-                          type: "Object",
-                          defaultValue: "-",
-                          usedBy: "设置上传时的请求头",
-                        },
                       ],
                     },
                   ],
@@ -1221,11 +1234,11 @@ export default {
     this.dealWithData(this.data);
   },
   methods: {
-    dealWithData(list, id = 1) {
-      list.forEach((item, index) => {
-        item.id = id ? `${id}${index}` : index++;
+    dealWithData(list) {
+      list.forEach((item) => {
+        item.id = Math.random();
         if (item.children && item.children.length) {
-          this.dealWithData(item.children, index++);
+          this.dealWithData(item.children);
         }
       });
     },

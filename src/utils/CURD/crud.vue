@@ -187,6 +187,10 @@ export default {
     // console.log("columnList", this.columnList);
   },
   methods: {
+    // 重绘表格
+    doLayout() {
+      this.$refs.pTable.tableDoLayout();
+    },
     // 获取slotname
     getSlotName(slotName, suffix) {
       return slotName + suffix;
