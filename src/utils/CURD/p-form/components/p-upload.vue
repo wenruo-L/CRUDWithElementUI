@@ -1,6 +1,5 @@
 <template>
   <div :element-loading-text="loadText" v-loading.lock="loading">
-    value:{{ value }}
     <el-upload
       class="pUpload"
       :class="[
@@ -85,6 +84,10 @@ import { getObjType } from "@/utils/util";
 // 表单组件中upload的东西较多，特意独立处理
 export default {
   name: "p-upload",
+  model: {
+    prop: "value",
+    event: "change",
+  },
   props: {
     value: {
       type: [String, Array],
@@ -222,12 +225,10 @@ export default {
     };
   },
   watch: {
-    text: {
+    value: {
       handler() {
-        this.handleValueChange();
+        this.initVal();
       },
-      deep: true,
-      immediate: true,
     },
   },
   computed: {
@@ -271,9 +272,6 @@ export default {
       return list;
     },
   },
-  created() {
-    this.initVal();
-  },
   methods: {
     initVal() {
       if (getObjType(this.value) === "string") {
@@ -292,20 +290,20 @@ export default {
       }
     },
     handleValueChange() {
+      let result = this.text;
       let getValueList = (isArray) => {
         if (isArray) {
-          return this.text.map((item) => {
+          result = this.text.map((item) => {
             return { name: item.name, url: item.url };
           });
         } else {
-          return this.text.map((item) => {
+          result = this.text.map((item) => {
             return item.url;
           });
         }
       };
-      let valueList = getValueList(this.isArray);
-      this.$emit("input", this.isArray ? valueList : valueList.join());
-      this.$emit("change", this.isArray ? valueList : valueList.join());
+      result = getValueList(this.isArray);
+      this.$emit("change", this.isArray ? result : result.join());
     },
     stop() {
       return false;

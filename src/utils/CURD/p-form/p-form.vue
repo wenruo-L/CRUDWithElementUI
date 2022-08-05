@@ -221,7 +221,6 @@
 <script>
 import { setPx, changeValueType, getPlaceHolder } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
-import upload from "@/utils/CURD/upload";
 import pFormConfig from "@/utils/CURD/p-form/p-form-config";
 import pUpload from "@/utils/CURD/p-form/components/p-upload";
 
@@ -265,7 +264,6 @@ export default {
       default: false,
     },
   },
-  mixins: [upload()],
   components: {
     pUpload,
   },

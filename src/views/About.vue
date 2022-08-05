@@ -1,6 +1,5 @@
 <template>
   <basic-container>
-    form:{{ form }}
     <p-form :option="option" v-model="form" @submitForm="submit"></p-form>
   </basic-container>
 </template>
