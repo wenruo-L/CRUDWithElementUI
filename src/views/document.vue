@@ -1,6 +1,6 @@
 <template>
   <basic-container>
-    <p-table :crudOption="option" :tableData="data"> </p-table>
+    <p-table :option="option" :tableData="data"> </p-table>
   </basic-container>
 </template>
 
@@ -104,6 +104,39 @@ export default {
             "打开表单弹窗前的回调，done为打开弹窗的回调，type为打开弹窗的类型",
         },
         {
+          attribute: ":sortBy",
+          type: "Function",
+          defaultValue: "String/Array/Function(row, index)",
+          usedBy:
+            "指定数据按照哪个属性进行排序，仅当 sortable 设置为 true 且没有设置 sort-method 的时候有效。如果 sort-by 为数组，则先按照第 1 个属性排序，如果第 1 个相等，再按照第 2 个排序，以此类推",
+        },
+        {
+          attribute: ":sortOrders",
+          type: "Array",
+          defaultValue: "['ascending', 'descending', null]",
+          options:
+            "数组中的元素需为以下三者之一：ascending 表示升序，descending 表示降序，null 表示还原为原始顺序",
+        },
+        {
+          attribute: ":sortMethod",
+          type: "Function",
+          defaultValue: "-",
+          usedBy:
+            "对数据进行排序的时候使用的方法，仅当 sortable 设置为 true 的时候有效，需返回一个数字，和 Array.sort 表现一致",
+        },
+        {
+          attribute: ":spanMethod",
+          type: "Function",
+          defaultValue: "Function({ row, column, rowIndex, columnIndex })",
+          usedBy: "合并行或列的计算方法",
+        },
+        {
+          attribute: ":summaryMethod",
+          type: "Function",
+          defaultValue: "Function({ columns, data })",
+          usedBy: "自定义的合计计算方法,",
+        },
+        {
           attribute: "@on-load",
           type: "Function",
           defaultValue: "page, params",
@@ -165,6 +198,24 @@ export default {
           type: "Function",
           defaultValue: "refreshChange",
           usedBy: "点击刷新按钮回调",
+        },
+        {
+          attribute: "@sort-change",
+          type: "Function",
+          defaultValue: "val",
+          usedBy: "排序回调",
+        },
+        {
+          attribute: "@row-click",
+          type: "Function",
+          defaultValue: "row, event",
+          usedBy: "当某一行被点击时会触发该事件",
+        },
+        {
+          attribute: "@row-dblclick",
+          type: "Function",
+          defaultValue: "row, event, column",
+          usedBy: "当某一行被双击击时会触发该事件",
         },
         {
           attribute: "slot",
@@ -257,7 +308,7 @@ export default {
           ],
         },
         {
-          attribute: "crudOption",
+          attribute: "option",
           type: "Object",
           defaultValue: "",
           usedBy: "表格配置",
@@ -464,6 +515,14 @@ export default {
               usedBy: "表格空数据时文字提示",
             },
             {
+              attribute: "sumColumnList",
+              type: "Array",
+              defaultValue: "-",
+              options: "{label: '',name: '', type: '',decimals: 2,}",
+              usedBy:
+                "属性配置需要计算的表格列配置,label为自定义前缀；name为字段对应的prop值，type有sum合计/ avg平均 /统计count;decimals为小数点后几位，默认2位",
+            },
+            {
               attribute: "column",
               type: "Array",
               defaultValue: "-",
@@ -532,6 +591,12 @@ export default {
                       defaultValue: "请选择/请输入${Label}",
                       usedBy:
                         "提示语,如果在rules里有传入提示语，会默认用第一个提示语，如果没有配置rules，默认为请选择/请输入${Label}",
+                    },
+                    {
+                      attribute: "order",
+                      type: "Number",
+                      defaultValue: "-",
+                      usedBy: "更改字段表单排序，数值越大越靠前",
                     },
                     {
                       attribute: "size",
@@ -650,10 +715,28 @@ export default {
                       usedBy: "数据源",
                     },
                     {
+                      attribute: "sortable",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "是否开启排序",
+                    },
+                    {
+                      attribute: "showSummary",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "是否开启合计",
+                    },
+                    {
                       attribute: "search",
                       type: "Boolean",
                       defaultValue: "false",
                       usedBy: "该字段是否开启搜索",
+                    },
+                    {
+                      attribute: "searchOrder",
+                      type: "Number",
+                      defaultValue: "-",
+                      usedBy: "更改搜索字段表单排序，数值越大越靠前",
                     },
                     {
                       attribute: "searchSize",

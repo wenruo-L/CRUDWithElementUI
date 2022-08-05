@@ -2,8 +2,8 @@
   <el-dialog
     :title="dialogTitle"
     append-to-body
-    :close-on-press-escape="crud.crudOption.dialogEscape || false"
-    :close-on-click-modal="crud.crudOption.dialogClickModal || false"
+    :close-on-press-escape="crud.option.dialogEscape || false"
+    :close-on-click-modal="crud.option.dialogClickModal || false"
     :visible.sync="dialogVisible"
     :width="dialogWidth"
     :fullscreen="fullscreen"
@@ -80,15 +80,12 @@ export default {
   computed: {
     formOption() {
       return {
-        detail: this.crud.crudOption.detail,
+        detail: this.crud.option.detail,
         column: this.crud.columnList,
       };
     },
     dialogWidth() {
-      return vaildData(
-        this.crud.crudOption.dialogWidth,
-        crudConfig.dialogWidth
-      );
+      return vaildData(this.crud.option.dialogWidth, crudConfig.dialogWidth);
     },
     dialogTitle() {
       return this.openType === "add"
@@ -98,23 +95,23 @@ export default {
         : "查 看";
     },
     size() {
-      return vaildData(this.crud.crudOption.size, pFormConfig.size);
+      return vaildData(this.crud.option.size, pFormConfig.size);
     },
     muneAlign() {
-      return vaildData(this.crud.crudOption.muneAlign, pFormConfig.muneAlign);
+      return vaildData(this.crud.option.muneAlign, pFormConfig.muneAlign);
     },
     getSubmitBtnText() {
-      return vaildData(this.crud.crudOption.submitText, pFormConfig.submitText);
+      return vaildData(this.crud.option.submitText, pFormConfig.submitText);
     },
     getCancelBtnText() {
-      return vaildData(this.crud.crudOption.cancelText, pFormConfig.cancelText);
+      return vaildData(this.crud.option.cancelText, pFormConfig.cancelText);
     },
     isView() {
       return this.openType === "view";
     },
     // 是否开启拖拽表单
     getDialogBind() {
-      return this.crud.crudOption.dialogDrag === true;
+      return this.crud.option.dialogDrag === true;
     },
   },
   data() {

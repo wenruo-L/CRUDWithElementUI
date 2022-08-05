@@ -24,18 +24,21 @@
     </p-form> -->
     <!-- 表格测试 -->
     <!-- 
-      <pTable :crudOption="option" :tableData="data"></pTable> -->
+      <pTable :option="option" :tableData="data"></pTable> -->
     <!-- crud测试 -->
     <Crud
       ref="crud"
       v-model="form"
       :page="page"
       :loading="loading"
-      :crudOption="option"
+      :option="option"
       :before-open="beforeOpen"
       :tableData="data"
       :query.sync="query"
       :permission="permissionList"
+      @row-click="rowClick"
+      @row-dblclick="rowDblclick"
+      @sort-change="sortChange"
       @row-save="submit"
       @row-update="submit"
       @row-delete="rowDelete"
@@ -629,6 +632,14 @@ export default {
         showSummary: true,
         expand: true,
         dialogDrag: true,
+        sumColumnList: [
+          {
+            label: "我是年龄哦",
+            name: "age",
+            type: "sum", //sum avg count 合计 / 平均 / 统计
+            decimals: 1,
+          },
+        ],
         column: [
           {
             label: "姓名",
@@ -663,6 +674,7 @@ export default {
                     prop: "inComming",
                     type: "select",
                     addDisplay: false,
+                    order: 98,
                     value: 0,
                     dicData: [
                       {
@@ -684,6 +696,7 @@ export default {
                         prop: "laoba",
                         disabled: true,
                         search: true,
+                        searchOrder: 99,
                       },
                       {
                         label: "你吃了吗",
@@ -758,6 +771,9 @@ export default {
             label: "年龄",
             prop: "age",
             // search: true,
+            width: 120,
+            showSummary: true,
+            sortable: true,
             value: 18,
             type: "number",
             rules: [
@@ -1437,6 +1453,7 @@ export default {
           {
             label: "测试使用自定义组件",
             prop: "testCom",
+            order: 99,
             span: 24,
             component: "testCom",
             params: {
@@ -1549,6 +1566,18 @@ export default {
     // this.$destroy("pForm");
   },
   methods: {
+    sortChange(val) {
+      console.log("sortChange", val);
+    },
+    rowClick(row, event, column) {
+      console.log("rowClick row", row);
+      console.log("rowClick  event", event);
+      console.log("rowClick column", column);
+    },
+    rowDblclick(row, event) {
+      console.log("rowDblclick row", row);
+      console.log("rowDblclick  event", event);
+    },
     to_document() {
       this.$router.push({
         path: "/document",

@@ -9,10 +9,18 @@
     <p-table
       ref="pTable"
       :loading="loading"
-      :crudOption="crudOption"
+      :option="option"
       :tableData="tableData"
       :permission="permission"
       :tablePageHeight="tablePageHeight"
+      :sort-method="sortMethod"
+      :sort-orders="sortOrders"
+      :sort-by="sortBy"
+      :span-method="spanMethod"
+      :summary-method="summaryMethod"
+      @row-click="rowClick"
+      @row-dblclick="rowDblclick"
+      @sort-change="sortChange"
       @refresh-change="refreshChange"
       @search-change="shouldShowSearch"
       @row-delete="rowDelete"
@@ -79,7 +87,7 @@ export default {
       },
     },
     // crud的配置
-    crudOption: {
+    option: {
       type: Object,
       default: () => {
         return Object.create(null);
@@ -119,6 +127,11 @@ export default {
       },
     },
     beforeOpen: Function,
+    sortBy: Function,
+    sortOrders: Array,
+    sortMethod: Function,
+    spanMethod: Function,
+    summaryMethod: Function,
   },
   data() {
     return {
@@ -151,7 +164,7 @@ export default {
     },
     // 首次加载crud是否显示顶部搜索
     headerSearch() {
-      return vaildData(this.crudOption.searchShow, crudConfig.searchShow);
+      return vaildData(this.option.searchShow, crudConfig.searchShow);
     },
     // 分页器高度
     tablePageHeight() {
@@ -164,8 +177,8 @@ export default {
     // 字段处理，主要处理存在复杂表头情况下，需要把复杂表头下的子数组展开到原本的下标位置
     columnList() {
       let result = [];
-      if (this.crudOption.column.length === 0) return result;
-      let list = deepClone(this.crudOption.column);
+      if (this.option.column.length === 0) return result;
+      let list = deepClone(this.option.column);
       const dealWithColumn = (list) => {
         list.forEach((el) => {
           if (el.children && el.children.length) {
@@ -187,6 +200,18 @@ export default {
     // console.log("columnList", this.columnList);
   },
   methods: {
+    // 行双击
+    rowDblclick(row, event) {
+      this.$emit("row-dblclick", row, event);
+    },
+    // 行单击
+    rowClick(row, event, column) {
+      this.$emit("row-click", row, event, column);
+    },
+    // 排序回调
+    sortChange(val) {
+      this.$emit("sort-change", val);
+    },
     // 重绘表格
     doLayout() {
       this.$refs.pTable.tableDoLayout();

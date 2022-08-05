@@ -308,6 +308,7 @@ export default {
         item.IsDisplay = this.vaildDisplay(item);
         return item.IsDisplay === true;
       });
+      result = result.sort((a, b) => (b.order || 0) - (a.order || 0));
       return result;
     },
     getFormLabelWidth() {

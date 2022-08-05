@@ -65,28 +65,35 @@
       v-loading="loading"
       :data="tableData"
       :height="tableHeight"
-      :max-height="isAutoHeight ? tableHeight : crudOption.maxHeight"
-      :stripe="crudOption.stripe"
-      :border="crudOption.border"
+      :max-height="isAutoHeight ? tableHeight : option.maxHeight"
+      :stripe="option.stripe"
+      :border="option.border"
       :size="size"
-      :fit="crudOption.fit || true"
-      :show-header="crudOption.showHeader || true"
-      :highlight-current-row="crudOption.highlightCurrentRow"
-      :cell-class-name="crudOption.cellClassName"
+      :fit="option.fit || true"
+      :show-header="option.showHeader || true"
+      :highlight-current-row="option.highlightCurrentRow"
+      :cell-class-name="option.cellClassName"
       :row-key="TableRowKey"
       :tree-props="TableTreeProps"
       :lazy="TableLazy"
-      :default-expand-all="crudOption.expandAll"
+      :default-expand-all="option.expandAll"
       :load="treeLoad"
+      :span-method="spanMethod"
       @selection-change="selectionChange"
       @expand-change="expandChange"
+      :sort-method="sortMethod"
+      :sort-orders="sortOrders"
+      :sort-by="sortBy"
+      @sort-change="sortChange"
+      @row-click="rowClick"
+      @row-dblclick="rowDblclick"
+      :show-summary="option.showSummary"
+      :summary-method="tableSummaryMethod"
       style="width: 100%"
     >
-      <!-- :show-summary="crudOption.showSummary"
-      :summary-method="summaryMethod" -->
       <!-- 行展开 -->
       <el-table-column
-        v-if="crudOption.expand"
+        v-if="option.expand"
         type="expand"
         fixed
         header-align="center"
@@ -99,7 +106,7 @@
       </el-table-column>
       <!-- 多选 -->
       <el-table-column
-        v-if="crudOption.selection"
+        v-if="option.selection"
         type="selection"
         fixed
         header-align="center"
@@ -109,7 +116,7 @@
       </el-table-column>
       <!-- 索引 -->
       <el-table-column
-        v-if="crudOption.index"
+        v-if="option.index"
         type="index"
         fixed
         header-align="center"
@@ -174,8 +181,7 @@
       <!-- 无数据 -->
       <template slot="empty">
         <slot name="empty">
-          <el-empty :description="crudOption.emptyText || '暂无数据'">
-          </el-empty>
+          <el-empty :description="option.emptyText || '暂无数据'"> </el-empty>
         </slot>
       </template>
     </el-table>
@@ -206,7 +212,7 @@ export default {
   },
   props: {
     // crud的配置
-    crudOption: {
+    option: {
       type: Object,
       default: () => {
         return Object.create(null);
@@ -243,6 +249,11 @@ export default {
       type: [String, Number],
       default: 20,
     },
+    sortBy: Function,
+    sortOrders: Array,
+    sortMethod: Function,
+    spanMethod: Function,
+    summaryMethod: Function,
   },
   computed: {
     // data(){
@@ -256,14 +267,14 @@ export default {
     // },
     // 表格自动高度
     isAutoHeight() {
-      return this.crudOption.height === "auto";
+      return this.option.height === "auto";
     },
     // 列配置
     columnOption() {
       let columnList = [];
-      // console.log("p-table  this.crudOption", this.crudOption);
-      if (this.crudOption.column.length == 0) return columnList;
-      columnList = this.crudOption.column.filter((item, index) => {
+      // console.log("p-table  this.option", this.option);
+      if (this.option.column.length == 0) return columnList;
+      columnList = this.option.column.filter((item, index) => {
         item.$index = index;
         return item.hide === undefined || item.hide === false;
       });
@@ -289,66 +300,70 @@ export default {
     },
     // 样式大小 控制表格及新增、批量操作按钮大小
     size() {
-      return vaildData(this.crudOption.size, crudConfig.size);
+      return vaildData(this.option.size, crudConfig.size);
     },
     // 顶部新增按钮
     HeaderMuneAddBtn() {
-      return vaildData(this.crudOption.addBtn, crudConfig.addBtn);
+      return vaildData(this.option.addBtn, crudConfig.addBtn);
     },
     // 顶部删除按钮
     HeaderMuneDelBtn() {
       return vaildData(
-        this.crudOption.topDelBtn,
-        crudConfig.topDelBtn && this.crudOption.selection
+        this.option.topDelBtn,
+        crudConfig.topDelBtn && this.option.selection
       );
     },
     // 顶部刷新按钮
     HeaderMuneRefreshBtn() {
-      return vaildData(this.crudOption.refreshBtn, crudConfig.refreshBtn);
+      return vaildData(this.option.refreshBtn, crudConfig.refreshBtn);
     },
     // 顶部搜索开关按钮
     HeaderMuneSearchBtn() {
-      return vaildData(this.crudOption.searchBtn, crudConfig.searchBtn);
+      return vaildData(this.option.searchBtn, crudConfig.searchBtn);
     },
     // 表格 rowkey
     TableRowKey() {
-      return vaildData(this.crudOption.rowKey, crudConfig.rowKey);
+      return vaildData(this.option.rowKey, crudConfig.rowKey);
     },
     // 表格 tree-props
     TableTreeProps() {
-      return vaildData(this.crudOption.treeProps, crudConfig.treeProps);
+      return vaildData(this.option.treeProps, crudConfig.treeProps);
     },
     // 表格 lazy
     TableLazy() {
-      return vaildData(this.crudOption.treeLazy, crudConfig.treeLazy);
+      return vaildData(this.option.treeLazy, crudConfig.treeLazy);
     },
     // 列 header-align
     ColumnHeaderAlign() {
-      return vaildData(this.crudOption.headerAlign, crudConfig.headerAlign);
+      return vaildData(this.option.headerAlign, crudConfig.headerAlign);
     },
     // 列 align
     ColumnAlign() {
-      return vaildData(this.crudOption.columnAlign, crudConfig.columnAlign);
+      return vaildData(this.option.columnAlign, crudConfig.columnAlign);
     },
     // 列 操作栏
     ColumnMenu() {
-      return vaildData(this.crudOption.menu, crudConfig.menu);
+      return vaildData(this.option.menu, crudConfig.menu);
     },
     // 列 操作栏宽度
     ColumnMenuWidth() {
-      return vaildData(this.crudOption.menuWidth, crudConfig.menuWidth);
+      return vaildData(this.option.menuWidth, crudConfig.menuWidth);
     },
     // 列 查看按钮
     ColumnViewBtn() {
-      return vaildData(this.crudOption.viewBtn, crudConfig.viewBtn);
+      return vaildData(this.option.viewBtn, crudConfig.viewBtn);
     },
     // 列 编辑按钮
     ColumnEditBtn() {
-      return vaildData(this.crudOption.editBtn, crudConfig.editBtn);
+      return vaildData(this.option.editBtn, crudConfig.editBtn);
     },
     // 列 删除按钮
     ColumnDelBtn() {
-      return vaildData(this.crudOption.delBtn, crudConfig.delBtn);
+      return vaildData(this.option.delBtn, crudConfig.delBtn);
+    },
+    // 进行合计的列
+    sumColumnList() {
+      return this.option.sumColumnList || [];
     },
   },
   created() {
@@ -364,6 +379,72 @@ export default {
     };
   },
   methods: {
+    // 表尾合计行
+    tableSummaryMethod(param) {
+      if (typeof this.summaryMethod === "function") {
+        return this.summaryMethod(param);
+      }
+      const { columns, data } = param;
+      let sumsList = {};
+      let sums = [];
+      if (columns.length > 0) {
+        columns.forEach((column, index) => {
+          let currItem = this.sumColumnList.find(
+            (item) => item.name === column.property
+          );
+          if (currItem) {
+            let decimals = currItem.decimals || 2;
+            let label = currItem.label || "";
+            let avgValues = data.map((item) => Number(item[column.property]));
+            let nowindex = 1;
+            let values = data.map((item) => Number(item[column.property]));
+            switch (currItem.type) {
+              case "count":
+                sums[index] = label + data.length;
+                break;
+              case "avg":
+                sums[index] = avgValues.reduce((perv, curr) => {
+                  let value = Number(curr);
+                  if (!isNaN(value)) {
+                    return (perv * (nowindex - 1) + curr) / nowindex++;
+                  } else {
+                    return perv;
+                  }
+                }, 0);
+                sums[index] = label + sums[index].toFixed(decimals);
+                break;
+              case "sum":
+                sums[index] = values.reduce((perv, curr) => {
+                  let value = Number(curr);
+                  if (!isNaN(value)) {
+                    return perv + curr;
+                  } else {
+                    return perv;
+                  }
+                }, 0);
+                sums[index] = label + sums[index].toFixed(decimals);
+                break;
+            }
+            sumsList[column.property] = sums[index];
+          } else {
+            sums[index] = "";
+          }
+        });
+      }
+      return sums;
+    },
+    // 行双击
+    rowDblclick(row, event) {
+      this.$emit("row-dblclick", row, event);
+    },
+    // 行单击
+    rowClick(row, event, column) {
+      this.$emit("row-click", row, event, column);
+    },
+    // 排序回调
+    sortChange(val) {
+      this.$emit("sort-change", val);
+    },
     // 重绘表格
     tableDoLayout() {
       this.$refs.table.doLayout();
@@ -520,10 +601,10 @@ export default {
             clientHeight -
             tableStyle.offsetTop -
             pageStyle -
-            this.crudOption.calcHeight;
+            this.option.calcHeight;
         });
       } else {
-        this.tableHeight = this.crudOption.height;
+        this.tableHeight = this.option.height;
       }
     },
     getShowOverflowTooltip(column) {

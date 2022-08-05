@@ -6,6 +6,7 @@
     :fixed="column.fixed"
     :prop="column.prop || ''"
     :label="column.label || ''"
+    :sortable="column.sortable || false"
     :show-overflow-tooltip="pTable.getShowOverflowTooltip(column)"
   >
     <template slot-scope="{ row, $index }">

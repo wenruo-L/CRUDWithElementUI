@@ -65,7 +65,7 @@ export default {
     // 搜索的字段有多少
     searchLen() {
       let count = 0;
-      this.crud.crudOption.column.forEach((el) => {
+      this.crud.option.column.forEach((el) => {
         if (el.search === true) count++;
       });
       return count;
@@ -76,7 +76,7 @@ export default {
     // 1.2 搜索的字段的长度是否大于要收起的数量
     shouldShowSearchToggleIcon() {
       return (
-        vaildData(this.crud.crudOption.searchBtn, crudConfig.searchBtn) &&
+        vaildData(this.crud.option.searchBtn, crudConfig.searchBtn) &&
         this.searchLen > this.searchIndex
       );
     },
@@ -103,7 +103,7 @@ export default {
       this.crud.$emit("update:query", this.searchForm);
     },
     initOption() {
-      const option = this.crud.crudOption;
+      const option = this.crud.option;
       this.searchShow = vaildData(option.searchBtn, crudConfig.searchBtn);
       this.searchIndex = vaildData(option.searchIndex, 4);
       this.searchForm = deepClone(this.crud.query);
@@ -116,6 +116,7 @@ export default {
             obj.prop = el.prop;
             obj.props = el.props;
             obj.dicData = el.dicData;
+            obj.order = el.searchOrder;
             obj.type = this.getSearchType(el);
             obj.size = vaildData(el.searchSize, pFormConfig.size);
             obj.span = vaildData(el.searchSpan, pFormConfig.searchSpan);

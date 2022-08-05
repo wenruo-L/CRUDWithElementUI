@@ -64,7 +64,7 @@ export default {
     // 1.2展示分页器条数得有值
     shouldShowPage() {
       return (
-        vaildData(this.crud.crudOption.page, crudConfig.page) &&
+        vaildData(this.crud.option.page, crudConfig.page) &&
         this.page.total &&
         this.page.total !== 0
       );
