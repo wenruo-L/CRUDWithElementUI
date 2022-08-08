@@ -137,6 +137,12 @@ export default {
           usedBy: "自定义的合计计算方法,",
         },
         {
+          attribute: ":on-filtered",
+          type: "Function",
+          defaultValue: "-",
+          usedBy: "列显隐操作后的回调",
+        },
+        {
           attribute: "@on-load",
           type: "Function",
           defaultValue: "page, params",
@@ -456,6 +462,12 @@ export default {
               type: "Boolean",
               defaultValue: "true",
               usedBy: "是否显示刷新按钮",
+            },
+            {
+              attribute: "filterBtn",
+              type: "Boolean",
+              defaultValue: "false",
+              usedBy: "是否显示列显隐按钮",
             },
             {
               attribute: "searchBtn",

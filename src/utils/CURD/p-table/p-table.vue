@@ -299,6 +299,7 @@ export default {
     isAutoHeight() {
       return this.option.height === "auto";
     },
+    // 列数据源，列显隐主要操作的数据源，会影响列配置
     columnList() {
       return this.option.column;
     },
@@ -433,6 +434,7 @@ export default {
     refreshTable() {
       this.reload = Math.random();
     },
+    // 设置列显隐的数据源与默认值
     setDefaultcheckedColumns() {
       // 过滤出非隐藏且能设置隐藏的列
       this.columnFilter = this.columnOption;
@@ -441,6 +443,7 @@ export default {
       });
       this.checkedColumns = list;
     },
+    // 列显隐全选
     handleCheckAllColumnChange(val) {
       if (!val) return (this.checkedColumns = []);
       let defaultValue = this.columnFilter.map((item) => {
@@ -449,6 +452,7 @@ export default {
       this.checkedColumns = defaultValue;
       this.handleCheckedColumnsChange(defaultValue);
     },
+    // 列显隐单项选择
     handleCheckedColumnsChange(val) {
       let checkedCount = val.length;
       this.checkAllColumn = checkedCount === this.columnFilter.length;
@@ -463,6 +467,7 @@ export default {
         this.onFiltered(this.columnList);
       }
     },
+    // 处理列显隐必须保留一个选项
     handleSingleColumnsChange(val) {
       if (this.checkedColumns.length === 0) {
         this.checkedColumns.push(val);
