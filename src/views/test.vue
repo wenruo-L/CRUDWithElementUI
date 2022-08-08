@@ -36,6 +36,7 @@
       :tableData="data"
       :query.sync="query"
       :permission="permissionList"
+      :on-filtered="onFiltered"
       @row-click="rowClick"
       @row-dblclick="rowDblclick"
       @sort-change="sortChange"
@@ -624,6 +625,7 @@ export default {
         calcHeight: 60,
         searchShow: true,
         border: true,
+        filterBtn: true,
         index: true,
         viewBtn: true,
         selection: true,
@@ -715,6 +717,7 @@ export default {
             prop: "sex",
             type: "select",
             search: true,
+            hide: true,
             filterable: true,
             dataType: "number",
             value: 1,
@@ -1566,6 +1569,9 @@ export default {
     // this.$destroy("pForm");
   },
   methods: {
+    onFiltered(columns) {
+      console.log("我要保存一下", columns);
+    },
     sortChange(val) {
       console.log("sortChange", val);
     },

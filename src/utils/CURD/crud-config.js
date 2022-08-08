@@ -20,6 +20,8 @@ export default {
     refreshBtn: true,
     // 展开/关闭搜索按钮
     searchBtn: true,
+    // 列显隐
+    filterBtn: false,
     // 内容过长是否悬浮显示
     overHidden: true,
     // 分页器

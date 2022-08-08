@@ -153,7 +153,6 @@ export default {
       let columnArr = this.crud.columnList.filter((item) => {
         return item.search === true;
       });
-      console.log("header-search columnArr", dealWithColumn(columnArr));
       let searchOption = {
         column: dealWithColumn(columnArr),
         cancelBtn: false,
@@ -172,7 +171,6 @@ export default {
         muneSpan: vaildData(option.searchMenuSpan, pFormConfig.searchMuneSpan),
         muneAlign: vaildData(option.searchMuneAlign, pFormConfig.muneAlign),
       };
-      console.log("searchOption", searchOption);
       this.option = searchOption;
     },
     // 获取搜索栏对应的组件类型

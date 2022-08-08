@@ -46,6 +46,43 @@
         <el-tooltip
           effect="dark"
           placement="top"
+          content="列显隐"
+          v-if="HeaderMuneFilterBtn"
+        >
+          <el-popover placement="bottom" width="120" trigger="click">
+            <el-checkbox
+              :indeterminate="isIndeterminate"
+              v-model="checkAllColumn"
+              @change="handleCheckAllColumnChange"
+              :disabled="checkAllColumn"
+            >
+              全选
+            </el-checkbox>
+            <el-checkbox-group
+              v-model="checkedColumns"
+              @change="handleCheckedColumnsChange"
+            >
+              <el-checkbox
+                v-for="(item, index) in columnFilter"
+                :label="item.prop || item.label"
+                :key="item.prop + index"
+                @change="handleSingleColumnsChange(item.prop || item.label)"
+              >
+                {{ item.label }}
+              </el-checkbox>
+            </el-checkbox-group>
+            <el-button
+              slot="reference"
+              icon="el-icon-s-operation"
+              style="margin: 0 10px"
+              circle
+              :size="size"
+            ></el-button>
+          </el-popover>
+        </el-tooltip>
+        <el-tooltip
+          effect="dark"
+          placement="top"
           content="搜索"
           v-if="HeaderMuneSearchBtn"
         >
@@ -63,6 +100,7 @@
       class="crud__Table"
       ref="table"
       v-loading="loading"
+      :key="reload"
       :data="tableData"
       :height="tableHeight"
       :max-height="isAutoHeight ? tableHeight : option.maxHeight"
@@ -254,28 +292,21 @@ export default {
     sortMethod: Function,
     spanMethod: Function,
     summaryMethod: Function,
+    onFiltered: Function,
   },
   computed: {
-    // data(){
-    //   let dataList = [];
-    //   if(this.tableData.length==0) return dataList;
-    //   dataList =
-    //   this.tableData.forEach((el)=>{
-
-    //   })
-    //   return dataList
-    // },
     // 表格自动高度
     isAutoHeight() {
       return this.option.height === "auto";
     },
+    columnList() {
+      return this.option.column;
+    },
     // 列配置
     columnOption() {
       let columnList = [];
-      // console.log("p-table  this.option", this.option);
-      if (this.option.column.length == 0) return columnList;
-      columnList = this.option.column.filter((item, index) => {
-        item.$index = index;
+      if (this.columnList.length == 0) return columnList;
+      columnList = this.columnList.filter((item) => {
         return item.hide === undefined || item.hide === false;
       });
       // 是否需要做去重？？
@@ -316,6 +347,10 @@ export default {
     // 顶部刷新按钮
     HeaderMuneRefreshBtn() {
       return vaildData(this.option.refreshBtn, crudConfig.refreshBtn);
+    },
+    // 顶部列显隐按钮
+    HeaderMuneFilterBtn() {
+      return vaildData(this.option.filterBtn, crudConfig.filterBtn);
     },
     // 顶部搜索开关按钮
     HeaderMuneSearchBtn() {
@@ -366,16 +401,24 @@ export default {
       return this.option.sumColumnList || [];
     },
   },
-  created() {
-    this.getTableHeight();
-  },
   data() {
     return {
+      reload: Math.random(),
       tableHeight: undefined,
       crudConfig: crudConfig,
       isRefresh: false,
       tableSelect: [],
+      isIndeterminate: false,
+      checkAllColumn: true,
+      checkedColumns: [],
+      columnFilter: [], //列显隐数据源
     };
+  },
+  created() {
+    this.getTableHeight();
+    if (this.HeaderMuneFilterBtn) {
+      this.setDefaultcheckedColumns();
+    }
   },
   mounted() {
     window.onresize = () => {
@@ -386,6 +429,46 @@ export default {
     window.onresize = null;
   },
   methods: {
+    // 利用虚拟dom更新机制刷新key值达到更新table的目的
+    refreshTable() {
+      this.reload = Math.random();
+    },
+    setDefaultcheckedColumns() {
+      // 过滤出非隐藏且能设置隐藏的列
+      this.columnFilter = this.columnOption;
+      let list = this.columnFilter.map((item) => {
+        return item.prop || item.label;
+      });
+      this.checkedColumns = list;
+    },
+    handleCheckAllColumnChange(val) {
+      if (!val) return (this.checkedColumns = []);
+      let defaultValue = this.columnFilter.map((item) => {
+        return item.prop || item.label;
+      });
+      this.checkedColumns = defaultValue;
+      this.handleCheckedColumnsChange(defaultValue);
+    },
+    handleCheckedColumnsChange(val) {
+      let checkedCount = val.length;
+      this.checkAllColumn = checkedCount === this.columnFilter.length;
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.columnFilter.length;
+      this.columnList.forEach((item) => {
+        let isHide = !val.includes(item.prop || item.label);
+        this.$set(item, "hide", isHide);
+      });
+      this.refreshTable();
+      if (typeof this.onFiltered === "function") {
+        this.onFiltered(this.columnList);
+      }
+    },
+    handleSingleColumnsChange(val) {
+      if (this.checkedColumns.length === 0) {
+        this.checkedColumns.push(val);
+        return this.$message.warning("至少保留一列哦");
+      }
+    },
     // 表尾合计行
     tableSummaryMethod(param) {
       if (typeof this.summaryMethod === "function") {
@@ -499,6 +582,9 @@ export default {
       setTimeout(() => {
         this.isRefresh = false;
       }, 500);
+    },
+    filterChange() {
+      this.$emit("filter-change");
     },
     searchChange() {
       this.$emit("search-change");

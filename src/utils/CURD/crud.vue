@@ -18,6 +18,7 @@
       :sort-by="sortBy"
       :span-method="spanMethod"
       :summary-method="summaryMethod"
+      :on-filtered="onFiltered"
       @row-click="rowClick"
       @row-dblclick="rowDblclick"
       @sort-change="sortChange"
@@ -132,6 +133,7 @@ export default {
     sortMethod: Function,
     spanMethod: Function,
     summaryMethod: Function,
+    onFiltered: Function,
   },
   data() {
     return {
