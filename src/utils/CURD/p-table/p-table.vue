@@ -367,7 +367,6 @@ export default {
     },
   },
   created() {
-    console.log("ptable this", this);
     this.getTableHeight();
   },
   data() {
@@ -377,6 +376,14 @@ export default {
       isRefresh: false,
       tableSelect: [],
     };
+  },
+  mounted() {
+    window.onresize = () => {
+      this.tableDoLayout();
+    };
+  },
+  destroyed() {
+    window.onresize = null;
   },
   methods: {
     // 表尾合计行
