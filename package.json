@@ -1,7 +1,12 @@
 {
   "name": "patpet-crud",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
+  "main": "lib/patpet-crud.umd.min.js",
+  "description": "基于elementUI进行二次封装的crud组件",
+  "keywords": ["crud","elementUI","Vue","table","form"],
+  "license": "MIT",
+  "author": "max",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -14,8 +19,7 @@
     "element-ui": "^2.15.6",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vuex": "^3.4.0",
-    "wangeditor": "^3.1.1"
+    "vuex": "^3.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.9",
