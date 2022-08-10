@@ -62,20 +62,16 @@
 </template>
 
 <script>
-import crudConfig from "@/utils/CURD/crud-config";
-import pFormConfig from "@/utils/CURD/p-form/p-form-config";
+import crudConfig from "../config/crud-config";
+import pFormConfig from "../config/p-form-config";
+import dialogDrag from "../directive/dialog-drag";
 import { vaildData } from "@/utils/validate";
-import pForm from "@/utils/CURD/p-form/p-form";
-import dialogDrag from "@/utils/CURD/directive/dialog-drag";
 
 export default {
   name: "dialog-form",
+  inject: ["crud"],
   directives: {
     dialogDrag,
-  },
-  inject: ["crud"],
-  components: {
-    pForm,
   },
   computed: {
     formOption() {
@@ -152,5 +148,5 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import "./style/dialog-form.scss";
+@import "/src/style/dialog-form.scss";
 </style>

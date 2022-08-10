@@ -36,17 +36,13 @@
 </template>
 
 <script>
-import pForm from "@/utils/CURD/p-form/p-form";
-import pFormConfig from "@/utils/CURD/p-form/p-form-config";
-import crudConfig from "@/utils/CURD/crud-config";
+import crudConfig from "../config/crud-config";
+import pFormConfig from "../config/p-form-config";
 import { deepClone, getPlaceHolder } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
 export default {
   name: "header-search",
   inject: ["crud"],
-  components: {
-    pForm,
-  },
   data() {
     return {
       show: false,

@@ -21,8 +21,8 @@
 </template>
 
 <script>
+import crudConfig from "../config/crud-config";
 import { vaildData } from "@/utils/validate";
-import crudConfig from "@/utils/CURD/crud-config";
 export default {
   name: "table-page",
   inject: ["crud"],

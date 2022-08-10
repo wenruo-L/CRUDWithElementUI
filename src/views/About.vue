@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import pForm from "@/utils/CURD/p-form/p-form";
+// import pForm from "@/packages/p-form/p-form";
 export default {
   name: "about",
-  components: {
-    pForm,
-  },
+  // components: {
+  //   pForm,
+  // },
   data() {
     return {
       option: {

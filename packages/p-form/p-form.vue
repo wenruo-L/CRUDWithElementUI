@@ -221,11 +221,11 @@
 <script>
 import { setPx, changeValueType, getPlaceHolder } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
-import pFormConfig from "@/utils/CURD/p-form/p-form-config";
-import pUpload from "@/utils/CURD/p-form/components/p-upload";
+import pFormConfig from "../config/p-form-config";
+import pUpload from "./components/p-upload";
 
 export default {
-  name: "p-from",
+  name: "p-form",
   model: {
     prop: "form",
     event: "handleformvaluechange",
@@ -771,5 +771,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../style/form.scss";
+@import "/src/style/form.scss";
 </style>

@@ -229,11 +229,11 @@
 </template>
 
 <script>
-import crudConfig from "@/utils/CURD/crud-config";
 import { getObjType } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
-import permission from "@/utils/CURD/directive/permission";
-import columnDynamic from "@/utils/CURD/p-table/column-dynamic";
+import permission from "../directive/permission";
+import columnDynamic from "./column-dynamic";
+import crudConfig from "../config/crud-config";
 
 export default {
   name: "p-table",
@@ -406,7 +406,6 @@ export default {
     return {
       reload: Math.random(),
       tableHeight: undefined,
-      crudConfig: crudConfig,
       isRefresh: false,
       tableSelect: [],
       isIndeterminate: false,
@@ -416,6 +415,7 @@ export default {
     };
   },
   created() {
+    // console.log("p-table this", this);
     this.getTableHeight();
     if (this.HeaderMuneFilterBtn) {
       this.setDefaultcheckedColumns();
@@ -575,7 +575,7 @@ export default {
     // 删除
     deleteClick(deleteType, row, index) {
       if (deleteType === "handleDelete") {
-        this.$emit("handle-delete", deleteType);
+        this.$emit("handle-delete", this.tableSelect);
       } else {
         this.$emit("row-delete", row, index);
       }
@@ -714,5 +714,5 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-@import "../style/table.scss";
+@import "/src/style/table.scss";
 </style>

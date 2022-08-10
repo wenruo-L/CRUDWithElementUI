@@ -25,6 +25,7 @@
       @refresh-change="refreshChange"
       @search-change="shouldShowSearch"
       @row-delete="rowDelete"
+      @handle-delete="handleDelete"
       @open-dialog-form="openDialogForm"
       @selection-change="selectionChange"
     >
@@ -48,11 +49,10 @@
 </template>
 
 <script>
-import pTable from "@/utils/CURD/p-table/p-table";
-import crudConfig from "@/utils/CURD/crud-config";
-import dialogForm from "@/utils/CURD/dialog-form";
-import tablePage from "@/utils/CURD/table-page";
-import headerSearch from "@/utils/CURD/header-search";
+import crudConfig from "../config/crud-config";
+import dialogForm from "./dialog-form";
+import tablePage from "./table-page";
+import headerSearch from "./header-search";
 import { getSlot, deepClone } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
 export default {
@@ -62,7 +62,6 @@ export default {
     event: "handletableformchange",
   },
   components: {
-    pTable,
     dialogForm,
     tablePage,
     headerSearch,
@@ -137,6 +136,7 @@ export default {
   },
   data() {
     return {
+      crudConfig: crudConfig,
       tableFormIndex: null,
       tableFormType: null,
       tableForm: {},
@@ -273,6 +273,14 @@ export default {
     // 行删除
     rowDelete(row, index) {
       this.$emit("row-delete", row, index);
+    },
+    // 批量删除
+    handleDelete(rows) {
+      if (rows.length === 0) {
+        this.$message.warning("请选择一条数据后再进行操作");
+        return;
+      }
+      this.$emit("handle-delete", rows);
     },
     handletableformchange(val) {
       this.$emit("handletableformchange", val ? val : this.tableForm);

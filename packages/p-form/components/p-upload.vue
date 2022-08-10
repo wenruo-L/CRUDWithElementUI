@@ -79,9 +79,10 @@
 </template>
 
 <script>
-import pFormConfig from "@/utils/CURD/p-form/p-form-config";
-import { getObjType } from "@/utils/util";
 // 表单组件中upload的东西较多，特意独立处理
+import pFormConfig from "../../config/p-form-config";
+import { getObjType } from "@/utils/util";
+
 export default {
   name: "p-upload",
   model: {
@@ -405,5 +406,5 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "../../style/upload.scss";
+@import "/src/style/upload.scss";
 </style>

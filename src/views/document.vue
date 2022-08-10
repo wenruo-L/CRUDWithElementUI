@@ -5,12 +5,8 @@
 </template>
 
 <script>
-import pTable from "@/utils/CURD/p-table/p-table";
 export default {
   name: "document",
-  components: {
-    pTable,
-  },
   data() {
     return {
       option: {
@@ -222,6 +218,38 @@ export default {
           type: "Function",
           defaultValue: "row, event, column",
           usedBy: "当某一行被双击击时会触发该事件",
+        },
+        {
+          attribute: "directive",
+          usedBy: "全局资源",
+          children: [
+            {
+              attribute: "v-permission",
+              type: "Boolean",
+              defaultValue: "true",
+              usedBy: "控制元素显示隐藏，可用于操作权限控制",
+            },
+            {
+              attribute: "v-dialogDrag",
+              type: "Boolean",
+              defaultValue: "true",
+              usedBy: "控制el-dialog弹窗的是否开启拖拽",
+            },
+          ],
+        },
+        {
+          attribute: "prototype",
+          usedBy: "实例方法",
+          children: [
+            {
+              attribute: "$ImagePreview",
+              type: "Function",
+              defaultValue:
+                "data / index / ops={closeOnClickModel:false,beforeClose:()=>{},mask:true}",
+              usedBy:
+                "data：浏览资源数组，格式为[{url:'xxx'}];index:开始浏览的下标；ops：选项，包含closeOnClickModel：是否点击蒙层关闭预览，默认false；beforeClose：关闭预览前的回调；mask：是否显示蒙层，默认true",
+            },
+          ],
         },
         {
           attribute: "slot",

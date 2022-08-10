@@ -66,7 +66,7 @@
   </el-table-column>
 </template>
 <script>
-import crudConfig from "@/utils/CURD/crud-config";
+import crudConfig from "../config/crud-config";
 export default {
   name: "column-dynamic",
   inject: ["pTable"],

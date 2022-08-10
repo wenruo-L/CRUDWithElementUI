@@ -26,7 +26,7 @@
     <!-- 
       <pTable :option="option" :tableData="data"></pTable> -->
     <!-- crud测试 -->
-    <Crud
+    <crud
       ref="crud"
       v-model="form"
       :page="page"
@@ -43,6 +43,7 @@
       @row-save="submit"
       @row-update="submit"
       @row-delete="rowDelete"
+      @handle-delete="handleDelete"
       @search-change="searchChange"
       @search-reset="searchReset"
       @selection-change="selectionChange"
@@ -74,7 +75,9 @@
         >
       </template>
       <template #muneRight>
-        <el-button type="primary" size="small">右边的测试按钮</el-button>
+        <el-button v-permission type="primary" size="small" @click="previewTest"
+          >点我看好康的</el-button
+        >
       </template>
       <!-- 表单插槽测试 -->
       <template v-slot:sexForm="{ disabled }">
@@ -111,7 +114,7 @@
       <template v-slot:expand="{ row }">
         <div>来，给他整个活！忽略~ ：{{ row.name }}</div>
       </template>
-    </Crud>
+    </crud>
   </basic-container>
 </template>
 
@@ -1569,6 +1572,17 @@ export default {
     // this.$destroy("pForm");
   },
   methods: {
+    previewTest() {
+      this.$ImagePreview([
+        {
+          url: "https://auto1.sinaimg.cn/autoimg/car/95/90/131519095_950.JPG",
+        },
+      ]);
+    },
+    handleDelete(rows) {
+      console.log("批量删除", rows);
+      console.log("this.selectionList", this.selectionList);
+    },
     onFiltered(columns) {
       console.log("我要保存一下", columns);
     },
