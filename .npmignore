@@ -1,0 +1,13 @@
+# 忽略目录
+.DS_Store
+node_modules
+/dist
+/examples
+/public
+/src
+
+# 忽略文件
+vue.config.js
+babel.config.js
+
+yarn-error.log

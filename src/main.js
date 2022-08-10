@@ -6,18 +6,16 @@ import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // import Crud from './utils/CURD/crud.vue'
 import basicContainer from './components/basic-container/main'
-import Ueditor from './components/ueditor'
 import testCom from '@/components/test-com/test-com'
 import {
   setPx
 } from './utils/util'
 // import patpetCrud from '../packages'
-import patpetCrud from '../lib/patpet-crud.umd.min'
-import '../lib/patpet-crud.css'
+import patpetCrud from 'patpet-crud'
+import 'patpet-crud/lib/patpet-crud.css'
 
 Vue.config.productionTip = false
 Vue.use(Element)
-Vue.use(Ueditor)
 Vue.use(patpetCrud)
 
 Vue.component('basicContainer', basicContainer)
