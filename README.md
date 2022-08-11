@@ -16,6 +16,10 @@ import 'patpet-crud/lib/patpet-crud.css'
 Vue.use(patpetCrud)
 ```
 
+#### 文档地址
+
+[文档](https://wenruo-l.github.io/CRUDWithElementUI/dist/index.html#/document)
+
 > 包含组件
 
 - crud （增删查改）
