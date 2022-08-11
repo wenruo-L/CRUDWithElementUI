@@ -1,5 +1,5 @@
 module.exports = {
-    publicPath: process.env.VUE_APP_PATH,
+    publicPath: '/',
     lintOnSave: false,
     productionSourceMap: false,
     css: {
