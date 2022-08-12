@@ -349,13 +349,24 @@ export default {
     HeaderMuneRefreshBtn() {
       return vaildData(this.option.refreshBtn, crudConfig.refreshBtn);
     },
+
     // 顶部列显隐按钮
     HeaderMuneFilterBtn() {
       return vaildData(this.option.filterBtn, crudConfig.filterBtn);
     },
     // 顶部搜索开关按钮
     HeaderMuneSearchBtn() {
-      return vaildData(this.option.searchBtn, crudConfig.searchBtn);
+      return (
+        vaildData(this.option.searchBtn, crudConfig.searchBtn) &&
+        this.searchColumnLength != 0
+      );
+    },
+    searchColumnLength() {
+      let index = 0;
+      this.columnOption.forEach((el) => {
+        if (el.search === true) index++;
+      });
+      return index;
     },
     // 表格 rowkey
     TableRowKey() {
@@ -695,11 +706,9 @@ export default {
           if (!tableRef) return;
           const tableStyle = tableRef.$el;
           const pageStyle = Number(this.tablePageHeight);
+          const calcHeight = this.option.calcHeight || 0;
           this.tableHeight =
-            clientHeight -
-            tableStyle.offsetTop -
-            pageStyle -
-            this.option.calcHeight;
+            clientHeight - tableStyle.offsetTop - pageStyle - calcHeight;
         });
       } else {
         this.tableHeight = this.option.height;

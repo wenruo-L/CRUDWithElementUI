@@ -8,10 +8,11 @@ import permission from './directive/permission'
 import dialogDrag from './directive/dialog-drag'
 // 实例方法
 import $ImagePreview from './directive/image-preview'
+import $crud from './directive/crud'
 
 const components = [pForm, pTable, crud];
 const prototypes = {
-    $ImagePreview
+    $ImagePreview,
 }
 const directive = {
     dialogDrag,
@@ -30,6 +31,7 @@ const install = function (Vue) {
         Vue.directive(key, directive[key])
     })
     Vue.prototype.$axios = axios;
+    window.$crud = $crud;
 }
 
 if (typeof window !== 'undefined' && window.Vue) {

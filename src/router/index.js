@@ -22,6 +22,11 @@ const routes = [{
     name: '文档',
     component: () => import( /* webpackChunkName: "test" */ '../views/document.vue')
   },
+  {
+    path: '/testCrud',
+    name: "测试crud",
+    component: () => import( /* webpackChunkName: "testCrud" */ '../views/testCrud.vue')
+  },
 ]
 
 const router = new VueRouter({

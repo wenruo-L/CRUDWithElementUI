@@ -164,7 +164,10 @@ export default {
         ),
         resetBtn: true,
         resetText: vaildData(option.searchResetText, pFormConfig.resetText),
-        muneSpan: vaildData(option.searchMenuSpan, pFormConfig.searchMuneSpan),
+        muneSpan: vaildData(
+          option.searchMenuSpan,
+          this.shouldShowSearchToggleIcon ? pFormConfig.searchMuneSpan : 6
+        ),
         muneAlign: vaildData(option.searchMuneAlign, pFormConfig.muneAlign),
       };
       this.option = searchOption;

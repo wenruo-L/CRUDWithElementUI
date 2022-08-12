@@ -10,9 +10,16 @@ import testCom from '@/components/test-com/test-com'
 import {
   setPx
 } from './utils/util'
+// 源码
 // import patpetCrud from '../packages'
-import patpetCrud from 'patpet-crud'
-import 'patpet-crud/lib/patpet-crud.css'
+// 插件
+// import patpetCrud from 'patpet-crud'
+// import 'patpet-crud/lib/patpet-crud.css'
+// 打包后的源码
+import patpetCrud from '../lib/patpet-crud.umd.min.js'
+import '../lib/patpet-crud.css'
+
+import './style/common.scss'
 
 Vue.config.productionTip = false
 Vue.use(Element)

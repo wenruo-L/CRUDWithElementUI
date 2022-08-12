@@ -152,6 +152,13 @@ export default {
       deep: true,
       immediate: true,
     },
+    tableForm: {
+      handler() {
+        this.handletableformchange();
+      },
+      deep: true,
+      immediate: true,
+    },
   },
   computed: {
     // 把属于table的插槽传到子组件
@@ -267,7 +274,12 @@ export default {
       if (this.tableFormType == "add") {
         this.$emit("row-save", form, this.closeDialogForm);
       } else if (this.tableFormType == "edit") {
-        this.$emit("row-update", form, this.closeDialogForm);
+        this.$emit(
+          "row-update",
+          form,
+          this.closeDialogForm,
+          this.tableFormIndex
+        );
       }
     },
     // 行删除

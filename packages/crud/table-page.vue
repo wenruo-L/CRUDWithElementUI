@@ -55,11 +55,7 @@ export default {
       deep: true,
     },
   },
-  created() {
-    this.pageInit();
-    this.crud.$emit("on-load", this.defaultPage);
-  },
-  methods: {
+  computed: {
     // 1.1默认展示分页器 除非主动传进了page:false
     // 1.2展示分页器条数得有值
     shouldShowPage() {
@@ -69,6 +65,12 @@ export default {
         this.page.total !== 0
       );
     },
+  },
+  created() {
+    this.pageInit();
+    this.crud.$emit("on-load", this.defaultPage);
+  },
+  methods: {
     // 初始化
     pageInit() {
       this.defaultPage = Object.assign(this.defaultPage, this.page, {

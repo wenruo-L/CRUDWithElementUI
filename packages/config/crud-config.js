@@ -5,7 +5,7 @@ export default {
     //是否显示菜单
     menu: true,
     // 菜单宽度
-    menuWidth: 120,
+    menuWidth: 250,
     // 新增按钮
     addBtn: true,
     // 查看按钮

@@ -78,6 +78,9 @@
         <el-button v-permission type="primary" size="small" @click="previewTest"
           >点我看好康的</el-button
         >
+        <el-button type="primary" size="small" @click="to_testCrud"
+          >testCrud</el-button
+        >
       </template>
       <!-- 表单插槽测试 -->
       <template v-slot:sexForm="{ disabled }">
@@ -1572,6 +1575,11 @@ export default {
     // this.$destroy("pForm");
   },
   methods: {
+    to_testCrud() {
+      this.$router.push({
+        path: "/testCrud",
+      });
+    },
     previewTest() {
       this.$ImagePreview([
         {
@@ -1772,6 +1780,7 @@ export default {
     },
     submit(form, done) {
       console.log("submit  表单提交了", form);
+      console.log("submit this.form", this.form);
       setTimeout(() => {
         // 模拟请求，1秒后停止禁用，清除缓存和初始化表格
         this.form = {};

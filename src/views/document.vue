@@ -154,15 +154,15 @@ export default {
         {
           attribute: "@row-update",
           type: "Function",
-          defaultValue: "form,done",
+          defaultValue: "form,done,index",
           usedBy:
-            "编辑类型表单弹窗保存后的回调，form为表单数据，done为关闭弹窗回调",
+            "编辑类型表单弹窗保存后的回调，form为表单数据，done为关闭弹窗回调;index为操作的行的下标",
         },
         {
           attribute: "@row-delete",
           type: "Function",
-          defaultValue: "row",
-          usedBy: "row为当前行数据",
+          defaultValue: "row,index",
+          usedBy: "row为当前行数据;index为操作的行的下标",
         },
         {
           attribute: "@search-change",

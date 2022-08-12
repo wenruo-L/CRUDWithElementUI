@@ -3,6 +3,7 @@
     <el-form
       ref="PForm"
       class="p-from"
+      v-if="columnOption.length"
       :inline="inline"
       :model="PForm"
       :label-width="getFormLabelWidth"
@@ -394,7 +395,7 @@ export default {
     },
     // 清除校验
     clearValidate() {
-      this.$refs.PForm.clearValidate();
+      this.$refs.PForm && this.$refs.PForm.clearValidate();
     },
     // 提交
     handleSubmit() {
@@ -446,11 +447,19 @@ export default {
           } else {
             // 设置父组件form传进的值，如果没有对应的值则设置默认值
             if (el.dataType) {
+              // 1.1 form[el.prop]是否有值，有值优先使用form传进的值，其次是column设定的默认值
+              // 1.1如有要求的数据类型，即对应转换
               defaultValue = this.form[el.prop]
                 ? changeValueType(el.dataType, this.form[el.prop])
                 : changeValueType(el.dataType, el.value);
             } else {
-              defaultValue = this.form[el.prop] ? this.form[el.prop] : el.value;
+              // 20220812
+              // 1.3 如column没有设定的默认值，初始化一个字符串
+              defaultValue = this.form[el.prop]
+                ? this.form[el.prop]
+                : el.value
+                ? el.value
+                : changeValueType("string", el.value);
             }
           }
           this.$set(this.PForm, el.prop, defaultValue);
