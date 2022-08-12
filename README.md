@@ -18,7 +18,7 @@ Vue.use(patpetCrud)
 
 #### 示例
 
-<iframe height=1920 width=1080 src="https://wenruo-l.github.io/CRUDWithElementUI/dist/index.html#/testCrud">
+<https://wenruo-l.github.io/CRUDWithElementUI/dist/index.html#/testCrud>
 
 代码
 
