@@ -139,6 +139,34 @@ export default {
           usedBy: "列显隐操作后的回调",
         },
         {
+          attribute: ":uploadExceed",
+          type: "Function",
+          defaultValue: "Function(limit,files,fileList,column)",
+          usedBy:
+            "上传时超出限制数量限制时的回调;limit为限制数量；files为选择的文件；fileList为已选择的文件；column为对应的字段配置",
+        },
+        {
+          attribute: ":uploadAfter",
+          type: "Function",
+          defaultValue: "Function(res,done,column)",
+          usedBy:
+            "上传成功后回调;res为接口返回结果；done为结束回调；column为对应的字段配置",
+        },
+        {
+          attribute: ":uploadDelete",
+          type: "Function",
+          defaultValue: "Function(file,column)",
+          usedBy:
+            "删除上传文件的回调；file为选择的文件；column为对应的字段配置",
+        },
+        {
+          attribute: ":uploadDelete",
+          type: "Function",
+          defaultValue: "Function(file,column,done)",
+          usedBy:
+            "查看已上传文件的回调；file为选择的文件；column为对应的字段配置；done为执行预览回调",
+        },
+        {
           attribute: "@on-load",
           type: "Function",
           defaultValue: "page, params",

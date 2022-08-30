@@ -11,7 +11,7 @@
       ref="form"
       :option="formOption"
       v-model="form"
-      @submitForm="submit"
+      @submit="submit"
     >
       <template v-slot:timeForm="{ size, disabled }">
         <el-input

@@ -1,6 +1,12 @@
 <template>
   <basic-container>
-    <p-form :option="option" v-model="form" @submitForm="submit"></p-form>
+    <p-form
+      :option="option"
+      v-model="form"
+      :uploadExceed="uploadExceed"
+      @submit="submit"
+      @uploadOnChange="onChange"
+    ></p-form>
   </basic-container>
 </template>
 
@@ -19,7 +25,7 @@ export default {
             label: "上传",
             prop: "upload",
             type: "upload",
-            accept: ".jpg,.mp4",
+            accept: ".jpg,.mp4,.png,.zip",
             hide: true,
             propsHttp: {
               domain: "http://www.liulongbin.top:3006", //图片前缀，如果需要的话
@@ -32,7 +38,7 @@ export default {
             }, //上传文件流时附带的请求头
             action: "http://www.liulongbin.top:3006/api/upload/avatar",
             multiple: true,
-            limit: 3,
+            limit: 2,
             fileSize: 2, //文件大小限制,单位M
             fileType: "jpg/jpeg", //逗号分隔
           },
@@ -73,6 +79,14 @@ export default {
             },
             dataType: "array",
           },
+          {
+            label: "上传",
+            prop: "test",
+            type: "upload",
+            accept: ".zip",
+            fileSize: 100,
+            autoUpload: false,
+          },
         ],
       },
 
@@ -98,6 +112,12 @@ export default {
     }, 700);
   },
   methods: {
+    uploadExceed(limit, files, fileList, column) {
+      console.log("uploadExceed", limit, files, fileList, column);
+    },
+    onChange(file, fileList, column) {
+      console.log("onChange", file, fileList, column);
+    },
     submit(form, done) {
       console.log("让我康康", form);
       done();

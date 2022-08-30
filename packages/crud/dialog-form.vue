@@ -28,7 +28,11 @@
       :option="formOption"
       :boxType="openType"
       :needBtnMune="false"
-      @submitForm="crud.handleSubmit"
+      :uploadExceed="crud.uploadExceed"
+      :uploadAfter="crud.uploadAfter"
+      :uploadDelete="crud.uploadDelete"
+      :uploadPreview="crud.uploadPreview"
+      @submit="crud.handleSubmit"
     >
       <template v-for="item in crud.formSlot" :slot="item" slot-scope="scope">
         <slot v-bind="scope" :name="item"></slot>
@@ -134,7 +138,7 @@ export default {
       }
     },
     submit() {
-      this.$refs.PForm.submitForm();
+      this.$refs.PForm.submit();
     },
     // 关闭弹窗
     close() {

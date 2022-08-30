@@ -188,7 +188,7 @@
               v-if="shouldShowSubmitBtn"
               :icon="allDisabled ? 'el-icon-loading' : 'el-icon-circle-check'"
               :disabled="allDisabled"
-              @click="submitForm"
+              @click="submit"
             >
               {{ getSubmitBtnText }}
             </el-button>
@@ -264,6 +264,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    uploadExceed: Function,
+    uploadAfter: Function,
+    uploadDelete: Function,
+    uploadPreview: Function,
   },
   components: {
     pUpload,
@@ -384,7 +388,7 @@ export default {
       this.allDisabled = false;
     },
     // 提交校验
-    submitForm() {
+    submit() {
       this.$refs["PForm"].validate((valid) => {
         if (valid) {
           this.handleSubmit();
@@ -400,7 +404,7 @@ export default {
     // 提交
     handleSubmit() {
       this.disableForm();
-      this.$emit("submitForm", this.PForm, this.enableForm);
+      this.$emit("submit", this.PForm, this.enableForm);
     },
     // 取消
     handleCancel() {
@@ -711,6 +715,7 @@ export default {
           );
         }
       } else if (type == "upload") {
+        result.column = column;
         result.ref = `${column.prop}Upload`;
         result[column.prop] = this.PForm[column.prop];
         result.action = column.action || "#0";
@@ -719,7 +724,7 @@ export default {
         result.limit = column.limit || pFormConfig.limit;
         result.multiple = column.multiple || false;
         result.drag = column.drag;
-        result.autoUpload = column.autoUpload || true;
+        result.autoUpload = column.autoUpload;
         result.listType = column.listType || "text"; //text/picture/picture-card
         result.dataType = column.dataType;
         if (result.listType === "text") {
@@ -728,13 +733,27 @@ export default {
           result.multiple = false;
         }
         // 上传相关
-        result.fileName = column.propsHttp && column.propsHttp.fileName;
-        result.name = column.propsHttp.name && column.propsHttp.name;
-        result.domain = column.propsHttp.domain && column.propsHttp.domain;
-        result.res = column.propsHttp.res && column.propsHttp.res;
-        result.url = column.propsHttp.url && column.propsHttp.url;
+        if (column.propsHttp) {
+          result.fileName =
+            column.propsHttp.fileName && column.propsHttp.fileName;
+          result.name = column.propsHttp.name && column.propsHttp.name;
+          result.domain = column.propsHttp.domain && column.propsHttp.domain;
+          result.res = column.propsHttp.res && column.propsHttp.res;
+          result.url = column.propsHttp.url && column.propsHttp.url;
+        }
+        result.httpRequest = column.httpRequest;
         result.data = column.data;
         result.headers = column.headers;
+        result.onRemove = (file, fileList, column) => {
+          this.uploadOnRemove(file, fileList, column);
+        };
+        result.onChange = (file, fileList, column) => {
+          this.uploadOnChange(file, fileList, column);
+        };
+        result.uploadExceed = this.uploadExceed;
+        result.uploadAfter = this.uploadAfter;
+        result.uploadDelete = this.uploadDelete;
+        result.uploadPreview = this.uploadPreview;
       }
       return result;
     },
@@ -752,6 +771,12 @@ export default {
     },
     getTypeOfPictureCardOnUpload(column) {
       return column.type == "upload" && column.listType === "picture-card";
+    },
+    uploadOnRemove(file, fileList, column) {
+      this.$emit("uploadOnRemove", file, fileList, column);
+    },
+    uploadOnChange(file, fileList, column) {
+      this.$emit("uploadOnChange", file, fileList, column);
     },
     getPrecision(column) {
       return vaildData(column.precision, pFormConfig.precision);

@@ -7,7 +7,7 @@
       :option="option"
       :inline="true"
       @change="handleChange"
-      @submitForm="searchChange"
+      @submit="searchChange"
       @resetFrom="resetChange"
     >
       <template slot="menuForm">

@@ -133,6 +133,10 @@ export default {
     spanMethod: Function,
     summaryMethod: Function,
     onFiltered: Function,
+    uploadExceed: Function,
+    uploadAfter: Function,
+    uploadDelete: Function,
+    uploadPreview: Function,
   },
   data() {
     return {

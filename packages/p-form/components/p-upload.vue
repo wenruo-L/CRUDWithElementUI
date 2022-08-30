@@ -25,6 +25,7 @@
       :on-preview="handlePreview"
       :http-request="httpUpload"
       :on-exceed="handleExceed"
+      :on-change="handleOnChange"
     >
       <template v-if="listType == 'picture-card'">
         <i class="el-icon-plus"></i>
@@ -93,6 +94,12 @@ export default {
     value: {
       type: [String, Array],
       default: "",
+    },
+    column: {
+      type: Object,
+      default: () => {
+        return {};
+      },
     },
     // 上传地址
     action: {
@@ -197,26 +204,13 @@ export default {
       type: String,
       default: "文件上传中,请稍等",
     },
-    // 点击文件列表中已上传的文件时的钩子  function(file)
-    onPreview: Function,
-    // 文件列表移除文件时的钩子   function(file, fileList)
     onRemove: Function,
-    // 文件上传成功时的钩子   function(response, file, fileList)
-    onSuccess: Function,
-    // 文件上传失败时的钩子  function(err, file, fileList)
-    onError: Function,
-    // 文件上传时的钩子  function(event, file, fileList)
-    onProgress: Function,
-    // 文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用  function(file, fileList)
     onChange: Function,
-    // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者返回 Promise 且被 reject，则停止上传。  function(file)
-    beforeUpload: Function,
-    // 删除文件之前的钩子，参数为上传的文件和文件列表，若返回 false 或者返回 Promise 且被 reject，则停止删除  function(file, fileList)
-    beforeRemove: Function,
-    // 覆盖默认的上传行为，可以自定义上传的实现
     httpRequest: Function,
-    // 文件超出个数限制时的钩子   function(files, fileList)
-    onExceed: Function,
+    uploadExceed: Function,
+    uploadAfter: Function,
+    uploadDelete: Function,
+    uploadPreview: Function,
   },
   data() {
     return {
@@ -274,6 +268,9 @@ export default {
     },
   },
   methods: {
+    handleOnChange(file, fileList) {
+      this.onChange && this.onChange(file, fileList, this.column);
+    },
     initVal() {
       if (getObjType(this.value) === "string") {
         let textItem = {
@@ -315,10 +312,14 @@ export default {
         : domain + uri;
     },
     handlePreview(file) {
+      // console.log("handlePreview", file);
       const callback = () => {
         let index = this.fileList.findIndex((ele) => {
           return ele.url === file.url;
         });
+        if (index === -1) {
+          return this.$message.warning("暂不支持预览该格式资源");
+        }
         this.$ImagePreview(this.fileList, index);
       };
       if (typeof this.uploadPreview === "function") {
@@ -328,7 +329,7 @@ export default {
       }
     },
     handleRemove(file, fileList) {
-      this.onRemove && this.onRemove(file, fileList);
+      this.onRemove && this.onRemove(file, fileList, this.column);
       this.text = fileList.length
         ? fileList.map((item) => {
             return { name: item.name, url: item.url };
@@ -336,37 +337,45 @@ export default {
         : [];
       this.menu = false;
     },
+    beforeRemove(file) {
+      if (typeof this.uploadDelete === "function") {
+        return this.uploadDelete(file, this.column);
+      } else {
+        return Promise.resolve();
+      }
+    },
     httpUpload(config) {
+      // console.log("httpUpload", config);
       if (typeof this.httpRequest === "function") {
         this.httpRequest(config);
         return;
       }
       let vaildUploadData = this.vaildUploadData(config.file);
-      if (vaildUploadData) {
-        this.loading = true;
-        const headers = Object.assign(this.headers, {
-          "Content-Type": "multipart/form-data",
-        });
-        let params = new FormData();
-        const done = () => {
-          let url = this.action;
-          if (JSON.stringify(this.data) != "{}") {
-            for (let key in this.data) {
-              params.append(key, this.data[key]);
-            }
+      // console.log("fileList", this.fileList);
+      if (!vaildUploadData) return;
+      this.loading = true;
+      const headers = Object.assign(this.headers, {
+        "Content-Type": "multipart/form-data",
+      });
+      let params = new FormData();
+      const done = () => {
+        let url = this.action;
+        if (JSON.stringify(this.data) != "{}") {
+          for (let key in this.data) {
+            params.append(key, this.data[key]);
           }
-          params.append(this.fileName, config.file);
-          this.$axios
-            .post(url, params, { headers })
-            .then((res) => {
-              this.handleSuccess(res);
-            })
-            .catch((error) => {
-              this.handleError(error);
-            });
-        };
-        done();
-      }
+        }
+        params.append(this.fileName, config.file);
+        this.$axios
+          .post(url, params, { headers })
+          .then((res) => {
+            this.handleSuccess(res);
+          })
+          .catch((error) => {
+            this.handleError(error);
+          });
+      };
+      done();
     },
     handleSuccess(result) {
       let resourcesUrl = `${this.domain}${result[this.res][this.url]}`;
@@ -377,10 +386,20 @@ export default {
       };
       this.text.push(resourcesItem);
       this.menu = false;
-      this.loading = false;
+      if (typeof this.uploadAfter === "function") {
+        this.uploadAfter(
+          result,
+          () => {
+            this.loading = false;
+          },
+          this.column
+        );
+      } else {
+        this.loading = false;
+      }
     },
     handleError(error) {
-      console.log("handleError error", error);
+      // console.log("handleError error", error);
       this.menu = false;
       this.loading = false;
       this.$message.error(error);
