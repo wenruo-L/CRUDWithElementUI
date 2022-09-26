@@ -355,7 +355,6 @@ export default {
       }
     },
     httpUpload(config) {
-      console.log("httpUpload", config);
       if (typeof this.httpRequest === "function") {
         this.httpRequest(config);
         return;
