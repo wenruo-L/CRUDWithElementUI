@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import childVue from "../components/testComponents/child.vue";
 export default {
   name: "document",
   data() {
