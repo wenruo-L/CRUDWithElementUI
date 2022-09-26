@@ -1,6 +1,9 @@
 <template>
   <basic-container>
-    <div>about form:{{ form }}</div>
+    <p-input-tree
+      v-model="inputTreeValue"
+      v-bind="inputTreeOptions"
+    ></p-input-tree>
     <div>--------------------------------------------------------</div>
     <p-form
       :option="option"
@@ -21,6 +24,47 @@ export default {
   // },
   data() {
     return {
+      inputTreeValue: "",
+      inputTreeOptions: {
+        placeholder: "请选择",
+        defaultExpandAll: true,
+        labelWidth: 100,
+        multiple: true,
+        // parent: false,
+        leafOnly: true,
+        dataType: "array",
+        value: [2, 3],
+        dicData: [
+          {
+            label: "字典1",
+            value: 0,
+            children: [
+              {
+                label: "字典3",
+                value: 2,
+              },
+              {
+                label: "字典4",
+                value: 3,
+              },
+              {
+                label: "字典5",
+                value: 4,
+              },
+            ],
+          },
+          {
+            label: "字典2",
+            value: 1,
+            children: [
+              {
+                label: "字典6",
+                value: 5,
+              },
+            ],
+          },
+        ],
+      },
       option: {
         column: [
           {

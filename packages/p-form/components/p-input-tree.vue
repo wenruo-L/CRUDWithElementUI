@@ -288,9 +288,7 @@ export default {
       });
       //是否禁止父类
       this.disabledParentNode(this.dicList, this.parent);
-      if (!validatenull(this.text)) {
-        this.$emit("change", this.text);
-      }
+      this.$emit("change", this.text);
     },
     disabledParentNode(dic, parent) {
       dic.forEach((ele) => {
