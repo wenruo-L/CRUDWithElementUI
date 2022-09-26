@@ -1,8 +1,8 @@
 <template>
-  <div class="crud__from" :class="[{ form__detail: isView || isDetail }]">
+  <div class="crud__form" :class="[{ form__detail: isView || isDetail }]">
     <el-form
       ref="PForm"
-      class="p-from"
+      class="p-form"
       v-if="columnOption.length"
       :inline="inline"
       :model="PForm"
@@ -50,7 +50,6 @@
                 v-model="PForm[column.prop]"
                 v-bind="getComponentBind(column)"
                 clearable
-                style="width: 100%"
                 @change="
                   (value) => {
                     handleChange(value, column);
@@ -206,7 +205,7 @@
               v-if="shouldShowResetBtn"
               :icon="allDisabled ? 'el-icon-loading' : 'el-icon-delete'"
               :disabled="allDisabled"
-              @click="resetForm"
+              @click="reset"
             >
               {{ getResetBtnText }}
             </el-button>
@@ -224,6 +223,7 @@ import { setPx, changeValueType, getPlaceHolder } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
 import pFormConfig from "../config/p-form-config";
 import pUpload from "./components/p-upload";
+import pInputTree from "./components/p-input-tree";
 
 export default {
   name: "p-form",
@@ -271,6 +271,7 @@ export default {
   },
   components: {
     pUpload,
+    pInputTree,
   },
   data() {
     return {
@@ -286,6 +287,7 @@ export default {
         this.PForm = Object.assign(this.PForm, val);
       },
       deep: true,
+      immediate: true,
     },
     // 通知父组件的禁用状态 目前dialog-form用到
     allDisabled: {
@@ -300,6 +302,7 @@ export default {
         this.handleformvaluechange(val);
       },
       deep: true,
+      immediate: true,
     },
   },
   computed: {
@@ -375,8 +378,10 @@ export default {
     },
   },
   created() {
-    this.formInit();
-    this.$nextTick(() => this.clearValidate());
+    this.$nextTick(() => {
+      this.formInit();
+      this.$nextTick(() => this.clearValidate());
+    });
   },
   methods: {
     // 禁用表单
@@ -408,12 +413,13 @@ export default {
     },
     // 取消
     handleCancel() {
-      this.$emit("cancelForm");
+      this.formInit(true);
+      this.$emit("cancel");
     },
     // 重置表单
-    resetForm() {
-      this.formInit();
-      this.$emit("resetFrom");
+    reset() {
+      this.formInit(true);
+      this.$emit("reset");
     },
     handleChange(value, column) {
       let lableValueName = "$" + column.prop;
@@ -559,6 +565,7 @@ export default {
       // 20020802 upload特殊处理
       if (column.type === "upload") return "p-upload";
       let key_component_name = pFormConfig.key_component_name;
+      let needPrefix = true;
       let result = column.type || "input";
       // 特殊处理
       switch (result) {
@@ -590,17 +597,23 @@ export default {
         case "datetimerange":
           result = "date-picker";
           break;
+        case "tree":
+          // 20220920 新增树型选择框
+          needPrefix = false;
+          result = "p-input-tree";
+          break;
       }
-      return key_component_name + result;
+      return needPrefix === true ? key_component_name + result : result;
     },
     // 动态绑定组件的option
     getComponentBind(column) {
       let result = {};
       let type = column.type || "input";
       // 公共的
-      result.size = this.size;
+      result.size = column.size || this.size;
       result.readonly = column.readonly || false;
       result.placeholder = getPlaceHolder(column);
+      result.style = `width: 100%`;
       // 1.1 处理自定义组件或者第三方插件的属性
       // 1.2 处理elementUI组件的属性
       if (
@@ -672,12 +685,12 @@ export default {
         result.separator = column.separator || "/";
         result.showAllLevels = column.showAllLevels || true;
         result.options = column.dicData || [];
-      } else if (type == "switch") {
+      } else if (type === "switch") {
         result.activeColor = column.activeColor || "#409EFF";
         result.inactiveColor = column.inactiveColor || "##C0CCDA";
         result.activeValue = column.activeValue || true;
         result.inactiveValue = column.inactiveValue || false;
-      } else if (type == "time") {
+      } else if (type === "time") {
         result.valueFormat = column.valueFormat || "yyyy-MM-dd HH:mm:ss";
         if (column.props != undefined) {
           result.pickerOptions = column.props || null;
@@ -689,7 +702,7 @@ export default {
           result.endPlaceholder = column.endPlaceholder || "结束时间";
           result.format = column.format || "yyyy-MM-dd HH:mm:ss";
         }
-      } else if (type == "datetime") {
+      } else if (type === "datetime") {
         result.type = "datetime";
         result.valueFormat = column.valueFormat || "yyyy-MM-dd HH:mm:ss";
         result.format = column.format || "yyyy-MM-dd HH:mm:ss";
@@ -700,7 +713,7 @@ export default {
             pFormConfig.datetimePickerOptions
           );
         }
-      } else if (type == "datetimerange") {
+      } else if (type === "datetimerange") {
         result.type = "datetimerange";
         result.valueFormat = column.valueFormat || "yyyy-MM-dd HH:mm:ss";
         result.format = column.format || "yyyy-MM-dd HH:mm:ss";
@@ -714,7 +727,7 @@ export default {
             pFormConfig.datetimerangePickerOptions
           );
         }
-      } else if (type == "upload") {
+      } else if (type === "upload") {
         result.column = column;
         result.ref = `${column.prop}Upload`;
         result[column.prop] = this.PForm[column.prop];
@@ -754,6 +767,29 @@ export default {
         result.uploadAfter = this.uploadAfter;
         result.uploadDelete = this.uploadDelete;
         result.uploadPreview = this.uploadPreview;
+      } else if (type === "tree") {
+        let treeOptions = {
+          loadingText: "",
+          leafOnly: false,
+          tags: false,
+          limit: 0,
+          expandOnClickNode: true,
+          filter: true,
+          filterText: "输入关键字进行过滤",
+          checkStrictly: false,
+          accordion: false,
+          parent: true,
+          iconClass: "",
+          defaultExpandAll: false,
+          multiple: false,
+          disabled: false,
+          props: pFormConfig.props,
+          clearable: true,
+          separator: ",",
+          dataType: "",
+          dicData: [],
+        };
+        result = Object.assign(treeOptions, column, result);
       }
       return result;
     },
@@ -782,9 +818,7 @@ export default {
       return vaildData(column.precision, pFormConfig.precision);
     },
     columnSpan(column) {
-      return this.inline
-        ? vaildData(column.searchSpan, pFormConfig.searchSpan)
-        : vaildData(column.span, pFormConfig.span);
+      return vaildData(column.span, pFormConfig.span);
     },
     columnOffset(column) {
       return vaildData(column.offset, pFormConfig.offset);
@@ -797,7 +831,6 @@ export default {
     },
     // 这里函数名不使用大/小驼峰是因为监听器在 DOM 模板中会被自动转换为全小写 (因为 HTML 是大小写不敏感的)
     handleformvaluechange(val) {
-      this.$emit("change", val);
       this.$emit("handleformvaluechange", val ? val : this.PForm);
     },
   },

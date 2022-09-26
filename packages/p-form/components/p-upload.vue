@@ -72,7 +72,7 @@
         >
       </template>
       <div slot="tip" class="el-upload__tip" v-if="accept">
-        <span> 只能上传{{ acceptList }}文件 </span>
+        <span v-if="acceptList !== ''"> 只能上传{{ acceptList }}文件 </span>
         <span v-if="fileSize"> ，且不超过{{ fileSize }}MB </span>
       </div>
     </el-upload>
@@ -240,7 +240,7 @@ export default {
       return this.listType === "picture-img";
     },
     imgUrl() {
-      if (this.text.length) {
+      if (this.text.length && this.text[0].url !== "") {
         return this.getFileUrl(this.domain, this.text[0].url);
       }
       return null;
@@ -254,7 +254,7 @@ export default {
     fileList() {
       let list = [];
       (this.text || []).forEach((el, index) => {
-        if (el) {
+        if (el && el.url) {
           list.push({
             uid: index + Math.random(),
             status: "done",
@@ -267,25 +267,13 @@ export default {
       return list;
     },
   },
+  created() {
+    this.initVal();
+  },
   methods: {
     handleOnChange(file, fileList) {
       this.onChange && this.onChange(file, fileList, this.column);
-    },
-    initVal() {
-      if (getObjType(this.value) === "string") {
-        let textItem = {
-          url: this.value,
-        };
-        this.text.push(textItem);
-      } else if (getObjType(this.value) === "array") {
-        this.value.forEach((el) => {
-          let textItem = {
-            name: el.name ? el.name : el.url,
-            url: el.url,
-          };
-          this.text.push(textItem);
-        });
-      }
+      // this.handleValueChange();
     },
     handleValueChange() {
       let result = this.text;
@@ -303,10 +291,32 @@ export default {
       result = getValueList(this.isArray);
       this.$emit("change", this.isArray ? result : result.join());
     },
+    initVal() {
+      if (getObjType(this.value) === "string") {
+        let textItem = {
+          url: this.value,
+        };
+        if (this.listType === "picture-img") {
+          this.text = [textItem];
+        } else {
+          this.text.push(textItem);
+        }
+      } else if (getObjType(this.value) === "array") {
+        this.value.forEach((el) => {
+          let textItem = {
+            name: el.name ? el.name : el.url,
+            url: el.url,
+          };
+          this.text.push(textItem);
+        });
+      }
+    },
+
     stop() {
       return false;
     },
     getFileUrl(domain, uri = "") {
+      this.menu = false;
       return uri.match(/(^http:\/\/|^https:\/\/|^\/\/|data:image\/)/)
         ? uri
         : domain + uri;
@@ -345,7 +355,7 @@ export default {
       }
     },
     httpUpload(config) {
-      // console.log("httpUpload", config);
+      console.log("httpUpload", config);
       if (typeof this.httpRequest === "function") {
         this.httpRequest(config);
         return;
@@ -424,6 +434,6 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 @import "/src/style/upload.scss";
 </style>

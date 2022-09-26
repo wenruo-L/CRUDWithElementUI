@@ -2,6 +2,11 @@ module.exports = {
     publicPath: './',
     lintOnSave: false,
     productionSourceMap: false,
+    configureWebpack:{
+        resolve:{
+            extensions:['.js', 'css', 'scss', '.vue']
+        }
+    },
     css: {
         extract: {
             ignoreOrder: true

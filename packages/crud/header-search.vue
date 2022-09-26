@@ -141,6 +141,33 @@ export default {
               }
             })();
             obj.formslot = el.searchslot;
+            if (
+              obj.type === "time" ||
+              obj.type === "datetime" ||
+              obj.type === "datetimerange"
+            ) {
+              obj.format = el.format;
+              obj.valueFormat = el.valueFormat;
+              obj.props = el.props;
+            }
+            if (obj.type === "time") {
+              obj.isRange = el.isRange;
+              obj.arrowControl = el.arrowControl;
+              obj.rangeSeparator = el.rangeSeparator;
+              obj.startPlaceholder = el.startPlaceholder;
+              obj.endPlaceholder = el.endPlaceholder;
+              obj.needOptions = el.needOptions;
+            }
+            if (obj.type === "datetime") {
+              obj.defaultTime = el.defaultTime;
+            }
+            if (obj.type === "datetimerange") {
+              obj.needOptions = el.needOptions;
+              obj.rangeSeparator = el.rangeSeparator;
+              obj.startPlaceholder = el.startPlaceholder;
+              obj.endPlaceholder = el.endPlaceholder;
+              obj.defaultTime = el.defaultTime;
+            }
             column.push(obj);
           }
         });
@@ -152,6 +179,7 @@ export default {
       let searchOption = {
         column: dealWithColumn(columnArr),
         cancelBtn: false,
+        width: vaildData(option.searchWidth, 100),
         labelWidth: vaildData(option.searchLabelWidth, pFormConfig.labelWidth),
         labelPosition: vaildData(
           option.searchLabelPosition,

@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import childVue from "../components/testComponents/child.vue";
 export default {
   name: "document",
   data() {
@@ -193,6 +194,25 @@ export default {
           usedBy: "row为当前行数据;index为操作的行的下标",
         },
         {
+          attribute: "@submit",
+          type: "Function",
+          defaultValue: "form,done",
+          usedBy:
+            "表单的提交回调，form为返回的表单数据，done为结束表单禁用和loading的回调",
+        },
+        {
+          attribute: "@cancel",
+          type: "Function",
+          defaultValue: "",
+          usedBy: "表单!的取消操作回调",
+        },
+        {
+          attribute: "@reset",
+          type: "Function",
+          defaultValue: "",
+          usedBy: "表单!的重置操作回调",
+        },
+        {
           attribute: "@search-change",
           type: "Function",
           defaultValue: "params, done",
@@ -248,6 +268,13 @@ export default {
           usedBy: "当某一行被双击击时会触发该事件",
         },
         {
+          attribute: "@upload-on-change",
+          type: "Function",
+          defaultValue: "file，fileList，column",
+          usedBy:
+            "当upload的autoUpload设置为false时，可以使用该回调进行处理；file为改动的资源，fileList为数据数组，column为字段配置",
+        },
+        {
           attribute: "directive",
           usedBy: "全局资源",
           children: [
@@ -273,9 +300,9 @@ export default {
               attribute: "$ImagePreview",
               type: "Function",
               defaultValue:
-                "data / index / ops={closeOnClickModel:false,beforeClose:()=>{},mask:true}",
+                "data / index / ops={closeOnClickModel:false,beforeClose:(this.datas, this.index)=>{},mask:true,showDescribe:false,showDownload:false,handleDownload(this.datas, this.index)=>{}}",
               usedBy:
-                "data：浏览资源数组，格式为[{url:'xxx'}];index:开始浏览的下标；ops：选项，包含closeOnClickModel：是否点击蒙层关闭预览，默认false；beforeClose：关闭预览前的回调；mask：是否显示蒙层，默认true",
+                "data：浏览资源数组，格式为[{url:'xxx'}];index:开始浏览的下标；ops：选项，包含closeOnClickModel：是否点击蒙层关闭预览，默认false；beforeClose：关闭预览前的回调；mask：是否显示蒙层，默认true；showDescribe：显示描述，需在data里传入describe数组（与url同级）；showDownload：显示下载按钮；handleDownload：用户点击下载后触发的回调",
             },
           ],
         },
@@ -1369,6 +1396,120 @@ export default {
                           type: "String",
                           defaultValue: "file",
                           usedBy: "上传文件流时的名称",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  attribute: "tree",
+                  usedBy: "树型下拉框",
+                  children: [
+                    {
+                      attribute: "filter",
+                      type: "Boolean",
+                      defaultValue: "true",
+                      usedBy: "是否开启搜索功能，默认为true",
+                    },
+                    {
+                      attribute: "filterText",
+                      type: "String",
+                      defaultValue: "输入关键字进行过滤",
+                      usedBy: "搜索栏的提示语",
+                    },
+                    {
+                      attribute: "leafOnly",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "是否只是叶子节点，默认值为 false",
+                    },
+                    {
+                      attribute: "tags",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "多选时是否将选中值按文字的形式展示",
+                    },
+                    {
+                      attribute: "limit",
+                      type: "Number",
+                      defaultValue: "0",
+                      usedBy: "多选时用户最多可以选择的项目数，为 0 则不限制",
+                    },
+                    {
+                      attribute: "expandOnClickNode",
+                      type: "Boolean",
+                      defaultValue: "true",
+                      usedBy:
+                        "是否在点击节点的时候展开或者收缩节点， 默认值为 true，如果为 false，则只有点箭头图标的时候才会展开或者收缩节点",
+                    },
+                    {
+                      attribute: "checkStrictly",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy:
+                        "在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false",
+                    },
+                    {
+                      attribute: "accordion",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy:
+                        "是否每次只打开一个同级树节点展开;(是否为手风琴模式)",
+                    },
+                    {
+                      attribute: "parent",
+                      type: "Boolean",
+                      defaultValue: "true",
+                      usedBy: "父类树节点是否可选;默认可选",
+                    },
+                    {
+                      attribute: "iconClass",
+                      type: "String",
+                      defaultValue: "",
+                      usedBy: "自定义树节点的图标",
+                    },
+                    {
+                      attribute: "defaultExpandAll",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "是否默认展开所有节点",
+                    },
+                    {
+                      attribute: "multiple",
+                      type: "Boolean",
+                      defaultValue: "false",
+                      usedBy: "是否多选",
+                    },
+                    {
+                      attribute: "props",
+                      type: "Object",
+                      defaultValue:
+                        "{'label': 'label,'value': 'value','children': 'children,'desc': 'desc'}",
+                      usedBy: "树型下拉框字段键名配置",
+                      children: [
+                        {
+                          attribute: "label",
+                          type: "String",
+                          defaultValue: "label",
+                          usedBy: "与数据源对应键名",
+                        },
+                        {
+                          attribute: "value",
+                          type: "String",
+                          defaultValue: "value",
+                          usedBy: "与数据源对应键值名",
+                        },
+                        {
+                          attribute: "children",
+                          type: "String",
+                          defaultValue: "children",
+                          usedBy: "与数据源对应下一级键名",
+                        },
+                        {
+                          attribute: "desc",
+                          type: "String",
+                          defaultValue: "desc",
+                          usedBy: "与数据源对应描述键名",
                         },
                       ],
                     },

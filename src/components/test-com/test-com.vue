@@ -14,10 +14,14 @@
 export default {
   name: "test-com",
   model: {
-    prop: "textValue",
-    event: "handlevaluechange",
+    prop: "value",
+    event: "change",
   },
   props: {
+    value: {
+      type: [String, Number],
+      default: "",
+    },
     testCom: {
       type: String,
       default: "",

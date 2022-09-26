@@ -595,7 +595,8 @@ export default {
             prop: "datetimerangetest",
             type: "datetimerange",
             dataType: "array",
-            needOptions: true,
+            needOptions: false,
+            search: true,
           },
           {
             label: "上传",
@@ -649,6 +650,56 @@ export default {
           },
         ],
         column: [
+          {
+            label: "日期时间区间",
+            prop: "datetimerangetest",
+            type: "datetimerange",
+            dataType: "array",
+            needOptions: true,
+            // search: true,
+            hide: true,
+            searchLabelWidth: 100,
+            searchWidth: 80,
+            searchSpan: 8,
+          },
+          {
+            label: "树型下拉框",
+            prop: "inputTree",
+            type: "tree",
+            value: 4,
+            search: true,
+            searchValue: 3,
+            dicData: [
+              {
+                label: "字典1",
+                value: 0,
+                children: [
+                  {
+                    label: "字典3",
+                    value: 2,
+                  },
+                  {
+                    label: "字典4",
+                    value: 3,
+                  },
+                  {
+                    label: "字典5",
+                    value: 4,
+                  },
+                ],
+              },
+              {
+                label: "字典2",
+                value: 1,
+                children: [
+                  {
+                    label: "字典6",
+                    value: 5,
+                  },
+                ],
+              },
+            ],
+          },
           {
             label: "姓名",
             prop: "name",
@@ -1440,15 +1491,15 @@ export default {
             label: "上传但picture-card",
             prop: "uploadPicture",
             type: "upload",
-            hide: "true",
-            listType: "picture-card",
-            action: "http://www.liulongbin.top:3006/api/upload/avatar",
-            propsHttp: {
-              domain: "http://www.liulongbin.top:3006",
-              res: "response",
-              url: "url",
-            },
-            dataType: "array",
+            hide: false,
+            listType: "picture-img",
+            // action: "http://www.liulongbin.top:3006/api/upload/avatar",
+            // propsHttp: {
+            //   domain: "http://www.liulongbin.top:3006",
+            //   res: "response",
+            //   url: "url",
+            // },
+            // dataType: "array",
           },
           {
             label: "textarea",
@@ -1581,11 +1632,34 @@ export default {
       });
     },
     previewTest() {
-      this.$ImagePreview([
+      this.$ImagePreview(
+        [
+          {
+            url: "https://1307918980.vod2.myqcloud.com/8a753638vodtranscq1307918980/5959edbc387702303012006247/v.f1417934.mp4",
+            describe: [
+              {
+                label: "姓名：",
+                value: "小明动画结束机顶盒",
+              },
+              {
+                label: "年龄：",
+                value: "10",
+              },
+            ],
+          },
+        ],
+        0,
         {
-          url: "https://auto1.sinaimg.cn/autoimg/car/95/90/131519095_950.JPG",
-        },
-      ]);
+          showDescribe: true,
+          showDownload: true,
+          handleDownload: (datas, index) => {
+            this.beforeClosePreview(datas, index);
+          },
+        }
+      );
+    },
+    beforeClosePreview(datas, index) {
+      console.log("beforeClosePreview", datas, index);
     },
     handleDelete(rows) {
       console.log("批量删除", rows);
@@ -1684,11 +1758,13 @@ export default {
                 url: "https://1307918980.vod2.myqcloud.com/8a753638vodtranscq1307918980/5959edbc387702303012006247/v.f1417934.mp4",
               },
             ],
+            // uploadPicture:
+            //   "https://auto1.sinaimg.cn/autoimg/car/95/90/131519095_950.JPG",
             uploadPicture:
-              "https://auto1.sinaimg.cn/autoimg/car/95/90/131519095_950.JPG",
+              "https://thirdwx.qlogo.cn/mmopen/vi_32/a1roqYfQFib4VhjwGALuVFg4ia6va8FibEpvNbXVU93kq7x5W791y6mun99d31DGStCZibIjdCRxNNegYjAapd87aw/132",
             haha: "哈哈",
             hi: "嗨！",
-            laoba: "客官里面请",
+            laoba: "客官里面请1111111",
             inComming: "美食家我老八",
             welcome: "肃然起敬",
           };
@@ -1750,7 +1826,7 @@ export default {
           cascader: [["zujian", "basic", "layout"]],
           cascaderOne: ["zujian", "form", "radio"],
           uploadPicture:
-            "http://www.liulongbin.top:3006/uploads/1659410093045_f21e01061b914120a6feb61d0f4fefe9.jpg",
+            "https://thirdwx.qlogo.cn/mmopen/vi_32/a1roqYfQFib4VhjwGALuVFg4ia6va8FibEpvNbXVU93kq7x5W791y6mun99d31DGStCZibIjdCRxNNegYjAapd87aw/132",
         });
       }
       setTimeout(() => {
@@ -1821,5 +1897,3 @@ export default {
   },
 };
 </script>
-
-

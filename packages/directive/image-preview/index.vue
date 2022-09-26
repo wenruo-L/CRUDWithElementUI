@@ -5,6 +5,13 @@
       <i class="el-icon-circle-close"></i>
     </span>
     <span
+      v-if="ops.showDownload"
+      class="el-image-viewer__btn el-image-viewer__download"
+      @click="handleDownload"
+    >
+      <i class="el-icon-download"></i>
+    </span>
+    <span
       class="el-image-viewer__btn el-image-viewer__prev"
       @click="handlePrev()"
       v-if="shouldShowRrrow"
@@ -35,27 +42,32 @@
           :key="item.id"
           @click.native.self="ops.closeOnClickModel ? close() : ''"
         >
-          <img
-            v-if="getFileType(item.url) === 'img'"
+          <div
+            class="describe"
+            v-if="ops.showDescribe && item.describe.length != 0"
+          >
+            <el-card>
+              <div
+                v-for="itemDescribe in item.describe"
+                :key="itemDescribe.value"
+              >
+                {{ itemDescribe.label }}{{ itemDescribe.value }}
+              </div>
+            </el-card>
+          </div>
+          <component
+            :is="getIsVideo(item.url)"
             :style="styleName"
-            class="preview__img"
             :src="item.url"
             alt="无法展示"
-          />
-          <video
-            class="preview__video"
-            v-if="getFileType(item.url) === 'video'"
-            :src="item.url"
             autoplay
             controls
-          ></video>
+          ></component>
         </el-carousel-item>
       </el-carousel>
     </div>
-    <div
-      class="el-image-viewer__btn el-image-viewer__actions"
-      v-show="shouldShowControls"
-    >
+    <!-- v-show="shouldShowControls" -->
+    <div class="el-image-viewer__btn el-image-viewer__actions">
       <div class="el-image-viewer__actions__inner">
         <i class="el-icon-zoom-out" @click="subScale"></i>
         <i class="el-icon-zoom-in" @click="addScale"></i>
@@ -97,10 +109,9 @@ export default {
     shouldShowRrrow() {
       return this.datas.length > 1;
     },
-    shouldShowControls() {
-      let type = this.getFileType(this.datas[this.index]);
-      return !(type === "video");
-    },
+  },
+  created() {
+    console.log("ops.showDescribe", this.ops.showDescribe);
   },
   methods: {
     handlePrev() {
@@ -120,21 +131,24 @@ export default {
         this.scale = parseFloat((this.scale - 0.2).toFixed(2));
       }
     },
-
-    getFileType(url) {
-      // 照片
-      if (this.fileType.img.test(url)) {
-        return "img";
-      }
-      // 视频
+    getIsVideo(url) {
       if (this.fileType.video.test(url)) {
         return "video";
       }
-      return "not support!";
+      return "img";
     },
     handleChange() {
       this.scale = 1;
       this.rotate = 0;
+    },
+    handleDownload() {
+      console.log("handleDownload  this.ops", this.ops);
+      if (
+        this.ops.showDownload === true &&
+        typeof this.ops.handleDownload === "function"
+      ) {
+        this.ops.handleDownload(this.datas, this.index);
+      }
     },
     close() {
       if (typeof this.ops.beforeClose === "function") {
@@ -146,6 +160,6 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 @import "./style.scss";
 </style>
