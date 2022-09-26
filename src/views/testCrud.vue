@@ -4,8 +4,10 @@
       ref="crud"
       :option="option"
       v-model="form"
+      :loading="loading"
       :query.sync="query"
       :tableData="data"
+      :page="page"
       :before-open="beforeOpen"
       @row-save="rowSave"
       @row-update="rowUpdate"
@@ -40,7 +42,7 @@ export default {
       selectionList: [],
       option: {
         height: "auto",
-        // calcHeight: 30,
+        calcHeight: 60,
         border: true,
         selection: true,
         column: [
@@ -169,10 +171,14 @@ export default {
     },
     onLoad() {
       this.loading = true;
-      this.data.push({ test1: "哈哈嗨", test2: 1 });
-      console.log("this.$refs.crud", this.$refs);
-      this.selectionClear();
-      this.loading = false;
+      let Timer = setTimeout(() => {
+        this.data.push({ test1: "哈哈嗨", test2: 1 });
+        this.page.total = 100;
+        console.log("this.$refs.crud", this.$refs);
+        this.selectionClear();
+        this.loading = false;
+        clearTimeout(Timer);
+      }, 700);
     },
   },
 };
