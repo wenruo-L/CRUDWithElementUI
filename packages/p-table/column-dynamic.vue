@@ -34,7 +34,8 @@
           </div>
         </template>
         <template v-else>
-          {{ pTable.getTableValue(row, column) }}
+          <!-- {{ pTable.getTableValue(row, column) }} -->
+          {{ row["_" + column.prop] }}
         </template>
       </template>
     </template>
@@ -82,7 +83,7 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .resources--content {
   width: 100%;
   height: 100%;

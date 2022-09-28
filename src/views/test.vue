@@ -666,9 +666,8 @@ export default {
             label: "树型下拉框",
             prop: "inputTree",
             type: "tree",
-            value: 4,
+            multiple: true,
             search: true,
-            searchValue: 3,
             dicData: [
               {
                 label: "字典1",
@@ -727,6 +726,7 @@ export default {
               {
                 label: "嗨！",
                 prop: "hi",
+                hide: true,
                 children: [
                   {
                     label: "来了啊",
@@ -760,6 +760,7 @@ export default {
                       {
                         label: "你吃了吗",
                         prop: "welcome",
+
                         editDisabled: true,
                         editDetail: true,
                       },
@@ -774,7 +775,7 @@ export default {
             prop: "sex",
             type: "select",
             search: true,
-            hide: true,
+            // hide: true,
             filterable: true,
             dataType: "number",
             value: 1,
@@ -880,24 +881,24 @@ export default {
               },
             ],
           },
-          // {
-          //   label: "多选框",
-          //   prop: "checkbox",
-          //   type: "checkbox",
-          //   dataType: "array",
-          //   // search: true,
-          //   value: [2],
-          //   dicData: [
-          //     {
-          //       label: "选项1",
-          //       value: 1,
-          //     },
-          //     {
-          //       label: "选项2",
-          //       value: 2,
-          //     },
-          //   ],
-          // },
+          {
+            label: "多选框",
+            prop: "checkbox",
+            type: "checkbox",
+            dataType: "array",
+            // search: true,
+            value: [2],
+            dicData: [
+              {
+                label: "选项1",
+                value: 1,
+              },
+              {
+                label: "选项2",
+                value: 2,
+              },
+            ],
+          },
           // {
           //   label: "级联选择器多选",
           //   prop: "cascader",
@@ -1784,16 +1785,18 @@ export default {
       if (this.data.length != 0) {
         this.data = [];
       }
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 1; i++) {
         this.data.push({
           id: i + 1,
           name: `姓名${i + 1}`,
-          sex: i % 2 == 0 ? 0 : 1,
+          // sex: i % 2 == 0 ? 0 : 1,
+          sex: "呵呵",
+          inputTree: [4, 5],
           useDisplay: "辣鸡数据",
           age: i < 5 ? i + 20 : i + 10,
           isRadio: 1,
           radio: 1,
-          selectButMultiple: [0, 1],
+          selectButMultiple: [0, "呵呵", 1],
           checkbox: [1],
           cascader: [
             ["zhinan", "shejiyuanze", "yizhi"],
@@ -1812,23 +1815,23 @@ export default {
           welcome: "肃然起敬",
         });
       }
-      for (let i = 1; i < 50; i++) {
-        this.data[1].children.push({
-          id: i + 20,
-          name: `姓名${i + 20}`,
-          sex: i % 2 == 0 ? 0 : 1,
-          selectButMultiple: [0, 1],
-          useDisplay: "辣鸡数据",
-          age: i < 20 ? i + 10 : i - 10,
-          isRadio: 2,
-          radio: 2,
-          checkbox: [1, 2],
-          cascader: [["zujian", "basic", "layout"]],
-          cascaderOne: ["zujian", "form", "radio"],
-          uploadPicture:
-            "https://thirdwx.qlogo.cn/mmopen/vi_32/a1roqYfQFib4VhjwGALuVFg4ia6va8FibEpvNbXVU93kq7x5W791y6mun99d31DGStCZibIjdCRxNNegYjAapd87aw/132",
-        });
-      }
+      // for (let i = 1; i < 50; i++) {
+      //   this.data[1].children.push({
+      //     id: i + 20,
+      //     name: `姓名${i + 20}`,
+      //     sex: i % 2 == 0 ? 0 : 1,
+      //     selectButMultiple: [0, 1],
+      //     useDisplay: "辣鸡数据",
+      //     age: i < 20 ? i + 10 : i - 10,
+      //     isRadio: 2,
+      //     radio: 2,
+      //     checkbox: [1, 2],
+      //     cascader: [["zujian", "basic", "layout"]],
+      //     cascaderOne: ["zujian", "form", "radio"],
+      //     uploadPicture:
+      //       "https://thirdwx.qlogo.cn/mmopen/vi_32/a1roqYfQFib4VhjwGALuVFg4ia6va8FibEpvNbXVU93kq7x5W791y6mun99d31DGStCZibIjdCRxNNegYjAapd87aw/132",
+      //   });
+      // }
       setTimeout(() => {
         this.loading = false;
         this.page.total = 233;

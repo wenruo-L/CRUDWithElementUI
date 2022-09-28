@@ -101,7 +101,7 @@
       ref="table"
       v-loading="loading"
       :key="reload"
-      :data="tableData"
+      :data="tableDataSetValue"
       :height="tableHeight"
       :max-height="isAutoHeight ? tableHeight : option.maxHeight"
       :stripe="option.stripe"
@@ -231,6 +231,7 @@
 <script>
 import { getObjType } from "@/utils/util";
 import { vaildData } from "@/utils/validate";
+import { deepClone } from "@/utils/util";
 import permission from "../directive/permission";
 import columnDynamic from "./column-dynamic";
 import crudConfig from "../config/crud-config";
@@ -307,11 +308,62 @@ export default {
     columnOption() {
       let columnList = [];
       if (this.columnList.length == 0) return columnList;
+
       columnList = this.columnList.filter((item) => {
         return item.hide === undefined || item.hide === false;
       });
       // 是否需要做去重？？
       return columnList;
+    },
+    // 把含有复杂表头的children数组插入到parent层
+    columnOptionSameLevel() {
+      let COLUMNOPTION = deepClone(this.columnOption);
+      COLUMNOPTION.forEach((el) => {
+        let dealWithChild = (column) => {
+          if (
+            column[this.getColumnProps(column, "children")] &&
+            column[this.getColumnProps(column, "children")].length != 0
+          ) {
+            column[this.getColumnProps(column, "children")].forEach(
+              (columnChild) => {
+                if (
+                  columnChild[this.getColumnProps(columnChild, "children")] &&
+                  columnChild[this.getColumnProps(columnChild, "children")]
+                    .length != 0
+                ) {
+                  dealWithChild(columnChild);
+                } else {
+                  COLUMNOPTION.push(columnChild);
+                }
+              }
+            );
+          }
+        };
+        dealWithChild(el);
+      });
+      return COLUMNOPTION;
+    },
+    // 处理后表格的展示数据
+    // 表格展示的将会是
+    tableDataSetValue() {
+      let DATA = this.tableData;
+      let COLUMN = this.columnOptionSameLevel;
+      for (let dataIndex = 0; dataIndex < DATA.length; dataIndex++) {
+        for (let columnIndex = 0; columnIndex < COLUMN.length; columnIndex++) {
+          let dataKeysList = Object.keys(DATA[dataIndex]);
+          for (
+            let dataKeysIndex = 0;
+            dataKeysIndex < dataKeysList.length;
+            dataKeysIndex++
+          ) {
+            if (dataKeysList[dataKeysIndex] == COLUMN[columnIndex].prop) {
+              DATA[dataIndex]["_" + dataKeysList[dataKeysIndex]] =
+                this.getTableValue(DATA[dataIndex], COLUMN[columnIndex]);
+            }
+          }
+        }
+      }
+      return DATA;
     },
     columnSlot() {
       let result = [];
@@ -605,9 +657,10 @@ export default {
     searchChange() {
       this.$emit("search-change");
     },
+    // 获取表格单元的中文值
     getTableValue(row, column) {
       let value = row[column.prop];
-      let matchType = ["select", "radio", "checkbox", "cascader"];
+      let matchType = ["select", "radio", "checkbox", "cascader", "tree"];
       // 1.1：该字段是否需要匹配
       // 1.2：需要匹配的字段的字典是否有值
       if (
@@ -623,75 +676,70 @@ export default {
         getObjType(row[column.prop]) != "array"
       ) {
         // 怎么会有人配置了字段但是表格data不传对应的值的？原来是我
-        let dicItem = column.dicData.find((item) => {
-          return item[this.getColumnProps(column, "value")] === value;
-        });
-        return (value = dicItem
-          ? dicItem[this.getColumnProps(column, "label")]
-          : "");
+        // 20220927 适配input-tree的数据格式
+        return this.findDicItemLabel(column.dicData, column, value);
       } else {
+        // 2.2 数据为[1,2,3]格式的都可以使用findDicItemLabelMultiple匹配数据
+        // 2.3 数据为[[1,2,3],[4,5,6]]的则使用findDicItemLabelCascader匹配数据
         if (column.type !== "cascader") {
-          return (value = column.dicData
-            .filter((item) => {
-              return value.includes(item[this.getColumnProps(column, "value")]);
-            })
-            .map((item) => {
-              return item[this.getColumnProps(column, "label")];
-            })
-            .join());
+          return this.findDicItemLabelMultiple(value, column);
         } else {
-          // 级联选择器
-          return this.matchCascaderValue(row, column);
+          return !column.multiple
+            ? this.findDicItemLabelMultiple(value, column, "-")
+            : this.findDicItemLabelCascader(value, column);
         }
       }
     },
-    matchCascaderValue(row, column) {
-      let value = row[column.prop];
-      // 1.1 当数据为空时处理显示格式，把原值返回显示
-      if (column.dicData.length === 0) {
-        value = column.multiple
-          ? value
-              .map((item) => {
-                return item.join("-");
-              })
-              .join("/")
-          : value.join("/");
-        return value;
-      }
-      // 1.2 当存在数据时，递归匹配数据
-      let labelList = [];
-      let valueIndex = 0;
-      const dealWithCascader = (value, data) => {
-        let taggetData = data.find((item) => {
-          return (
-            item[this.getColumnProps(column, "value")] === value[valueIndex]
-          );
-        });
-        if (taggetData) {
-          labelList.push(taggetData[this.getColumnProps(column, "label")]);
-          valueIndex++;
-          if (
-            !taggetData[this.getColumnProps(column, "children")] ||
-            taggetData[this.getColumnProps(column, "children")].length === 0
-          )
-            return;
-          dealWithCascader(
-            value,
-            taggetData[this.getColumnProps(column, "children")]
-          );
-        }
-        return labelList.join("-");
-      };
-      if (column.multiple) {
-        let resultList = [];
-        value.forEach((el) => {
-          resultList.push(dealWithCascader(el, column.dicData));
-        });
-        value = resultList.join(" / ");
-      } else {
-        value = dealWithCascader(value, column.dicData);
-      }
-      return value;
+    // 数据扁平化
+    platFn(list, column) {
+      let res = [];
+      res = list.concat(
+        ...list
+          .map((item) => {
+            if (
+              item[this.getColumnProps(column, "children")] &&
+              item[this.getColumnProps(column, "children")].length > 0
+            ) {
+              return this.platFn(
+                item[this.getColumnProps(column, "children")],
+                column
+              );
+            }
+            return null;
+          })
+          .filter((o) => o instanceof Array && o.length > 0)
+      );
+      return res;
+    },
+    // 使用数据匹配中文值
+    findDicItemLabel(list, column, defaultValue) {
+      let platList = this.platFn(list, column);
+      let res = null;
+      res = platList.find((item) => {
+        return item[this.getColumnProps(column, "value")] === defaultValue;
+      });
+      return res ? res[this.getColumnProps(column, "label")] : defaultValue;
+    },
+    // 使用数据匹配中文值（多选）
+    findDicItemLabelMultiple(valueList, column, separator = " | ") {
+      if (valueList.length <= 0) return "";
+      let dicLabelList = [];
+      valueList.forEach((value) => {
+        let dicLabel = this.findDicItemLabel(column.dicData, column, value);
+        dicLabelList.push(dicLabel);
+      });
+      return dicLabelList.join(separator);
+    },
+    // 使用数据匹配中文值（级联选择器多选）
+    findDicItemLabelCascader(valueList, column) {
+      if (valueList.length <= 0) return "";
+      let dicLabelList = [];
+      console.log("valueList", valueList);
+      valueList.forEach((value) => {
+        let dicLabel = this.findDicItemLabelMultiple(value, column, "-");
+        dicLabelList.push(dicLabel);
+      });
+      return dicLabelList.join(" | ");
     },
     // 获取label/value对应的字段名 默认label/value
     getColumnProps(column, type) {
@@ -722,6 +770,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import "/src/style/table.scss";
 </style>
