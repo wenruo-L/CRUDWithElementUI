@@ -101,7 +101,7 @@
       ref="table"
       v-loading="loading"
       :key="reload"
-      :data="tableDataSetValue"
+      :data="tableData"
       :height="tableHeight"
       :max-height="isAutoHeight ? tableHeight : option.maxHeight"
       :stripe="option.stripe"
@@ -344,7 +344,7 @@ export default {
       return COLUMNOPTION;
     },
     // 处理后表格的展示数据
-    // 表格展示的将会是
+    // 表格展示的将会是 --废弃
     tableDataSetValue() {
       let DATA = this.tableData;
       let COLUMN = this.columnOptionSameLevel;
@@ -363,6 +363,7 @@ export default {
           }
         }
       }
+      console.log("DATA", DATA);
       return DATA;
     },
     columnSlot() {

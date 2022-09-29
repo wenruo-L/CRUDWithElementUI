@@ -668,32 +668,38 @@ export default {
             type: "tree",
             multiple: true,
             search: true,
+            props: {
+              label: "title",
+              value: "id",
+              desc: "test",
+            },
             dicData: [
               {
-                label: "字典1",
-                value: 0,
+                title: "字典1",
+                id: 0,
+                test: "卧槽？字典",
                 children: [
                   {
-                    label: "字典3",
-                    value: 2,
+                    title: "字典3",
+                    id: 2,
                   },
                   {
-                    label: "字典4",
-                    value: 3,
+                    title: "字典4",
+                    id: 3,
                   },
                   {
-                    label: "字典5",
-                    value: 4,
+                    title: "字典5",
+                    id: 4,
                   },
                 ],
               },
               {
-                label: "字典2",
-                value: 1,
+                title: "字典2",
+                id: 1,
                 children: [
                   {
-                    label: "字典6",
-                    value: 5,
+                    title: "字典6",
+                    id: 5,
                   },
                 ],
               },
@@ -1509,6 +1515,7 @@ export default {
             hide: true,
             search: true,
             span: 24,
+            minRows: 10,
             value: "我依家就叼柒你",
           },
           {

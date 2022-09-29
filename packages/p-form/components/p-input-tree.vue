@@ -27,7 +27,7 @@
         :data="dicList"
         class="tree-option"
         style="padding: 10px 0"
-        :node-key="props.value"
+        :node-key="treeProps.value"
         :accordion="accordion"
         :icon-class="iconClass"
         :show-checkbox="multiple"
@@ -141,7 +141,7 @@ export default {
     props: {
       type: Object,
       default: () => {
-        return pFormConfig.props;
+        return {};
       },
     },
     size: {
@@ -207,7 +207,7 @@ export default {
       return list;
     },
     treeProps() {
-      return Object.assign(this.props, {
+      return Object.assign({}, pFormConfig.props, this.props, {
         isLeaf: this.leafKey,
       });
     },
