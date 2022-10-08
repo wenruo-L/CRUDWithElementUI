@@ -34,8 +34,8 @@
           </div>
         </template>
         <template v-else>
-          <!-- {{ pTable.getTableValue(row, column) }} -->
-          {{ row["_" + column.prop] }}
+          {{ pTable.getTableValue(row, column) }}
+          <!-- {{ row["_" + column.prop] }} -->
         </template>
       </template>
     </template>

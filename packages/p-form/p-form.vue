@@ -48,8 +48,8 @@
                 :is="getComponent(column)"
                 :disabled="getDisabled(column)"
                 v-model="PForm[column.prop]"
-                v-bind="getComponentBind(column)"
                 clearable
+                v-bind="getComponentBind(column)"
                 @change="
                   (value) => {
                     handleChange(value, column);
@@ -634,11 +634,14 @@ export default {
         result.maxlength = column.maxlength;
         result.minlength = column.minlength;
         result.showWordLimit = column.showWordLimit;
-        if (column.minRows) {
-          result.autosize.minRows = column.minRows;
-        }
-        if (column.maxRows) {
-          result.autosize.maxRows = column.minRows;
+        if (column.minRows || column.maxRows) {
+          result.autosize = {};
+          if (column.minRows) {
+            result.autosize.minRows = column.minRows;
+          }
+          if (column.maxRows) {
+            result.autosize.maxRows = column.maxRows;
+          }
         }
       } else if (type === "password") {
         result.showPassword = true;
@@ -665,8 +668,8 @@ export default {
       } else if (type === "radio") {
         result.border = column.border || false;
       } else if (type === "checkbox") {
-        result.min = column.min || 0;
-        result.max = column.max || Infinity;
+        result.min = vaildData(column.min, 0);
+        result.max = vaildData(column.max, Infinity);
       } else if (type === "cascader") {
         result.ref = `${column.prop}Cascader`;
         result.props = {
