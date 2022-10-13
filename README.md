@@ -1,5 +1,39 @@
 ## 对 elementUI 进行二次封装的 crud 组件
 
+### 结构
+
+```
+├── packages
+│   ├── config                  // 配置文件
+│   │   ├── crud-config.js      // crud组件的配置文件
+│   │   └── p-form-config.js    // form组件的配置文件
+│   ├── crud                    // crud组件
+│   │   ├── crud.vue            // crud组件的主入口
+│   │   ├── dialog-form.vue     // 弹窗表单组件
+│   │   ├── event.js            // 封装的事件
+│   │   ├── header-search.vue   // 搜索栏组件
+│   │   ├── index.js            // 注册文件
+│   │   └── table-page.vue      // 分页器组件
+│   ├── directive               // 自定义指令
+│   │   ├── dialog-drag.js      // 弹窗拖动指令
+│   │   ├── image-preview       // 资源预览指令
+│   │   │   ├── index.js
+│   │   │   ├── index.vue
+│   │   │   └── style.scss
+│   │   └── permission.js       // 权限指令
+│   ├── index.js
+│   ├── p-form                  // 表单组件
+│   │   ├── components
+│   │   │   ├── p-input-tree.vue  // 树型下拉框
+│   │   │   └── p-upload.vue      // 上传组件的封装
+│   │   ├── index.js
+│   │   └── p-form.vue            // 表单组件
+│   └── p-table                 // 表格组件
+│       ├── column-dynamic.vue  // 动态列
+│       ├── index.js
+│       └── p-table.vue         // 表格组件
+```
+
 #### 安装
 
 ```
